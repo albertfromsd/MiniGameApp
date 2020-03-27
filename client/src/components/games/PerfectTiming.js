@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const PerfectTiming = () => {
     
     // DontComeInsideMe is a better version of this
@@ -14,9 +16,12 @@ const PerfectTiming = () => {
     // winner is the one who has the best score (least total distance from target line)
 
     return (
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2>Perfect Timing</h2>
         </div>
+        </>
     );
 };
 

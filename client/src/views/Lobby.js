@@ -44,6 +44,7 @@ const Lobby = ({ dispatch, user }) => {
 
     return (
         <>
+        <NavBar />
         <div className={styles.flexColCen}>
             <h2>Welcome to the Mini Game App Lobby!</h2><br/>
             <p>Please enter your username and room you want to enter or create</p> <br/>
@@ -69,7 +70,6 @@ const Lobby = ({ dispatch, user }) => {
             <DontComeInsideMe path="/dontcomeinsideme" userName={userName} socket={socket} />
             <DropAFatShot path="/dropafatshot" userName={userName} socket={socket} />
         </Router>
-
         </>
     );
 };

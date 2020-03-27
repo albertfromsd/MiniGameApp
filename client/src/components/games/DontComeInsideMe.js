@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const DontComeInsideMe = () => {
 
     // at random setTimeout, prompt will shout "Come to me!"
@@ -11,9 +13,12 @@ const DontComeInsideMe = () => {
     // player who gets closest to the target line without passing into the red area gets the points
 
     return (
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2>Please Don't Come Inside Me!</h2>
         </div>
+        </>
     );
 };
 

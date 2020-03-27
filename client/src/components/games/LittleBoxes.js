@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const LittleBoxes = () => {
 
     // a series of divs will show up with random bgColors and textColors
@@ -12,9 +14,12 @@ const LittleBoxes = () => {
     // then the next prompt and set of divs will appear
 
     return (
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2> Little Boxes </h2>
         </div>
+        </>
     );
 };
 

@@ -10,7 +10,9 @@ import LoginReg from './views/LoginReg'; // fix later
 import GameRoom from './views/GameRoom';
 import Lobby from './views/Lobby';
 
-// [ GAME COMPONENTS ]
+// [ COMPONENTS ]
+import NavBar from './components/NavBar';
+
 import MathHead from './components/games/MathHead';
 import WiseToMemorize from './components/games/WiseToMemorize';
 import TypeFasterMaster from './components/games/TypeFasterMaster';

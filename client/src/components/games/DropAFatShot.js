@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const DropAFatShot = () => {
 
     // have a static target of a specific size
@@ -12,9 +14,12 @@ const DropAFatShot = () => {
     // whosever bullet covers the most surface area is the winner
 
     return (
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2> Drop a Fat Shot </h2>
         </div>
+        </>
     );
 };
 

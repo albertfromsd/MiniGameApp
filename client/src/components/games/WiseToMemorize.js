@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const WiseToMemorize = ({ socket }) => {
 
     // generate a random string
@@ -23,9 +25,12 @@ const WiseToMemorize = ({ socket }) => {
     }
 
     return(
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2>Wise to Memorize</h2>
         </div>
+        </>
     );
 };
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const MathHead = ({ socket }) => {
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
@@ -116,6 +118,8 @@ const MathHead = ({ socket }) => {
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
 
     return(
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2>Math Head</h2>
             <br/>
@@ -170,6 +174,7 @@ const MathHead = ({ socket }) => {
                 </form>
             </div>
         </div>
+        </>
     )
 };
 

@@ -19,7 +19,8 @@ const GameRoom = ({ socket, userName, roomName }) => {
         <>
         <NavBar />
         <div className={styles.flexColCen}>
-            <h2>Welcome to the Lobby: {roomName}!</h2>
+            <h2>Welcome, {userName}!</h2>
+            <h3>You are in {roomName}</h3>
                 <br/>
             <h3>Pick a game below:</h3>
                 <br/>

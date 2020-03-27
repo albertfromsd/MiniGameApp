@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
+import NavBar from '../NavBar';
+
 const TypeFasterMaster = ({ socket })  => {
 
     // generate random string at random setTimeouts at random places on the screen
@@ -10,9 +12,12 @@ const TypeFasterMaster = ({ socket })  => {
 
 
     return (
+        <>
+        <NavBar />
         <div className={styles.entirePage}>
             <h2>Type Faster Master</h2>
         </div>
+        </>
     );
 };
 
