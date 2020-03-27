@@ -77,18 +77,20 @@ const HumanCalculator = ({ socket }) => {
     const submitAnswer = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
+
+            // [TOP] Timer calculation not working
             setQAnsweredAt( new Date().getTime() );
             timeDiff = ( (qAnsweredAt - qCreatedAt )/1000000000000 );
             setTimeToAnswer( timeDiff );
+            // [END] Timer calculation not working
 
-            socket.emit("correctAnswer", socket.id);
+            // socket.emit("correctAnswer", socket.id);
 
             setResultMsg(["Correct!",question+" does equal "+formAnswer+"!"]);
             setResultColor("green");
 
-            // [TOP] Timer calculation not working
             setFormVisibility("hidden");
-            // [END] Timer calculation not working
+
 
         } else {
             setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);

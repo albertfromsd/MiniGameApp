@@ -78,13 +78,13 @@
 }
 
 .hiddenForm {
-    display: "none";
+    display: none;
 }
 .visibleForm {
-    display: "flex";
-    flex-flow: "column";
-    justify-content: "center";
-    align-items: "center";
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* [HUMAN CALCULATOR] */
