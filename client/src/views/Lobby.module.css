@@ -8,3 +8,52 @@
     justify-content: center;
     align-items: center;
 }
+
+
+.btn {
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    margin: 10px 5px 10px 20px;
+    padding: 5px 10px;
+}
+.btn:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn:focus, .buttonMsg.focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.activeBtn {
+    color: white;
+    background-color: #007bff;
+    background-image: none;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    margin: 10px 5px 10px 20px;
+    padding: 5px 10px;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+
+.inactiveBtn {
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    margin: 10px 5px 10px 20px;
+    padding: 5px 10px;
+}
+.inactiveBtn:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.inactiveBtn:focus, .buttonMsg.focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}

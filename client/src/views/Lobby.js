@@ -47,17 +47,47 @@ const Lobby = () => {
                 <br/>
             <h3>Pick a game below:</h3>
                 <br/>
-            <button onClick={gameSelector} value="humancalculator">Human Calculator</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="humancalculator"
+                className={styles.btn}>
+                    Human Calculator
+            </button>{" "}
                 <br/>
-            <button onClick={gameSelector} value="wisetomemorize">Wise to Memorize</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="wisetomemorize"
+                className={styles.btn}>
+                    Wise to Memorize
+            </button>{" "}
                 <br/>
-            <button onClick={gameSelector} value="typefastermaster">Type Faster Master</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="typefastermaster"
+                className={styles.btn}>
+                    Type Faster Master
+            </button>{" "}
                 <br/>
-            <button onClick={gameSelector} value="littleboxes">Little Boxes</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="littleboxes"
+                className={styles.btn}>
+                    Little Boxes
+            </button>{" "}
                 <br/>
-            <button onClick={gameSelector} value="dontcomeinsideme">Don't Come Inside Me</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="dontcomeinsideme"
+                className={styles.btn}>
+                    Don't Come Inside Me
+            </button>{" "}
                 <br/>
-            <button onClick={gameSelector} value="dropafatshot">Drop a Fat Shot</button>{" "}
+            <button 
+                onClick={gameSelector} 
+                value="dropafatshot"
+                className={styles.btn}>
+                    Drop a Fat Shot
+            </button>{" "}
                 <br/>
         </div>
         <Router basepath="/games">
