@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
-const HumanCalculator = ({ socket }) => {
+const MathHead = ({ socket }) => {
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
 
@@ -99,7 +99,6 @@ const HumanCalculator = ({ socket }) => {
         setFormAnswer("");
     }
 
-    
     // useEffect( () => {
     //     socket.on("questionAnswered", winner => {
     //         let copyResultMsg = resultMsg;
@@ -118,7 +117,7 @@ const HumanCalculator = ({ socket }) => {
 
     return(
         <div className={styles.entirePage}>
-            <h2>Human Calculator</h2>
+            <h2>Math Head</h2>
             <br/>
             <div>
                 {difficultyLevels.map( (d, i) => {
@@ -174,4 +173,4 @@ const HumanCalculator = ({ socket }) => {
     )
 };
 
-export default HumanCalculator;
+export default MathHead;

@@ -1,31 +1,30 @@
+// [MAIN COMPONENTS]
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import {  Router, navigate } from '@reach/router';
+import { Router, navigate } from '@reach/router';
+import { connect } from 'react-redux';
 
+// [STYLES]
 import styles from './Lobby.module.css';
 
+// [NAVBAR]
 import NavBar from '../components/NavBar';
 
-import HumanCalculator from '../components/games/HumanCalculator';
+// [GAMES]
+import MathHead from '../components/games/MathHead';
 import WiseToMemorize from '../components/games/WiseToMemorize';
 import TypeFasterMaster from '../components/games/TypeFasterMaster';
 import LittleBoxes from '../components/games/LittleBoxes';
 
 import DontComeInsideMe from '../components/games/DontComeInsideMe';
-
 import DropAFatShot from '../components/games/DropAFatShot';
 
-
-
-const Lobby = () => {
+const Lobby = ({ dispatch, user }) => {
     const [ socket ] = useState( () => io(':8000') );
-    const [ user, setUser ] = useState("")
+    const [ userName, setUserName ] = useState("");
+    const [ roomName, setRoomName ] = useState("");
 
     useEffect( () => {
-        // axios.get("/api/user/id/"+userid)
-        //     .then(res => setUser(res.data))
-        //     .catch(console.log);
-
         socket.on('welcome', data => {
             console.log(data);
         });
@@ -34,69 +33,35 @@ const Lobby = () => {
         }
     }, [socket]);
 
-    const gameSelector = e => {
-        navigate('/games/'+e.target.value);
-    };
+    // in Line 24 we will need a form to let user input their displayed name + room they want to enter/create
+    // in /views/GameRoom.js we will have a list of sockets connected, chatbox, + list of games (later we will add total score for session using state or redux)
 
     return (
         <>
-        <NavBar />
-            <br/>
-        <div className={styles.entirePage}>
-            <h2>Game Room Lobby</h2>
-                <br/>
-            <h3>Pick a game below:</h3>
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="humancalculator"
-                className={styles.btn}>
-                    Human Calculator
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="wisetomemorize"
-                className={styles.btn}>
-                    Wise to Memorize
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="typefastermaster"
-                className={styles.btn}>
-                    Type Faster Master
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="littleboxes"
-                className={styles.btn}>
-                    Little Boxes
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="dontcomeinsideme"
-                className={styles.btn}>
-                    Don't Come Inside Me
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="dropafatshot"
-                className={styles.btn}>
-                    Drop a Fat Shot
-            </button>{" "}
-                <br/>
+        <div className={styles.flexColCen}>
+            <h2>Welcome to the Mini Game App Lobby!</h2><br/>
+            <p>Please enter your username and room you want to enter or create</p> <br/>
+            <form className={styles.flexColCen}>
+                <label>Username: </label>
+                <input
+                    type="text"
+                    value={userName}
+                    onChange={e => setUserName(e.target.value)} /> <br/>
+                <label>Room Name:</label>
+                <input 
+                    type="text"
+                    value={roomName}
+                    onChange={e => setRoomName(e.target.value)} /> <br/>
+                <input type="submit" value="Enter room" />
+            </form>
         </div>
-        <Router basepath="/games">
-            <HumanCalculator path="/humancalculator" socket={socket} />
-            <WiseToMemorize path="/wisetomemorize" socket={socket} />
-            <TypeFasterMaster path="/typefastermaster" socket={socket} />
-            <LittleBoxes path="/littleboxes" socket={socket} />
-            <DontComeInsideMe path="/dontcomeinsideme" socket={socket} />
-            <DropAFatShot path="/dropafatshot" socket={socket} />
+        <Router basepath="/:roomName">
+            <MathHead path="/mathhead" userName={userName} socket={socket} />
+            <WiseToMemorize path="/wisetomemorize" userName={userName} socket={socket} />
+            <TypeFasterMaster path="/typefastermaster" userName={userName} socket={socket} />
+            <LittleBoxes path="/littleboxes" userName={userName} socket={socket} />
+            <DontComeInsideMe path="/dontcomeinsideme" userName={userName} socket={socket} />
+            <DropAFatShot path="/dropafatshot" userName={userName} socket={socket} />
         </Router>
 
         </>

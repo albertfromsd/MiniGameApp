@@ -49,7 +49,7 @@ UserSchema.pre('save', function(next) {
             this.password = hashedPw;
             next(); //put this line inside of .then so it saves after it has been hashed
         })
-        .catch(console.log("Something went wrong during password hashing"));
+        .catch(()=>console.log("Something went wrong during password hashing"));
 });
 
 
