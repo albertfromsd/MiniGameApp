@@ -1,0 +1,44 @@
+* {
+  margin: 0 auto;
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
+.chatLogBox {
+  width: 85%;
+  height: 75%;
+  border: 1px solid black;
+  display: flex;
+  flex-flow: row;
+}
+
+.chatLogMsgs {
+  height: 100%;
+  width: 75%;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+.userList {
+  height: 100%;
+  width: 25%;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+.formBox {
+  width: 53%;
+}
+.msgInput {
+
+}
+.msgSubmit {
+
+}

@@ -1,0 +1,23 @@
+* {
+    margin: 0 auto;
+}
+
+.loginForm {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formRow {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-end;
+}
+
+.rowCenter {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+}

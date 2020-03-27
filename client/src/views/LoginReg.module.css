@@ -1,0 +1,28 @@
+* {
+    margin: 0 auto;
+}
+
+.entirePage {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginReg {
+    display: flex;
+    flex-flow: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.regform {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}

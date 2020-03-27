@@ -1,0 +1,10 @@
+* {
+    margin: 0 auto;
+}
+
+.flexRow {
+    display: flex;
+    flex-flow: row;
+    width: 15%;
+    padding: 15px;
+}
