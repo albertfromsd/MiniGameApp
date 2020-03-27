@@ -33,6 +33,12 @@ const Lobby = ({ dispatch, user }) => {
         }
     }, [socket]);
 
+    const enterRoom = e => {
+        e.preventDefault();
+
+        navigate('/'+roomName);
+
+    }
     // in Line 24 we will need a form to let user input their displayed name + room they want to enter/create
     // in /views/GameRoom.js we will have a list of sockets connected, chatbox, + list of games (later we will add total score for session using state or redux)
 
@@ -41,7 +47,7 @@ const Lobby = ({ dispatch, user }) => {
         <div className={styles.flexColCen}>
             <h2>Welcome to the Mini Game App Lobby!</h2><br/>
             <p>Please enter your username and room you want to enter or create</p> <br/>
-            <form className={styles.flexColCen}>
+            <form className={styles.flexColCen} onSubmit={enterRoom}>
                 <label>Username: </label>
                 <input
                     type="text"

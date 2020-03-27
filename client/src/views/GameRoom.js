@@ -18,8 +18,8 @@ const GameRoom = ({ socket, userName, roomName }) => {
     return (
         <>
         <NavBar />
-        <div className={styles.entirePage}>
-            <h2>Game Room Lobby</h2>
+        <div className={styles.flexColCen}>
+            <h2>Welcome to the Lobby: {roomName}!</h2>
                 <br/>
             <h3>Pick a game below:</h3>
                 <br/>
