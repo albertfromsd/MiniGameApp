@@ -17,7 +17,7 @@ const DropAFatShot = () => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2> Drop a Fat Shot </h2>
+            <h2 className={styles.textWhite}> Drop a Fat Shot </h2>
         </div>
         </>
     );

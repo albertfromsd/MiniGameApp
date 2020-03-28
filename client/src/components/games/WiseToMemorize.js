@@ -28,7 +28,7 @@ const WiseToMemorize = ({ socket }) => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2>Wise to Memorize</h2>
+            <h2 className={styles.textWhite}>Wise to Memorize</h2>
         </div>
         </>
     );

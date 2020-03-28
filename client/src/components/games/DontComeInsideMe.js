@@ -16,7 +16,7 @@ const DontComeInsideMe = () => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2>Please Don't Come Inside Me!</h2>
+            <h2 className={styles.textWhite}>Please Don't Come Inside Me!</h2>
         </div>
         </>
     );

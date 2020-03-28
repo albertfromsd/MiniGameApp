@@ -15,7 +15,7 @@ const TypeFasterMaster = ({ socket })  => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2>Type Faster Master</h2>
+            <h2 className={styles.textWhite}>Type Faster Master</h2>
         </div>
         </>
     );

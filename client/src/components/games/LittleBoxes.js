@@ -17,7 +17,7 @@ const LittleBoxes = () => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2> Little Boxes </h2>
+            <h2 className={styles.textWhite}> Little Boxes </h2>
         </div>
         </>
     );

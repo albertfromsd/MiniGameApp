@@ -19,7 +19,7 @@ const PerfectTiming = () => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2>Perfect Timing</h2>
+            <h2 className={styles.textWhite}>Perfect Timing</h2>
         </div>
         </>
     );
