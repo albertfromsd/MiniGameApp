@@ -3,39 +3,39 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// [ SERVER ]
+const server = app.listen(8000, () => {
+    console.log("Gameroom App server is listening at Port 8000");
+});
 // [ CORS ]
 const cors = require('cors');
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }));
-
 // [ COOKIE-PARSER ]
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-
 // [ CONFIG ]
 require('./config/mongoose.config');
 require('dotenv').config();
 console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 
+// [ MODELS ]
+// const { Chat } = require('./models/Chat');
+// const { User } = require('./models/User');
+// const { GameRoom } = require('./models/GameRoom');
+
 // [ ROUTES ]
-require('./routes/Users.routes')(app);
-require('./routes/Gameroom.routes')(app)
-require('./routes/Chatroom.routes')(app);
+require('./routes/User.routes')(app);
+require('./routes/GameRoom.routes')(app)
+require('./routes/Chat.routes')(app);
 
 
-// [ SERVER ]
-const server = app.listen(8000, () => {
-    console.log("Gameroom App server is listening at Port 8000");
-});
+// [ SOCKET ]
 
-
-// [ SOCKET.IO ]
 const io = require("socket.io")(server);
-
 let connectedClients = 0;
 let chatLog = [];
 let userList = [];
@@ -62,9 +62,12 @@ io.on("connection", socket => {
         io.emit("refreshChatLog", chatLog);
     });
 
-    // [ HUMAN CALCULATOR ]
-    socket.on("correctAnswer", data => {
-        io.emit("questionAnswered", data);
+    // [ MATH HEAD ]
+    socket.on("enteredMathHead", data => {
+        
+        socket.on("correctAnswer", data => {
+            io.emit("questionAnswered", data);
+        });
     });
 
     // [ USER LOGOUT ]

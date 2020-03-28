@@ -27,6 +27,12 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     // WINNER
     const [ winnerId, setWinnerId ] = useState(null);
 
+    useEffect( () => {
+        socket.on('enteredMathHead', userName, roomName => {
+            console.log(userName+" entered "+roomName)
+         })
+    }, [socket]);
+
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
     }

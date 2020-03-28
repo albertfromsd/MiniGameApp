@@ -48,7 +48,7 @@ function reducer( state, action ) {
 
 const initialState = {
   socket: null,
-  userName: null,
+  nickName: null,
   userScore: null,
 };
 

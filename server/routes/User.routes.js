@@ -1,4 +1,4 @@
-const UCtrl = require('../controllers/Users.controllers');
+const UCtrl = require('../controllers/User.controller');
 
 const { authenticate } = require('../config/jwt.config');
 

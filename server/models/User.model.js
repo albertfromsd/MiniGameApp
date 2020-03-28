@@ -52,5 +52,6 @@ UserSchema.pre('save', function(next) {
         .catch(()=>console.log("Something went wrong during password hashing"));
 });
 
+const User = mongoose.model("User", UserSchema);
 
-module.exports.User = mongoose.model("User", UserSchema);
+module.exports = { User };

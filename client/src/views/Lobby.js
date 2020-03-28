@@ -20,8 +20,9 @@ import NavBar from '../components/NavBar';
 
 const Lobby = ({ socket, dispatch, userName }) => {
     const [ formState, setFormState ] = useState({
-        uName: "",
-        rName: ""
+        nickName: "",
+        rName: "",
+        rPassword: ""
     });
     const [ errorMsg, setErrorMsg ] = useState ("");
 
@@ -37,8 +38,8 @@ const Lobby = ({ socket, dispatch, userName }) => {
         e.preventDefault();
         if (formState.uName.length>0 && formState.rName.length>0) {
             dispatch({
-                type: 'SETUSERNAME',
-                userName: formState.uName,
+                type: 'SETNICKNAME',
+                userName: formState.nickName,
             });
             navigate('/'+formState.rName);
         } else {
@@ -54,24 +55,37 @@ const Lobby = ({ socket, dispatch, userName }) => {
         <NavBar />
         <div className={[styles.flexColCen, styles.textWhite].join(' ')}>
             <h1>Mini Game Party!</h1><br/>
-            <p className={styles.textWhite}>Please enter your desired username and room you want to enter or create</p> <br/>
+            <p className={styles.textWhite}>Please enter your desired nick name and room you want to enter or create</p> <br/>
             <form className={styles.flexColCen} onSubmit={enterRoom}>
 
                 <p style={{color: "red"}}>{errorMsg}</p>
 
-                <label>Username: </label>
-                <input
-                    type="text"
-                    name="uName"
-                    value={formState.uName}
-                    onChange={onChangeHandler} /> <br/>
+                <div className={styles.inputRow}>
+                    <label>Nickname: </label>
+                    <input
+                        type="text"
+                        name="nickName"
+                        value={formState.nickName}
+                        onChange={onChangeHandler} /> 
+                </div> <br/>
 
-                <label>Room Name:</label>
-                <input 
-                    type="text"
-                    name="rName"
-                    value={formState.rName}
-                    onChange={onChangeHandler} /> <br/>
+                <div className={styles.inputRow}>
+                    <label>Room Name:</label>
+                    <input 
+                        type="text"
+                        name="rName"
+                        value={formState.rName}
+                        onChange={onChangeHandler} /> 
+                </div> <br/>
+
+                <div className={styles.inputRow}>
+                    <label>Password:</label>
+                    <input 
+                        type="password"
+                        name="rPassword"
+                        value={formState.rPassword}
+                        onChange={onChangeHandler} /> 
+                </div> <br/>
 
                 <input type="submit" value="Enter room" className={styles.prettyBtn} />
             </form>
@@ -82,7 +96,7 @@ const Lobby = ({ socket, dispatch, userName }) => {
 
 function mapStateToProps(state) {
     return {
-        socketId: state.socketId,
+        socket: state.socket,
         userName: state.userName,
         userScore: state.userScore
     };
