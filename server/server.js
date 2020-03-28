@@ -63,16 +63,8 @@ io.on("connection", socket => {
     });
 
     // [ HUMAN CALCULATOR ]
-    socket.on("correctAnswer", winnerId => {
-        io.emit("questionAnswered", winnerId);
-    });
-
-    // [ RESET ]
-    socket.on("reset", () => {
-        let chatLog = [];
-        let userList = [];
-        io.emit("refreshChatLog", chatLog);
-        io.emit("refreshUserList", userList);
+    socket.on("correctAnswer", data => {
+        io.emit("questionAnswered", data);
     });
 
     // [ USER LOGOUT ]

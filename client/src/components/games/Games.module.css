@@ -11,6 +11,10 @@
     align-items: center;
 }
 
+.textWhite {
+    color: white;
+}
+
 .btn {
     color: #007bff;
     background-color: transparent;

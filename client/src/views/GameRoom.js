@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Router, navigate } from '@reach/router';
+import { connect } from 'react-redux';
 
 // [ STYLES ]
-import styles from "./Lobby.module.css";
+import styles from "./Views.module.css";
 
+
+// [ COMPONENTS ]
 import NavBar from "../components/NavBar";
 
-// [ GAME COMPONENTS ]
-import MathHead from '../components/games/MathHead';
 
-const GameRoom = ({ socket, userName, roomName }) => {
+const GameRoom = ({ socket, dispatch, userName, roomName }) => {
+    // insert check if user submitted a userName
+    // if (!userName || !socket ) {
+    //     navigate('/');
+    // };
 
     const gameSelector = e => {
         navigate('/'+roomName+'/'+e.target.value);
@@ -19,56 +24,70 @@ const GameRoom = ({ socket, userName, roomName }) => {
         <>
         <NavBar />
         <div className={styles.flexColCen}>
-            <h2>Welcome, {userName}!</h2>
-            <h3>You are in {roomName}</h3>
+            <h2 className={styles.textWhite}>Welcome, {userName}!</h2>
+            <h3 className={styles.textWhite}>You are in {roomName}</h3>
                 <br/>
-            <h3>Pick a game below:</h3>
+            <h3 className={styles.textWhite}>Pick a game below:</h3>
                 <br/>
-            <button 
-                onClick={gameSelector} 
-                value="mathhead"
-                className={styles.btn}>
-                    Math Head
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="wisetomemorize"
-                className={styles.btn}>
-                    Wise to Memorize
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="typefastermaster"
-                className={styles.btn}>
-                    Type Faster Master
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="littleboxes"
-                className={styles.btn}>
-                    Little Boxes
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="dontcomeinsideme"
-                className={styles.btn}>
-                    Don't Come Inside Me
-            </button>{" "}
-                <br/>
-            <button 
-                onClick={gameSelector} 
-                value="dropafatshot"
-                className={styles.btn}>
-                    Drop a Fat Shot
-            </button>{" "}
-                <br/>
+            <div className={styles.flexRowCen}>
+                <div className={styles.flexColCen}>
+                    <button 
+                        onClick={gameSelector} 
+                        value="mathhead"
+                        className={styles.btn}>
+                            Math Head
+                    </button>{" "}
+                    <br/>
+                        <button 
+                        onClick={gameSelector} 
+                        value="wisetomemorize"
+                        className={styles.btn}>
+                            Wise to Memorize
+                    </button>{" "}
+                        <br/>
+                    <button 
+                        onClick={gameSelector} 
+                        value="typefastermaster"
+                        className={styles.btn}>
+                            Type Faster Master
+                    </button>{" "}
+                    <br/>
+                </div>
+                <div className={styles.flexColCen}>
+                <button 
+                    onClick={gameSelector} 
+                    value="littleboxes"
+                    className={styles.btn}>
+                        Little Boxes
+                </button>{" "}
+                    <br/>
+                <button 
+                    onClick={gameSelector} 
+                    value="dontcomeinsideme"
+                    className={styles.btn}>
+                        Don't Come Inside Me
+                </button>{" "}
+                    <br/>
+                <button 
+                    onClick={gameSelector} 
+                    value="dropafatshot"
+                    className={styles.btn}>
+                        Drop a Fat Shot
+                </button>{" "}
+                    <br/>
+                </div>
+            </div>
         </div>
     </>
     )
 }
 
-export default GameRoom;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
+
+export default connect(mapStateToProps)(GameRoom);

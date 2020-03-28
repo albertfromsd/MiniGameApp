@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
 import { Router } from '@reach/router';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux'; // implement later
+import { Provider } from 'react-redux';
 
 import './MiniGameApp.css';
 
@@ -11,8 +12,6 @@ import GameRoom from './views/GameRoom';
 import Lobby from './views/Lobby';
 
 // [ COMPONENTS ]
-import NavBar from './components/NavBar';
-
 import MathHead from './components/games/MathHead';
 import WiseToMemorize from './components/games/WiseToMemorize';
 import TypeFasterMaster from './components/games/TypeFasterMaster';
@@ -21,19 +20,26 @@ import LittleBoxes from './components/games/LittleBoxes';
 import DontComeInsideMe from './components/games/DontComeInsideMe';
 import DropAFatShot from './components/games/DropAFatShot';
 
-
-// [TOP] REDUX NOT BEING USED AS OF 2020.03.27 @ 14:30
+// [TOP] [ REDUX ]
 function reducer( state, action ) {
   switch(action.type) {
-    case 'LOGIN':
+    case 'SETUSERNAME':
       return {
         ...state,
-        user: action.user
+        userName: action.userName,
+        socket: action.socket,
       };
     case 'LOGOUT':
       return {
         ...state,
-        user:null
+        socket: null,
+        userName: null,
+        userScore: null,
+      };
+    case 'CHANGETOTALSCORE':
+      return {
+        ...state,
+        userScore: action.userScore
       };
     default:
       return state;
@@ -41,29 +47,49 @@ function reducer( state, action ) {
 };
 
 const initialState = {
-  user: null,
-  socket: null
+  socket: null,
+  userName: null,
+  userScore: null,
 };
 
 const store = createStore( reducer, initialState );
-// [END] REDUX NOT BEING USED AS OF 2020.03.27 @ 14:30
+// [END] [ REDUX ]
 
 
 function MiniGameApp() {
+  const [ socket ] = useState( () => io(':8000') );
+
+  useEffect( () => {
+    socket.on('welcome', data => {
+        console.log(data);
+    });
+    return () => {
+        socket.disconnect();
+    }
+  }, [socket]);
 
   return (
     <>
-    <Router>
-      <Lobby path="/" />
-      <GameRoom path="/:roomName" />
-      <MathHead path="/:roomName/mathhead" socket={store.socket}/>
-      <WiseToMemorize path="/:roomName/wisetomemorize" socket={store.socket}/>
-      <TypeFasterMaster path="/:roomName/typefastermaster" socket={store.socket}/>
-      <LittleBoxes path="/:roomName/littleboxes" socket={store.socket}/>
-      <DontComeInsideMe path="/:roomName/dontcomeinsideme" socket={store.socket}/>
-      <DropAFatShot path="/:roomName/dropafatshot" socket={store.socket} />
-    </Router>
-
+    <Provider store={store}>
+      <Router>
+        <Lobby path="/" 
+          socket={socket}/>
+        <GameRoom path="/:roomName" 
+          socket={socket}/>
+        <MathHead path="/:roomName/mathhead" 
+          socket={socket}/>
+        <WiseToMemorize path="/:roomName/wisetomemorize" 
+          socket={socket}/>
+        <TypeFasterMaster path="/:roomName/typefastermaster" 
+          socket={socket}/>
+        <LittleBoxes path="/:roomName/littleboxes" 
+          socket={socket}/>
+        <DontComeInsideMe path="/:roomName/dontcomeinsideme" 
+          socket={socket}/>
+        <DropAFatShot path="/:roomName/dropafatshot" 
+          socket={socket} />
+      </Router>
+    </Provider>
     </>
   );
 }

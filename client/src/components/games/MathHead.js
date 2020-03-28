@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const MathHead = ({ socket }) => {
+const MathHead = ({ socket, userName, roomName, userScore }) => {
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
 
@@ -86,7 +87,14 @@ const MathHead = ({ socket }) => {
             setTimeToAnswer( timeDiff );
             // [END] Timer calculation not working
 
-            // socket.emit("correctAnswer", socket.id);
+            // [ SOCKET ] emit after answered correctly
+            socket.emit("correctAnswer", 
+                {
+                    socket,
+                    userName,
+                    roomName
+                }
+            );
 
             setResultMsg(["Correct!",question+" does equal "+formAnswer+"!"]);
             setResultColor("green");
@@ -101,18 +109,18 @@ const MathHead = ({ socket }) => {
         setFormAnswer("");
     }
 
-    // useEffect( () => {
-    //     socket.on("questionAnswered", winner => {
-    //         let copyResultMsg = resultMsg;
-    //         copyResultMsg.push(winnerId+" answered correctly");
-    //         setResultMsg(
-    //             copyResultMsg
-    //         );
-    //         setWinnerId(
-    //             winner
-    //         )
-    //     });
-    // }, [socket]);
+    // [ SOCKET ] Set message after correct answer was submitted
+
+    useEffect( () => {
+        socket.on("questionAnswered", data => {
+            setFormVisibility("hidden");
+            let copyResultMsg = resultMsg;
+            copyResultMsg.push(data.userName+" answered correctly");
+            setResultMsg(
+                copyResultMsg
+            );
+        });
+    }, [socket]);
 
     // [BUTTONS]
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
@@ -121,7 +129,7 @@ const MathHead = ({ socket }) => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h2>Math Head</h2>
+            <h2 className={styles.textWhite}>Math Head</h2>
             <br/>
             <div>
                 {difficultyLevels.map( (d, i) => {
@@ -155,12 +163,11 @@ const MathHead = ({ socket }) => {
                     : <p></p>
                 }
                 
-                
             <br/>
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                <p>{question}</p>
+                <p className={styles.textWhite}>{question}</p>
                     <br/>
                     <br/>
                     <br/>
@@ -178,4 +185,12 @@ const MathHead = ({ socket }) => {
     )
 };
 
-export default MathHead;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
+
+export default connect(mapStateToProps)(MathHead);
