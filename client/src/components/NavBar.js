@@ -1,11 +1,12 @@
 import React from 'react';
 import { navigate, Link } from '@reach/router';
+import { connect } from 'react-redux';
 
 import LogoutButton from './loginreg/LogoutButton';
 
 import styles from './NavBar.module.css';
 
-const NavBar = ({ roomName }) => {
+const NavBar = ({ roomName, dispatch }) => {
 
     const navLink = e => {
         navigate('/'+e.target.value);
@@ -44,5 +45,12 @@ const NavBar = ({ roomName }) => {
         </>
     )
 }
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
 
-export default NavBar;
+export default connect(mapStateToProps)(NavBar);

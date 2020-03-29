@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const TypeFasterMaster = ({ socket })  => {
+const TypeFasterMaster = ({ roomName })  => {
 
     // generate random string at random setTimeouts at random places on the screen
     // each player gets a chance to type that single word the fastest
@@ -13,7 +14,7 @@ const TypeFasterMaster = ({ socket })  => {
 
     return (
         <>
-        <NavBar />
+        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Type Faster Master</h2>
         </div>
@@ -21,4 +22,12 @@ const TypeFasterMaster = ({ socket })  => {
     );
 };
 
-export default TypeFasterMaster;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
+
+export default connect(mapStateToProps)(TypeFasterMaster);

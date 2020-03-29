@@ -40,7 +40,12 @@ const Lobby = ({ socket, dispatch, userName }) => {
             dispatch({
                 type: 'SETUSERNAME',
                 userName: formState.uName,
-            });
+            },
+            // {
+            //     type: 'SETROOMNAME',
+            //     roomName: formState.rName,
+            // },
+            );
             navigate('/'+formState.rName);
         } else {
             setErrorMsg("Please enter both a user and room name");
@@ -55,7 +60,7 @@ const Lobby = ({ socket, dispatch, userName }) => {
             <br/>
             <h1>Mini Game Party!</h1>
                 <br/>
-            <p className={styles.textRed}>Please enter your desired nick name and room you want to enter or create</p> 
+            <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
                 <br/> <br/>
             <form className={styles.flexColCen} onSubmit={enterRoom}>
 

@@ -133,7 +133,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
 
     return(
         <>
-        <NavBar />
+        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Math Head</h2>
             <br/>

@@ -22,7 +22,7 @@ const GameRoom = ({ socket, dispatch, userName, roomName }) => {
 
     return (
         <>
-        <NavBar />
+        <NavBar roomName={roomName}/>
         <div className={styles.flexColCen}>
             <h2 className={styles.textWhite}>Welcome, {userName}!</h2>
             <h3 className={styles.textWhite}>You are in {roomName}</h3>

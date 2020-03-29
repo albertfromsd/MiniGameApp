@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const DropAFatShot = () => {
+const DropAFatShot = ({ roomName }) => {
 
     // have a static target of a specific size
     // each player gets a turn;
@@ -15,7 +16,7 @@ const DropAFatShot = () => {
 
     return (
         <>
-        <NavBar />
+        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}> Drop a Fat Shot </h2>
         </div>
@@ -23,4 +24,12 @@ const DropAFatShot = () => {
     );
 };
 
-export default DropAFatShot;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
+
+export default connect(mapStateToProps)(DropAFatShot);

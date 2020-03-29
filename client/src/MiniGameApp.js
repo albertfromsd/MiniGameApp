@@ -64,7 +64,7 @@ function mapStateToProps(state) {
   return {
       socket: state.socket,
       userName: state.userName,
-      userScore: state.userScore
+      userScore: state.userScore,
   };
 };
 

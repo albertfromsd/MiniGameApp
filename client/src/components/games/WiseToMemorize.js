@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const WiseToMemorize = ({ socket }) => {
+const WiseToMemorize = ({ roomName }) => {
 
     // generate a random string
     // show the string for about 3-5 sex
@@ -26,7 +27,7 @@ const WiseToMemorize = ({ socket }) => {
 
     return(
         <>
-        <NavBar />
+        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Wise to Memorize</h2>
         </div>
@@ -34,4 +35,12 @@ const WiseToMemorize = ({ socket }) => {
     );
 };
 
-export default WiseToMemorize;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
+
+export default connect(mapStateToProps)(WiseToMemorize);

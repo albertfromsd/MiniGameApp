@@ -11,30 +11,35 @@ import * as serviceWorker from './serviceWorker';
 // [TOP] [ REDUX ]
 function reducer( state, action ) {
     switch(action.type) {
-      case 'SETUSERNAME':
-        return {
-          ...state,
-          userName: action.userName,
-        };
-      case 'SETSOCKET':
-        return {
-          ...state,
-          socket: action.socket
-        }
-      case 'LOGOUT':
-        return {
-          ...state,
-          socket: null,
-          userName: null,
-          userScore: null,
-        };
-      case 'CHANGETOTALSCORE':
-        return {
-          ...state,
-          userScore: action.userScore
-        };
-      default:
-        return state;
+        case 'SETSOCKET':
+            return {
+            ...state,
+            socket: action.socket
+            };
+        case 'SETUSERNAME':
+            return {
+            ...state,
+            userName: action.userName,
+            };
+        case 'SETROOMNAME':
+            return {
+            ...state,
+            roomName: action.roomName,
+            };
+        case 'CHANGETOTALSCORE':
+            return {
+            ...state,
+            userScore: action.userScore
+            };
+        case 'LOGOUT':
+            return {
+                ...state,
+                socket: null,
+                userName: null,
+                userScore: null,
+            };
+        default:
+            return state;
     };
   };
   
@@ -42,6 +47,7 @@ function reducer( state, action ) {
     socket: null,
     userName: null,
     userScore: null,
+    roomName: null
   };
   
   const store = createStore( reducer, initialState );

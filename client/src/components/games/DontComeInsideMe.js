@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const DontComeInsideMe = () => {
+const DontComeInsideMe = ({ roomName }) => {
 
     // at random setTimeout, prompt will shout "Come to me!"
     // bar will display with a target line towards the end of the bar, with a red forbidden area
@@ -14,12 +15,19 @@ const DontComeInsideMe = () => {
 
     return (
         <>
-        <NavBar />
+        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
-            <h2 className={styles.textWhite}>Please Don't Come Inside Me!</h2>
+            <h2 className={styles.textWhite}>Don't Come Inside Me!</h2>
         </div>
         </>
     );
 };
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        userScore: state.userScore
+    };
+};
 
-export default DontComeInsideMe;
+export default connect(mapStateToProps)(DontComeInsideMe);
