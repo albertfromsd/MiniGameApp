@@ -1,11 +1,11 @@
 import React from 'react';
-import { Router, navigate} from '@reach/router';
+import { navigate, Link } from '@reach/router';
 
 import LogoutButton from './loginreg/LogoutButton';
 
 import styles from './NavBar.module.css';
 
-const NavBar = () => {
+const NavBar = ({ roomName }) => {
 
     const navLink = e => {
         navigate('/'+e.target.value);
@@ -35,7 +35,7 @@ const NavBar = () => {
                         <a className="dropdown-item" href="#">Action</a>
                         <a className="dropdown-item" href="#">Another action</a>
                         <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">Something else here</a>
+                        <Link to={"/"+roomName}>Game Room Lobby</Link>
                     </div>
                     </li>
                 </ul>

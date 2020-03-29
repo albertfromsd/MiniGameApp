@@ -16,8 +16,16 @@
     align-items: center;
 }
 
+.onlyDiv {
+    margin: 100px;
+}
+
 .textWhite {
     color: white;
+}
+
+.textRed {
+    color: red;
 }
 
 .btn {

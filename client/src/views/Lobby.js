@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import styles from './Views.module.css';
 
 // [NAVBAR]
-import NavBar from '../components/NavBar';
+// import NavBar from '../components/NavBar';
 
 // [GAMES]
 // import MathHead from '../components/games/MathHead';
@@ -20,7 +20,7 @@ import NavBar from '../components/NavBar';
 
 const Lobby = ({ socket, dispatch, userName }) => {
     const [ formState, setFormState ] = useState({
-        nickName: "",
+        uName: "",
         rName: "",
         rPassword: ""
     });
@@ -38,34 +38,35 @@ const Lobby = ({ socket, dispatch, userName }) => {
         e.preventDefault();
         if (formState.uName.length>0 && formState.rName.length>0) {
             dispatch({
-                type: 'SETNICKNAME',
-                userName: formState.nickName,
+                type: 'SETUSERNAME',
+                userName: formState.uName,
             });
             navigate('/'+formState.rName);
         } else {
             setErrorMsg("Please enter both a user and room name");
         };
-        
     };
 
     // in /views/GameRoom.js we will have a list of sockets connected, chatbox, + list of games (later we will add total score for session using state or redux)
 
     return (
         <>
-        <NavBar />
-        <div className={[styles.flexColCen, styles.textWhite].join(' ')}>
-            <h1>Mini Game Party!</h1><br/>
-            <p className={styles.textWhite}>Please enter your desired nick name and room you want to enter or create</p> <br/>
+        <div className={[styles.flexColCen, styles.textWhite, styles.onlyDiv].join(' ')}>
+            <br/>
+            <h1>Mini Game Party!</h1>
+                <br/>
+            <p className={styles.textRed}>Please enter your desired nick name and room you want to enter or create</p> 
+                <br/> <br/>
             <form className={styles.flexColCen} onSubmit={enterRoom}>
 
                 <p style={{color: "red"}}>{errorMsg}</p>
 
                 <div className={styles.inputRow}>
-                    <label>Nickname: </label>
+                    <label>Nick Name: </label>
                     <input
                         type="text"
-                        name="nickName"
-                        value={formState.nickName}
+                        name="uName"
+                        value={formState.uName}
                         onChange={onChangeHandler} /> 
                 </div> <br/>
 
@@ -84,9 +85,8 @@ const Lobby = ({ socket, dispatch, userName }) => {
                         type="password"
                         name="rPassword"
                         value={formState.rPassword}
-                        onChange={onChangeHandler} /> 
+                        onChange={onChangeHandler} />
                 </div> <br/>
-
                 <input type="submit" value="Enter room" className={styles.prettyBtn} />
             </form>
         </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { Router } from '@reach/router';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { connect } from 'react-redux';
 
 import './MiniGameApp.css';
 
@@ -20,49 +19,19 @@ import LittleBoxes from './components/games/LittleBoxes';
 import DontComeInsideMe from './components/games/DontComeInsideMe';
 import DropAFatShot from './components/games/DropAFatShot';
 
-// [TOP] [ REDUX ]
-function reducer( state, action ) {
-  switch(action.type) {
-    case 'SETUSERNAME':
-      return {
-        ...state,
-        userName: action.userName,
-        socket: action.socket,
-      };
-    case 'LOGOUT':
-      return {
-        ...state,
-        socket: null,
-        userName: null,
-        userScore: null,
-      };
-    case 'CHANGETOTALSCORE':
-      return {
-        ...state,
-        userScore: action.userScore
-      };
-    default:
-      return state;
-  };
-};
-
-const initialState = {
-  socket: null,
-  nickName: null,
-  userScore: null,
-};
-
-const store = createStore( reducer, initialState );
-// [END] [ REDUX ]
-
-
-function MiniGameApp() {
+function MiniGameApp({ dispatch }) {
   const [ socket ] = useState( () => io(':8000') );
+
+  dispatch({
+    type: 'SETSOCKET',
+    socket: socket,
+  });
 
   useEffect( () => {
     socket.on('welcome', data => {
         console.log(data);
     });
+
     return () => {
         socket.disconnect();
     }
@@ -70,7 +39,6 @@ function MiniGameApp() {
 
   return (
     <>
-    <Provider store={store}>
       <Router>
         <Lobby path="/" 
           socket={socket}/>
@@ -89,9 +57,15 @@ function MiniGameApp() {
         <DropAFatShot path="/:roomName/dropafatshot" 
           socket={socket} />
       </Router>
-    </Provider>
     </>
   );
 }
+function mapStateToProps(state) {
+  return {
+      socket: state.socket,
+      userName: state.userName,
+      userScore: state.userScore
+  };
+};
 
-export default MiniGameApp;
+export default connect(mapStateToProps)(MiniGameApp);

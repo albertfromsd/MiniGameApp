@@ -29,7 +29,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
 
     useEffect( () => {
         socket.on('enteredMathHead', userName, roomName => {
-            console.log(userName+" entered "+roomName)
+            console.log(userName+" + "+roomName)
          })
     }, [socket]);
 
