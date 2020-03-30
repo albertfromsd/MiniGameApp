@@ -42,10 +42,11 @@ let userList = [];
 
 let miniGame = {
     "roomName" : "",
-    // "users" : [{
-    //     "name" : "",
-    //     "score" : ""
-    // }],
+    "users" : [{
+        "name" : "",
+        "score" : "",
+        "totalTime": ""
+    }],
     "users" : [],
     "gameName" : "",
 }
@@ -76,6 +77,7 @@ io.on("connection", socket => {
 
     // [ MATH HEAD ]
     socket.on("enteredMathHead", data => {
+        miniGame.users = [];
         miniGame.roomName = data.roomName;
         miniGame.users.push(data.userName);
         miniGame.gameName = data.gameName;
@@ -90,10 +92,14 @@ io.on("connection", socket => {
 
      // [ TYPE FASTER MASTER ]
      socket.on("enteredTypeFaster", data => {
+        miniGame.users = [];
         miniGame.roomName = data.roomName;
         miniGame.users.push(data.userName);
 
         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
+        // socket.on('total time', time =>{
+        //     console.log("Time Taken: " +time);
+        // })
     });
 
     // [ USER LOGOUT ]

@@ -32,10 +32,9 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         console.log(gameName);
         socket.emit('enteredMathHead', {
             userName,
-            roomName
+            roomName,
+            gameName
          })
-
-         socket.on('')
     }, [socket]);
 
     const changeDifficulty = e => {

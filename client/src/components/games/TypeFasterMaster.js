@@ -18,56 +18,74 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     const [difficulty, setDifficulty] = useState("")
     const [userInput, setUserInput ] = useState("");
     const [timer, setTimer] = useState("");
+    const [totalTime, setTotalTime] = useState(0);
     const [message, setMessage] = useState("Go!");
     
    
     useEffect( () => {
-        setDifficulty("Easy");
+        if(difficulty === ""){
+            setMessage("❤ Please select your minigame level...❤");
+        }
         console.log(userName +roomName);
         socket.emit('enteredTypeFaster', {
             userName,
-            roomName
+            roomName,
+            totalTime
          })
 
-         socket.on('')
-    }, [socket]);
+        //  if(totalTime > 0){
+        //     socket.emit('total time',  totalTime);
+        //  }
+    }, [socket, totalTime]);
 
 
-    const findResult = event =>{
+    const findResult = (event) =>{
         event.preventDefault();
-        if(userInput === string.join('')){
-            console.log("Got it!!!");
-            setMessage("You got it!..")
+        let now = new Date();
+        let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+        let totalTimeTaken = +answerTime - +timer;
+        setTimer("");
+        if(difficulty == "Genius"){
+            if(userInput === string){
+                setMessage(" 🏆🏆 You got it!..");
+                setTotalTime(totalTimeTaken);
+            }
         }
+        else{
+            if(userInput === string.join('')){
+                setMessage(" 🏆🏆You got it!..");
+                setTotalTime(totalTimeTaken);
+            }
+        } 
+        setUserInput("");
     }
 
 
     const changeDifficulty = event =>{
         const {name, value} = event.target;
         setDifficulty(event.target.name);
+        setMessage("Create and Play !!!")
+
     }
 
     const createTarget = event =>{
+         let now = new Date();
+         let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+         setTimer(questionTime);
+         setTotalTime(0);
+            
         if(difficulty === "Easy"){
-            //[Timer Tryout code, not working]
-            // let now = new Date();
-            // var distance = 20- now.getMinutes();
-            // var seconds = Math.floor((distance % (1000 * 60 *60)) / 1000 * 60);
-            // setTimer(seconds);
-            // setTimer("10");
             setString(randomWords(3));
         }
         else if (difficulty == "Medium"){
-            setTimer("15");
             setString(randomWords(6));
         }
         else if(difficulty == "Hard"){
-            setTimer("20");
             setString(randomWords(9));
         }
         else if(difficulty == "Genius"){
-            setTimer("30");
-            setString(Math.random().toString(36).substring(2, 20) + randomWords(4));
+            //join used to remove the comma between the words that is being created by randomWords()
+            setString(Math.random().toString(36).substring(2, 20) + randomWords(4).join(''));
         }
     }
 
@@ -77,34 +95,40 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         <>
         <NavBar />
         <div className={styles.entirePage}>
-            <h1 className={styles.textWhite}>{message} {userName} </h1>
+            <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
+           {
+                totalTime > 0 
+           ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
+            : <p></p>
+            }
             <br/>
             <h2  className={styles.textWhite}>Type Faster Master</h2>
 
             <div>
-                {difficultyLevels.map( (d, i) => {
+                {difficultyLevels.map( (d, i) => (
                     // let buttonStyle = (d == difficulty ? styles.activeBtn : styles.inactiveBtn );
-
-                    return (
-                        <button 
-                            onClick={changeDifficulty} 
-                            key={i} 
-                            name={d} 
-                            value={d} 
-                            className={(d == difficulty ? styles.activeBtn : styles.inactiveBtn)}>
-                                {d}
-                        </button>
-                    )
-
-                })}
+                    <button 
+                    onClick={changeDifficulty} 
+                    key={i} 
+                    name={d} 
+                    value={d} 
+                    className={(d == difficulty ? styles.activeBtn : styles.inactiveBtn)}>
+                        {d}
+                </button>
+             ))}
             </div>
             <br/>
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
            
             <p style={{color: 'white'}}> {string} </p>
-            <form onSubmit = {findResult}>
-                <input type="text" onChange= {e => setUserInput(e.target.value)}/>
-                <button style={{backgroundColor: 'pink'}}>Go!</button>
+            <form onSubmit = {e => findResult(e)}>
+                <input 
+                type="text" 
+                value={userInput} 
+                onChange= {e => setUserInput(e.target.value)} 
+                // onPaste = {e=> e.preventDefault()}
+                 />
+                <button name="submitButton" style={{backgroundColor: 'pink'}} type="submit">Go!</button>
             </form>
         </div>
         </>
