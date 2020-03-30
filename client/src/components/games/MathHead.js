@@ -17,7 +17,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // POST ANSWER SUBMISSION
     const [ formAnswer, setFormAnswer ] = useState("");
     const [ resultMsg, setResultMsg ] = useState([]);
-    const [ resultColor, setResultColor ] = useState("");
+    const [ resultColor, setResultColor ] = useState("white");
 
     // ANSWER TIMER
     const [ qCreatedAt, setQCreatedAt ] = useState("");
@@ -29,18 +29,24 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     useEffect( () => {
         console.log(userName +roomName);
-        console.log(gameName);
         socket.emit('enteredMathHead', {
             userName,
             roomName,
-            gameName
-         })
+            gameName: "Math Head"
+         });
+
+         socket.on("mathHeadQuestionShared", data => {
+            setFormVisibility("visible");
+            setQuestion(data.question);
+            setAnswer(data.answer);
+        });
     }, [socket]);
 
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
     }
 
+    // [ TOP ] Create question in client and use sockets to share with all players
     const createQuestion = e => {
         // Start timer
         console.log("-----------------")
@@ -49,21 +55,36 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         setResultMsg([]);
         setFormVisibility("visible");
 
+        const operators = [ "+", "-", "×"];
+
         const getRandomInt = (maxNum, minNum) => {
             let num = Math.floor(Math.random() * (maxNum - minNum) + minNum );
             return num;
-        }
+        }; // [END] function getRandomInt
 
-        const generateOperands = (max, min) => {
+        const generateProblem = (max, min) => {
             const num1 = getRandomInt(max, min);
             const num2 = getRandomInt(max, min);
-            let result = (num1*num2);
-            setQuestion(num1 + " × " + num2);
-            setAnswer(result);
-        } 
+            const operator = operators[getRandomInt(3, 0)];
+            let result;
+            if (operator == "+") {
+                result = num1+num2;
+            };
+            if (operator == "-") {
+                result = num1-num2;
+            };
+            if (operator == "×") {
+                result = num1*num2;
+            };
 
-        // SET DIFFCULTY
-        // how to access max/min values outside of scope of if statements
+            socket.emit("mathHeadQuestionGenerated", 
+                {
+                    question: (num1+" "+operator+" "+num2),
+                    answer: result
+                });
+        } // [END] sub-function generateProblem
+
+        // Question changes based on difficulty
         let max;
         let min;
         if (difficulty == "Easy") {
@@ -82,8 +103,13 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             max = 1000;
             min = 101;
         } 
-        generateOperands(max, min);
+        generateProblem(max, min);
     }
+    // Display/set question and answer after creation
+    // useEffect( () => {
+    // }, [socket, question]);
+    // [ END ] Create question and use sockets to share will players
+
 
     let timeDiff;
 
@@ -97,38 +123,36 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setTimeToAnswer( timeDiff );
             // [END] Timer calculation not working
 
-            // [ SOCKET ] emit after answered correctly
-            socket.emit("correctAnswer", 
-                {
-                    socket,
-                    userName,
-                    roomName
-                }
-            );
-
             setResultMsg(["Correct!",question+" does equal "+formAnswer+"!"]);
             setResultColor("green");
 
+            // RESET FORM
+            setFormAnswer("");
             setFormVisibility("hidden");
 
-
+            // [ SOCKET ] emit after answered correctly
+            socket.emit("correctAnswer", 
+                {
+                    userName,
+                    roomName,
+                    timeDiff
+                }
+            );
+        // wrong answer submitted; set wrong msg and no emit
         } else {
             setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);
             setResultColor("red");
-        }
-        setFormAnswer("");
-    }
+            setFormAnswer("");
+        };
+    }; // [END] of function submitAnswer
 
-    // [ SOCKET ] Set message after correct answer was submitted
-
+    // [ SOCKET ] Set message after opponent answers correctly
     useEffect( () => {
         socket.on("questionAnswered", data => {
+            console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
-            let copyResultMsg = resultMsg;
-            copyResultMsg.push(data.userName+" answered correctly");
-            setResultMsg(
-                copyResultMsg
-            );
+            setResultMsg([data.userName+" answered correctly!"]);
+            setResultColor("green");
         });
     }, [socket]);
 
@@ -143,7 +167,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             <br/>
             <div>
                 {difficultyLevels.map( (d, i) => {
-                    // let buttonStyle = (d == difficulty ? styles.activeBtn : styles.inactiveBtn );
 
                     return (
                         <button 
@@ -159,6 +182,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                 })}
             </div>
             <br/>
+
             <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
             <br/>
 

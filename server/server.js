@@ -84,7 +84,11 @@ io.on("connection", socket => {
 
         console.log(miniGame.users +" inside socket and room name: " +  miniGame.roomName);
         console.log("Squads in game name: " +miniGame.gameName);
-
+        //Share question after generated
+        socket.on("mathHeadQuestionGenerated", data => {
+            io.emit("mathHeadQuestionShared", data);
+        });
+        //Alert players when someone gets it right
         socket.on("correctAnswer", data => {
             io.emit("questionAnswered", data);
         });
@@ -107,6 +111,11 @@ io.on("connection", socket => {
         connectedClients--;
         userList = userList.filter(user => user != socket.id);
         io.emit("refreshUserList", userList);
+
+        //server not removing the disconnected users from the userlist
+        miniGame.users = miniGame.users.filter(userName => userName != userName);
+        console.log("Minigame user list: "+miniGame.users);
+        io.emit("refreshMiniGameUserList", miniGame.users);
 
         console.log(" ");
         console.log("[------LOGOUT-----]");
