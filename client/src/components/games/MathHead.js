@@ -47,7 +47,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const createQuestion = e => {
         // Start timer
         let now = new Date();
-        let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+        let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
         setTimer(questionTime);
         setTotalTime(0);
 
@@ -111,7 +111,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         if (formAnswer == answer ) {
 
             let now = new Date();
-            let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+            let answerTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
             let totalTimeTaken = +answerTime - +timer;
             setTimer("");
 
