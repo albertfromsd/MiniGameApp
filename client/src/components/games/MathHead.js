@@ -20,9 +20,8 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const [ resultColor, setResultColor ] = useState("white");
 
     // ANSWER TIMER
-    const [ qCreatedAt, setQCreatedAt ] = useState("");
-    const [ qAnsweredAt, setQAnsweredAt ] = useState("");
-    const [ timeToAnswer, setTimeToAnswer ] = useState(null);
+    const [timer, setTimer] = useState("");
+    const [totalTime, setTotalTime] = useState(0);
 
     // WINNER
     const [ winnerId, setWinnerId ] = useState(null);
@@ -32,6 +31,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         socket.emit('enteredMathHead', {
             userName,
             roomName,
+            totalTime,
             gameName: "Math Head"
          });
 
@@ -40,7 +40,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket]);
+    }, [socket, totalTime]);
 
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
@@ -49,8 +49,12 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // [ TOP ] Create question in client and use sockets to share with all players
     const createQuestion = e => {
         // Start timer
-        console.log("-----------------")
-        setQCreatedAt( new Date().getTime() );
+        let now = new Date();
+        let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+        setTimer(questionTime);
+        setTotalTime(0);
+
+        // setQCreatedAt( new Date().getTime() );
 
         setResultMsg([]);
         setFormVisibility("visible");
@@ -111,19 +115,20 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // [ END ] Create question and use sockets to share will players
 
 
-    let timeDiff;
+    let totalTimeTaken;
 
     const submitAnswer = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
 
             // [TOP] Timer calculation not working
-            setQAnsweredAt( new Date().getTime() );
-            timeDiff = ( (qAnsweredAt - qCreatedAt )/1000000000000 );
-            setTimeToAnswer( timeDiff );
+            let now = new Date();
+            let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+            let totalTimeTaken = +answerTime - +timer;
+            setTimer("");
             // [END] Timer calculation not working
 
-            setResultMsg(["Correct!",question+" does equal "+formAnswer+"!"]);
+            setResultMsg(["You are correct!",question+" does equal "+formAnswer+"!", "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
             // RESET FORM
@@ -135,7 +140,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                 {
                     userName,
                     roomName,
-                    timeDiff
+                    totalTimeTaken
                 }
             );
         // wrong answer submitted; set wrong msg and no emit
@@ -151,8 +156,11 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         socket.on("questionAnswered", data => {
             console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
-            setResultMsg([data.userName+" answered correctly!"]);
-            setResultColor("green");
+            if (data.userName != userName) {
+                setResultMsg([data.userName+" answered correctly!", "It took "+data.totalTimeTaken+" seconds"]);
+                setResultColor("orange");
+            }
+            
         });
     }, [socket]);
 
@@ -192,10 +200,10 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                         <br/>
                     </>
                 )}
-                {timeToAnswer != null 
+                {/* {timeToAnswer != null 
                     ? <p style={{color: resultColor}}>Answered in {timeToAnswer} seconds</p>
                     : <p></p>
-                }
+                } */}
                 
             <br/>
             <div className={formVisibility == "hidden" 
