@@ -40,7 +40,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-
     }, [socket]);
 
     const changeDifficulty = e => {
