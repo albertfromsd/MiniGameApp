@@ -4,8 +4,14 @@ import { connect } from 'react-redux';
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
+import { navigate } from '@reach/router';
 
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
+
+    if (userName == null || userName.length() < 1 ) {
+        navigate('/')
+    };
+
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
 
@@ -22,6 +28,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // ANSWER TIMER
     const [timer, setTimer] = useState("");
     const [totalTime, setTotalTime] = useState(0);
+
 
     useEffect( () => {
         console.log(userName +roomName);
@@ -125,6 +132,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             // [ SOCKET ] emit after answered correctly
             socket.emit("correctAnswer", 
                 {
+                    socketId: socket.id,
                     userName,
                     roomName,
                     question,

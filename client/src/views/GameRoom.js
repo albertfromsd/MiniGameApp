@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Router, navigate } from '@reach/router';
+import React, { useState } from 'react';
+import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 // [ STYLES ]
@@ -11,10 +11,11 @@ import NavBar from "../components/NavBar";
 
 
 const GameRoom = ({ socket, dispatch, userName, roomName }) => {
-    // insert check if user submitted a userName
-    // if (!userName || !socket ) {
-    //     navigate('/');
-    // };
+
+    if (userName == null || userName.length() < 1 ) {
+        navigate('/')
+    };
+
     const [gameName, setGameName] = useState("");
 
     dispatch({
