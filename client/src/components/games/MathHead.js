@@ -8,7 +8,7 @@ import { navigate } from '@reach/router';
 
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
-    if (userName == null || userName.length() < 1 ) {
+    if (userName == null || userName.length < 1 ) {
         navigate('/')
     };
 
