@@ -12,7 +12,7 @@ import NavBar from "../components/NavBar";
 
 const GameRoom = ({ socket, dispatch, userName, roomName }) => {
 
-    if (userName == null || userName.length() < 1 ) {
+    if (userName == null || userName.length < 1 ) {
         navigate('/')
     };
 
