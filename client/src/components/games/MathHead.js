@@ -121,12 +121,14 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             // RESET FORM
             setFormAnswer("");
             setFormVisibility("hidden");
-
+            
             // [ SOCKET ] emit after answered correctly
             socket.emit("correctAnswer", 
                 {
                     userName,
                     roomName,
+                    question,
+                    answer,
                     totalTimeTaken
                 }
             );
@@ -144,7 +146,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
             if (data.userName != userName) {
-                setResultMsg([data.userName+" answered correctly!", "It took "+data.totalTimeTaken+" seconds"]);
+                setResultMsg([data.userName+" wins! ", data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", "You can get it next time!"]);
                 setResultColor("orange");
             }
             
