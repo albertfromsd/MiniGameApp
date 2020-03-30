@@ -5,7 +5,7 @@ import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
 
-const MathHead = ({ socket, userName, roomName, userScore }) => {
+const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
 
@@ -28,9 +28,14 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     const [ winnerId, setWinnerId ] = useState(null);
 
     useEffect( () => {
-        socket.on('enteredMathHead', userName, roomName => {
-            console.log(userName+" + "+roomName)
+        console.log(userName +roomName);
+        console.log(gameName);
+        socket.emit('enteredMathHead', {
+            userName,
+            roomName
          })
+
+         socket.on('')
     }, [socket]);
 
     const changeDifficulty = e => {

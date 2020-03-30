@@ -40,6 +40,15 @@ let connectedClients = 0;
 let chatLog = [];
 let userList = [];
 
+let miniGame = {
+    "roomName" : "",
+    // "users" : [{
+    //     "name" : "",
+    //     "score" : ""
+    // }],
+    "users" : [],
+    "gameName" : "",
+}
 io.on("connection", socket => {
 
     // [ USER LOGIN ]
@@ -51,6 +60,9 @@ io.on("connection", socket => {
 
     chatLog.push({user: "System", message: "[ User "+socket.id+" has entered the room! ]"});
     userList.push(socket.id);
+
+    //[WELCOME]
+    socket.emit('welcome', "Socket successfully connected. Happy!!")
 
     // [ AUTO REFRESH LOGS/LIST]
     io.emit('refreshChatLog', chatLog);
@@ -64,10 +76,24 @@ io.on("connection", socket => {
 
     // [ MATH HEAD ]
     socket.on("enteredMathHead", data => {
-        
+        miniGame.roomName = data.roomName;
+        miniGame.users.push(data.userName);
+        miniGame.gameName = data.gameName;
+
+        console.log(miniGame.users +" inside socket and room name: " +  miniGame.roomName);
+        console.log("Squads in game name: " +miniGame.gameName);
+
         socket.on("correctAnswer", data => {
             io.emit("questionAnswered", data);
         });
+    });
+
+     // [ TYPE FASTER MASTER ]
+     socket.on("enteredTypeFaster", data => {
+        miniGame.roomName = data.roomName;
+        miniGame.users.push(data.userName);
+
+        console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
     });
 
     // [ USER LOGOUT ]

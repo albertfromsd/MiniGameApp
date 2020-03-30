@@ -15,8 +15,17 @@ const GameRoom = ({ socket, dispatch, userName, roomName }) => {
     // if (!userName || !socket ) {
     //     navigate('/');
     // };
+    const [gameName, setGameName] = useState("");
+
+    dispatch({
+        type: 'SETGAMENAME',
+        gameName: gameName,
+      });
 
     const gameSelector = e => {
+        let game = e.target.value;
+        setGameName(game);
+        console.log("game name:" + gameName);
         navigate('/'+roomName+'/'+e.target.value);
     };
 
@@ -25,7 +34,7 @@ const GameRoom = ({ socket, dispatch, userName, roomName }) => {
         <NavBar roomName={roomName}/>
         <div className={styles.flexColCen}>
             <h2 className={styles.textWhite}>Welcome, {userName}!</h2>
-            <h3 className={styles.textWhite}>You are in {roomName}</h3>
+            <h3 className={styles.textWhite}>You are in  Room {roomName}</h3>
                 <br/>
             <h3 className={styles.textWhite}>Pick a game below:</h3>
                 <br/>

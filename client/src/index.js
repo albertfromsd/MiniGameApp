@@ -26,6 +26,11 @@ function reducer( state, action ) {
             ...state,
             roomName: action.roomName,
             };
+        case 'SETGAMENAME':
+            return{
+                ...state,
+                gameName : action.gameName,
+            }
         case 'CHANGETOTALSCORE':
             return {
             ...state,
@@ -47,7 +52,8 @@ function reducer( state, action ) {
     socket: null,
     userName: null,
     userScore: null,
-    roomName: null
+    roomName: null,
+    gameName : null
   };
   
   const store = createStore( reducer, initialState );
