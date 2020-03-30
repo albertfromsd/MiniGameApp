@@ -23,9 +23,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const [timer, setTimer] = useState("");
     const [totalTime, setTotalTime] = useState(0);
 
-    // WINNER
-    const [ winnerId, setWinnerId ] = useState(null);
-
     useEffect( () => {
         console.log(userName +roomName);
         socket.emit('enteredMathHead', {
@@ -46,15 +43,13 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         setDifficulty(e.target.value);
     }
 
-    // [ TOP ] Create question in client and use sockets to share with all players
+    // [ TOP ] Create question and use sockets to share with all players
     const createQuestion = e => {
         // Start timer
         let now = new Date();
         let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
         setTimer(questionTime);
         setTotalTime(0);
-
-        // setQCreatedAt( new Date().getTime() );
 
         setResultMsg([]);
         setFormVisibility("visible");
@@ -109,24 +104,16 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         } 
         generateProblem(max, min);
     }
-    // Display/set question and answer after creation
-    // useEffect( () => {
-    // }, [socket, question]);
     // [ END ] Create question and use sockets to share will players
-
-
-    let totalTimeTaken;
 
     const submitAnswer = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
 
-            // [TOP] Timer calculation not working
             let now = new Date();
             let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
             let totalTimeTaken = +answerTime - +timer;
             setTimer("");
-            // [END] Timer calculation not working
 
             setResultMsg(["You are correct!",question+" does equal "+formAnswer+"!", "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
@@ -200,10 +187,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                         <br/>
                     </>
                 )}
-                {/* {timeToAnswer != null 
-                    ? <p style={{color: resultColor}}>Answered in {timeToAnswer} seconds</p>
-                    : <p></p>
-                } */}
                 
             <br/>
             <div className={formVisibility == "hidden" 
