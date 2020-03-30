@@ -59,7 +59,8 @@ function MiniGameApp({ dispatch }) {
       </Router>
     </>
   );
-}
+};
+
 function mapStateToProps(state) {
   return {
       socket: state.socket,
