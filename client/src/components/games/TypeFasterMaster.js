@@ -12,7 +12,7 @@ var randomWords = require('random-words');
 const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     // validation check to make sure username is not blank/null
-    if (userName == null || userName.length() < 1 ) {
+    if (userName == null || userName.length < 1 ) {
         navigate('/')
     };
 

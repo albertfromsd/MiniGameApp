@@ -31,7 +31,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
 
     useEffect( () => {
-        console.log(userName +roomName);
         socket.emit('enteredMathHead', {
             userName,
             roomName,
@@ -44,7 +43,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket, totalTime]);
+    }, [socket, roomName]);
 
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
@@ -54,7 +53,8 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const createQuestion = e => {
         // Start timer
         let now = new Date();
-        let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
+        // let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
+        let questionTime = now.getTime();
         setTimer(questionTime);
         setTotalTime(0);
 
@@ -94,19 +94,19 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         let max;
         let min;
         if (difficulty == "Easy") {
-            max = 15;
+            max = 21;
             min = 2;
         }
         if (difficulty == "Medium") {
-            max = 50;
+            max = 52;
             min = 3;
         }
         if (difficulty == "Hard") {
-            max = 100;
+            max = 102;
             min = 11;
         }
         if (difficulty == "Genius") {
-            max = 1000;
+            max = 1002;
             min = 101;
         } 
         generateProblem(max, min);
@@ -118,8 +118,9 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         if (formAnswer == answer ) {
 
             let now = new Date();
-            let answerTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
-            let totalTimeTaken = +answerTime - +timer;
+            // let answerTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
+            let answerTime = now.getTime();
+            let totalTimeTaken = (+answerTime - + timer)/1000;
             setTimer("");
 
             setResultMsg(["You are correct!",question+" does equal "+formAnswer+"!", "It took you "+totalTimeTaken+" seconds"]);
