@@ -12,8 +12,9 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         navigate('/')
     };
 
-    // FORM VISIBILITY
+    // ELEMENT VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
+    const [ resultsVisibility, setResultsVisibility ] = useState("hidden");
 
     // CREATING QUESTION AND ANSWER
     const [ difficulty, setDifficulty ] = useState("Easy");
@@ -40,6 +41,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
          socket.on("mathHeadQuestionShared", data => {
             setFormVisibility("visible");
+            setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
         });
@@ -141,12 +143,15 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     totalTimeTaken
                 }
             );
+            
         // wrong answer submitted; set wrong msg and no emit
         } else {
             setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);
             setResultColor("red");
             setFormAnswer("");
+
         };
+        setResultsVisibility("visible");
     }; // [END] of function submitAnswer
 
     // [ SOCKET ] Set message after opponent answers correctly
@@ -154,6 +159,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         socket.on("questionAnswered", data => {
             console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
+            setResultsVisibility("visible");
             if (data.userName != userName) {
                 setResultMsg([data.userName+" wins! ", data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", "You can get it next time!"]);
                 setResultColor("orange");
@@ -170,7 +176,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Math Head</h2>
-            <br/>
+                <br/>
             <div>
                 {difficultyLevels.map( (d, i) => {
 
@@ -187,17 +193,22 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
                 })}
             </div>
-            <br/>
+                <br/>
 
             <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
-            <br/>
+                <br/>
 
+            {/* Answers not hiding/displayed correctly */}
+            <div className={resultsVisibility == "hidden" 
+                ? styles.hiddenForm 
+                : styles.visibleForm}>
                 {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
                     <>
                     <p style={{color: resultColor}} key={i}>{msg}</p>
                         <br/>
                     </>
                 )}
+            </div>
                 
             <br/>
             <div className={formVisibility == "hidden" 
