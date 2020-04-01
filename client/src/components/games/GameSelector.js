@@ -2,8 +2,6 @@ import React, {useState, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
-import NavBar from '../NavBar';
-
 import styles from './Games.module.css';
 
 const GameSelector = ({ socket, dispatch, userName, roomName }) => {
@@ -87,8 +85,8 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
             </div>
         </div>
         </>
-    )
-}
+    );
+};
 
 function mapStateToProps(state) {
     return {

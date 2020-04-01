@@ -13,7 +13,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
-        navigate('/')
+        navigate('/');
     };
 
     // generate random string at random setTimeouts at random places on the screen
@@ -31,25 +31,47 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     useEffect( () => {
         if(difficulty === ""){
             setMessage("❤ Please select your minigame level...❤");
-        }
+        };
         console.log(userName +roomName);
         socket.emit('enteredTypeFaster', {
             userName,
             roomName,
             totalTime
-         })
+         });
 
         //  if(totalTime > 0){
         //     socket.emit('total time',  totalTime);
         //  }
-    }, [socket, totalTime]);
+    }, [socket, totalTime, roomName]);
 
+    const createTarget = event =>{
+        let now = new Date();
+        // let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+        let questionTime = now.getTime();
+        setTimer(questionTime);
+        setTotalTime(0);
+           
+       if(difficulty === "Easy"){
+           setString(randomWords(3));
+       };
+       if (difficulty == "Medium"){
+           setString(randomWords(6));
+       };
+       if(difficulty == "Hard"){
+           setString(randomWords(9));
+       };
+       if(difficulty == "Genius"){
+           //join used to remove the comma between the words that is being created by randomWords()
+           setString(Math.random().toString(36).substring(2, 20) + randomWords(4).join(''));
+       };
+    };
 
     const findResult = (event) =>{
         event.preventDefault();
         let now = new Date();
-        let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
-        let totalTimeTaken = +answerTime - +timer;
+        // let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
+        let answerTime = now.getTime();
+        let totalTimeTaken = (+answerTime - + timer)/1000;
         setTimer("");
         if(difficulty == "Genius"){
             if(userInput === string){
@@ -61,41 +83,19 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             if(userInput === string.join('')){
                 setMessage(" 🏆🏆You got it!..");
                 setTotalTime(totalTimeTaken);
-            }
-        } 
+            };
+        } ;
         setUserInput("");
-    }
-
+    };
 
     const changeDifficulty = event =>{
         const {name, value} = event.target;
         setDifficulty(event.target.name);
-        setMessage("Create and Play !!!")
+        setMessage("Create and Play !!!");
+    };
 
-    }
 
-    const createTarget = event =>{
-         let now = new Date();
-         let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
-         setTimer(questionTime);
-         setTotalTime(0);
-            
-        if(difficulty === "Easy"){
-            setString(randomWords(3));
-        }
-        else if (difficulty == "Medium"){
-            setString(randomWords(6));
-        }
-        else if(difficulty == "Hard"){
-            setString(randomWords(9));
-        }
-        else if(difficulty == "Genius"){
-            //join used to remove the comma between the words that is being created by randomWords()
-            setString(Math.random().toString(36).substring(2, 20) + randomWords(4).join(''));
-        }
-    }
-
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
 
     return (
         <>
