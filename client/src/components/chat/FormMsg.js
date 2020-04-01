@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import styles from './FormMsg.module.css';
+import styles from './Chat.module.css';
 
-const FormMsg = ({ socket }) => {
+const FormMsg = ({ socket, userName, roomName }) => {
     const [ msgState, setMsgState ] = useState({
         user: [socket.id],
         message: ""
@@ -57,4 +57,13 @@ const FormMsg = ({ socket }) => {
     )
 }
 
-export default FormMsg;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket,
+        userName: state.userName,
+        roomName: state.roomName,
+        userScore: state.userScore,
+    };
+  };
+  
+  export default connect(mapStateToProps)(FormMsg);

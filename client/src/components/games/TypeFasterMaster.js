@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
@@ -9,6 +10,11 @@ var randomWords = require('random-words');
 
 
 const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
+
+    // validation check to make sure username is not blank/null
+    if (userName == null || userName.length < 1 ) {
+        navigate('/')
+    };
 
     // generate random string at random setTimeouts at random places on the screen
     // each player gets a chance to type that single word the fastest

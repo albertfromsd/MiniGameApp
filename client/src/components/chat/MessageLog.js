@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'teact-redux';
 
-import styles from './MessageLog.module.css';
+import styles from './Chat.module.css';
 
-const MessageLog = ({ socket }) => {
+const MessageLog = ({ socket, userName, roomName }) => {
     const [ chatroomLog, setChatroomLog ] = useState([]);
 
       useEffect( () => {
@@ -21,7 +22,7 @@ const MessageLog = ({ socket }) => {
 
     return (
         <>
-        <div className="msgLog">
+        <div className={styles.msgLog}>
           {chatroomLog.map ( (msg, i) => 
             <div className={styles.messageBubble}>
               <p key={i} className={styles.user}>{msg.user}:</p>
@@ -29,10 +30,18 @@ const MessageLog = ({ socket }) => {
             </div>
           )}
         </div>
-        
         </>
     );
 
 };
 
-export default MessageLog;
+function mapStateToProps(state) {
+  return {
+      socket: state.socket,
+      userName: state.userName,
+      roomName: state.roomName,
+      userScore: state.userScore,
+  };
+};
+
+export default connect(mapStateToProps)(MessageLog);
