@@ -50,9 +50,9 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             <MathHead path="/mathhead" socket={socket}/>
             <TypeFasterMaster path="/typefastermaster" socket={socket}/>
             <WiseToMemorize path="/wisetomemorize" socket={socket}/>
-            <LittleBoxes path="/:roomName/littleboxes" socket={socket}/>
-            <DontComeInsideMe path="/:roomName/dontcomeinsideme" socket={socket}/>
-            <DropAFatShot path="/:roomName/dropafatshot" socket={socket} />
+            <LittleBoxes path="/littleboxes" socket={socket}/>
+            <DontComeInsideMe path="/dontcomeinsideme" socket={socket}/>
+            <DropAFatShot path="/dropafatshot" socket={socket} />
         </Router>
     </>
     )
