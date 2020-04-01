@@ -9,8 +9,8 @@ import styles from './NavBar.module.css';
 const NavBar = ({ roomName, dispatch }) => {
 
     const navLink = e => {
-        navigate('/'+e.target.value);
-    }
+        navigate('/'+roomName+"/"+e.target.value);
+    };
 
     return (
         <>
@@ -41,10 +41,12 @@ const NavBar = ({ roomName, dispatch }) => {
                     </li>
                 </ul>
             </div>
+
         </nav>
         </>
-    )
-}
+    );
+};
+
 function mapStateToProps(state) {
     return {
         socket: state.socket,

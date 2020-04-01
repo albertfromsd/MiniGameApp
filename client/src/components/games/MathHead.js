@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-import { navigate } from '@reach/router';
-
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     if (userName == null || userName.length < 1 ) {
-        navigate('/')
+        navigate('/');
     };
 
     // ELEMENT VISIBILITY
@@ -45,14 +43,14 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket, roomName]);
+    }, [socket, roomName, totalTime]);
 
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
     }
 
     // [ TOP ] Create question and use sockets to share with all players
-    const createQuestion = e => {
+    const createTarget = e => {
         // Start timer
         let now = new Date();
         // let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
@@ -98,24 +96,24 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         if (difficulty == "Easy") {
             max = 21;
             min = 2;
-        }
+        };
         if (difficulty == "Medium") {
             max = 52;
             min = 3;
-        }
+        };
         if (difficulty == "Hard") {
             max = 102;
             min = 11;
-        }
+        };
         if (difficulty == "Genius") {
             max = 1002;
             min = 101;
-        } 
+        } ;
         generateProblem(max, min);
-    }
+    };
     // [ END ] Create question and use sockets to share will players
 
-    const submitAnswer = e => {
+    const findResult = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
 
@@ -152,7 +150,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         };
         setFormAnswer("");
         setResultsVisibility("visible");
-    }; // [END] of function submitAnswer
+    }; // [END] of function findResult
 
     // [ SOCKET ] Set message after opponent answers correctly
     useEffect( () => {
@@ -196,7 +194,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             </div>
                 <br/>
 
-            <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
+            <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
                 <br/>
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
@@ -205,7 +203,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     <br/>
                     <br/>
                     <br/>
-                <form onSubmit={submitAnswer}>
+                <form onSubmit={findResult}>
                     <input 
                         type="text"
                         placeholder="Enter you answer here"
@@ -227,7 +225,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             </div>
         </div>
         </>
-    )
+    );
 };
 
 function mapStateToProps(state) {
