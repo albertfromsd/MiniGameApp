@@ -10,8 +10,6 @@ express mongoose cors jsonwebtoken bcrypt dotenv cookie-parser socket.io express
 axios @reach/router socket.io-client redux react-redux
 random-words react-reveal
 
-axios @reach/router socket.io-client redux react-redux random-words
-
-
 [ENV]
+
 need to create your own .env inside /server folder
