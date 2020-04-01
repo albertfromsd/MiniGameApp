@@ -19,7 +19,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
-        navigate('/');
+        navigate('/')
     };
 
     // generate random string at random setTimeouts at random places on the screen
@@ -28,7 +28,6 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     // FORM VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
-    const [ resultsVisibility, setResultsVisibility ] = useState("hidden");
 
     // CREATING QUESTION(string) AND ANSWER(userInput)
     const [ string, setString ] = useState("");
@@ -44,20 +43,19 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
    
     useEffect( () => {
-
         socket.emit('enteredTypeFaster', {
             userName,
             roomName,
             totalTime,
             gameName : "TypeFasterMaster"
-         });
+        });
 
-         socket.on("typeFasterTargetShared", data => {
+        socket.on("typeFasterQuestionShared", data => {
             setFormVisibility("visible");
             setString(data.question);
         });
 
-        socket.on("targetAnswered", data => {
+        socket.on("questionAnswered", data => {
             console.log("Data from typeFaster client: "+data.userName);
             setFormVisibility("hidden");
             setResultMsg([data.userName+" answered correctly!" + " Try one more shot!"]);
@@ -67,31 +65,19 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         //     console.log('Incoming message:', data);
         //  });
         
-    }, [socket, roomName, userName, totalTime]);
+    }, [socket]);
 
-        if(difficulty === ""){
-            setMessage("❤ Please select your minigame level...❤");
-        };
-        console.log(userName +roomName);
-        socket.emit('enteredTypeFaster', {
-            userName,
-            roomName,
-            totalTime
-         });
-
-        //  if(totalTime > 0){
-        //     socket.emit('total time',  totalTime);
-        //  }
-
+    // Difficulty
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
     const changeDifficulty = event =>{
         const {name, value} = event.target;
         setDifficulty(event.target.name);
-    };
+    }
 
+    // Create Target String
     const createTarget = event =>{
         //For knowing question generated time
         let now = new Date();
-        //  let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
         let questionTime = now.getTime();
         setTimer(questionTime);
         setTotalTime(0);
@@ -108,56 +94,46 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         }
         else if(difficulty == "Genius"){
             //join used to remove the comma between the words that is being created by randomWords()
-
-            // why Math.random below?
             targetString = Math.random().toString(36).substring(2, 20) + randomWords(4).join('');
         }
-        socket.emit("typeFasterTargetGenerated", 
+        socket.emit("typeFasterQuestionGenerated", 
         {
             question: targetString,
         });
-    };
-    
-    setMessage("Create and Play !!!");
+    }
 
+    // Answer submission/confirmation
     const findResult = (event) =>{
         event.preventDefault();
         let now = new Date();
-        // let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
-        let answerTime = now.getTime();
-        let totalTimeTaken = +answerTime - +timer;
+        let answerTime = now.getTime();(now.getSeconds()).toString();
+        let totalTimeTaken = (+answerTime - + timer)/1000;
         setTimer("");
         if(difficulty == "Genius"){
             if(userInput === string){
                 setMessage(" 🏆🏆 You got it!..");
                 setTotalTime(totalTimeTaken);
-            };
-        } else {
+            }
+        }
+        else{
             if(userInput === string.join('')){
                 setMessage(" 🏆🏆You got it!..");
                 setTotalTime(totalTimeTaken);
-            };
+            }
         }; 
-
-        socket.emit("targetAnswered", data => {
-            setFormVisibility("hidden");
-            setResultsVisibility("visible");
-        });
 
         //RESET FORM
         setUserInput("");
         setFormVisibility("hidden");
 
         // [ SOCKET ] emit after answered correctly
-        socket.emit("targetAnswered", 
+        socket.emit("correctAnswer", 
         {
             userName,
             roomName,
             totalTime
         });
     };
-
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
 
     return (
         <>
@@ -168,9 +144,10 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             </FormControl>
             <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
-            { totalTime > 0 
-                ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
-                : <p></p>
+            {
+                totalTime > 0 
+            ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
+            : <p></p>
             }
             <br/>
             <h2  className={styles.textWhite}>Type Faster Master</h2>
@@ -190,11 +167,11 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             </div>
             <br/>
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
-           
+            
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                     <p style={{color: 'white'}}> {string} </p>
+                    <p style={{color: 'white'}}> {string} </p>
             <form onSubmit = {e => findResult(e)}>
                 <input 
                 type="text" 

@@ -51,6 +51,10 @@ let miniGame = {
     "gameName" : "",
 };
 
+// const rooms = {};
+
+// rooms[key] = []
+
 // maybe use namespace here {represents variable names, not correct syntax}
 // const {roomName} = io.of('/'+ {roomName} )
 
@@ -107,24 +111,26 @@ io.on("connection", socket => {
     });
 
      // [ TYPE FASTER MASTER ]
-     socket.emit('message', 'what is going on, party people?');
-     socket.emit("enteredTypeFaster", data=> {
-        miniGame.users = [];
-        miniGame.roomName = data.roomName;
-        miniGame.users.push(data.userName);
+     io.in(room).emit('message', 'what is going on, party people?');
+    //  io.to(room).emit("enteredTypeFaster", data=> {
+    //     miniGame.users = [];
+    //     miniGame.roomName = data.roomName;
+    //     miniGame.users.push(data.userName);
+
+        io.in(room)
 
         //Share question after generated
-        socket.on("typeFasterTargetGenerated", data => {
-            io.emit("typeFasterTargetShared", data);;
+        io.sockets.in(room).on("typeFasterQuestionGenerated", data => {
+            io.in(room).emit("typeFasterQuestionShared", data);
         });
 
         //Alert players when someone gets it right
-        socket.on("correctAnswer", data => {
-            socket.broadcast.emit("targetAnswered", data);
+        io.sockets.in(room).on("correctAnswer", data => {
+            io.in(room).emit("questionAnswered", data);
         });
         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
        
-    });
+    // });
 
     // [ USER LOGOUT ]
     socket.on("disconnect", () => {
