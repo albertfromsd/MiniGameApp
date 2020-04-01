@@ -18,7 +18,7 @@ import styles from './Views.module.css';
 // import DontComeInsideMe from '../components/games/DontComeInsideMe';
 // import DropAFatShot from '../components/games/DropAFatShot';
 
-const Lobby = ({ socket, dispatch, userName }) => {
+const Lobby = ({ socket, dispatch }) => {
     const [ formState, setFormState ] = useState({
         uName: "",
         rName: "",
@@ -37,14 +37,17 @@ const Lobby = ({ socket, dispatch, userName }) => {
     const enterRoom = e => {
         e.preventDefault();
         if (formState.uName.length>0 && formState.rName.length>0) {
-            dispatch({
+            dispatch(
+                {
                 type: 'SETUSERNAME',
                 userName: formState.uName,
-            },
-            // {
-            //     type: 'SETROOMNAME',
-            //     roomName: formState.rName,
-            // },
+                }
+            );
+            dispatch(
+                {
+                type: 'SETROOMNAME',
+                roomName: formState.rName,
+                },
             );
             navigate('/'+formState.rName);
         } else {
@@ -73,8 +76,8 @@ const Lobby = ({ socket, dispatch, userName }) => {
                         name="uName"
                         value={formState.uName}
                         onChange={onChangeHandler} /> 
-                </div> <br/>
-
+                </div> 
+                    <br/>
                 <div className={styles.inputRow}>
                     <label>Room Name:</label>
                     <input 
@@ -82,8 +85,8 @@ const Lobby = ({ socket, dispatch, userName }) => {
                         name="rName"
                         value={formState.rName}
                         onChange={onChangeHandler} /> 
-                </div> <br/>
-
+                </div> 
+                    <br/>
                 <div className={styles.inputRow}>
                     <label>Password:</label>
                     <input 
@@ -91,8 +94,24 @@ const Lobby = ({ socket, dispatch, userName }) => {
                         name="rPassword"
                         value={formState.rPassword}
                         onChange={onChangeHandler} />
-                </div> <br/>
-                <input type="submit" value="Enter room" className={styles.prettyBtn} />
+                </div> 
+                    <br/>
+                <div className={styles.buttonRow}>
+                    <button 
+                        type="submit" 
+                        name ="roomButton" 
+                        value="enterRoom" 
+                        className={styles.prettyBtn}>
+                            Enter Room
+                    </button>
+                    <button 
+                        type="submit" 
+                        name ="roomButton" 
+                        value="createRoom" 
+                        className={styles.prettyBtn}>
+                            Create Room
+                    </button>
+                </div>
             </form>
         </div>
         </>
@@ -101,9 +120,8 @@ const Lobby = ({ socket, dispatch, userName }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
+        userScore: state.userScore,
     };
 };
 

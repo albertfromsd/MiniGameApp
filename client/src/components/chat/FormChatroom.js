@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import { navigate } from '@reach/router';
 
-import styles from './Form.module.css';
+import styles from './Chat.module.css';
 
 const FormChatroom = () => {
     const [ chatroomName, setChatroomName ] = useState("");
@@ -15,10 +15,11 @@ const FormChatroom = () => {
             name: chatroomName
         }, {withCredentials: true})
             .then(newRoom => {
-                res.json(newRoom);
+                // newRoom.json???
+                newRoom.json(newRoom);
                 navigate("/chatroom/"+chatroomName)
             })
-            .catch(err => res.status(400).json(err));
+            .catch(err => err.status(400).json(err));
     }
 
     return (

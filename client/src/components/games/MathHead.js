@@ -125,11 +125,13 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             let totalTimeTaken = (+answerTime - + timer)/1000;
             setTimer("");
 
-            setResultMsg(["You are correct!",question+" does equal "+formAnswer+"!", "It took you "+totalTimeTaken+" seconds"]);
+            setResultMsg([
+                "You are correct!",
+                question+" does equal "+formAnswer+"!", 
+                "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
             // RESET FORM
-            setFormAnswer("");
             setFormVisibility("hidden");
             
             // [ SOCKET ] emit after answered correctly
@@ -143,14 +145,12 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     totalTimeTaken
                 }
             );
-            
         // wrong answer submitted; set wrong msg and no emit
         } else {
             setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);
             setResultColor("red");
-            setFormAnswer("");
-
         };
+        setFormAnswer("");
         setResultsVisibility("visible");
     }; // [END] of function submitAnswer
 
@@ -161,10 +161,12 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setFormVisibility("hidden");
             setResultsVisibility("visible");
             if (data.userName != userName) {
-                setResultMsg([data.userName+" wins! ", data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", "You can get it next time!"]);
+                setResultMsg([
+                    data.userName+" wins! ", 
+                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                    "You can get it next time!"]);
                 setResultColor("orange");
             }
-            
         });
     }, [socket]);
 
@@ -173,7 +175,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     return(
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Math Head</h2>
                 <br/>
@@ -197,20 +198,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
             <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
                 <br/>
-
-            {/* Answers not hiding/displayed correctly */}
-            <div className={resultsVisibility == "hidden" 
-                ? styles.hiddenForm 
-                : styles.visibleForm}>
-                {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
-                    <>
-                    <p style={{color: resultColor}} key={i}>{msg}</p>
-                        <br/>
-                    </>
-                )}
-            </div>
-                
-            <br/>
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
@@ -224,8 +211,19 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                         placeholder="Enter you answer here"
                         value={formAnswer}
                         onChange={e=>setFormAnswer(e.target.value)}/>
-                    <input type="submit" value="Submit your answer"/>
+                    <input type="submit" value="Submit"/>
                 </form>
+            </div>
+                <br/>
+            <div className={resultsVisibility == "hidden" 
+                ? styles.hiddenForm 
+                : styles.visibleForm}>
+                {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
+                    <>
+                    <p style={{color: resultColor}} key={i}>{msg}</p>
+                        <br/>
+                    </>
+                )}
             </div>
         </div>
         </>
@@ -236,7 +234,7 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
+        userScore: state.userScore,
     };
 };
 

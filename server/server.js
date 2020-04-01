@@ -29,7 +29,7 @@ console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 // [ ROUTES ]
 require('./routes/User.routes')(app);
-require('./routes/GameRoom.routes')(app)
+require('./routes/GameRoom.routes')(app);
 require('./routes/Chat.routes')(app);
 
 
@@ -49,7 +49,8 @@ let miniGame = {
     }],
     "users" : [],
     "gameName" : "",
-}
+};
+
 io.on("connection", socket => {
 
     // [ USER LOGIN ]
