@@ -2,39 +2,58 @@
   margin: 0 auto;
 }
 
-.chatLogBox {
-  width: 85%;
-  height: 75%;
-  border: 1px solid black;
+.chatBox {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
+  justify-content: flex-end;
+  width: 25%;
+  height: 100%;
+  border: 1px solid green;
+  background-color: white;
 }
 
 .chatLogMsgs {
   height: 100%;
-  width: 75%;
-  border: 1px solid black;
+  width: 100%;
+  color: white;
+  border: 1px solid blue;
+  background-color: white;
   overflow: auto;
+  overflow-wrap: break-word;
 }
 
-.userList {
-  height: 100%;
-  width: 25%;
-  border: 1px solid black;
-  overflow: auto;
-}
-
-.formBox {
-  width: 53%;
+/* MESSAGE FORM */
+.chatFormBox {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .inputMsg {
-  margin: 5px 15px 0px -42px;
-  width: 77%;
-  line-height: 4;
+  margin: 5%;
+  width: 90%;
+  line-height: 1;
   background-color: rgb(186, 229, 247);
   border: 1px solid rgb(139, 139, 241);
 }
+
+.msgLog {
+  width: 100%;
+  padding: 10px 0px 0px 0px;
+  border: 1px solid red;
+  background-color: white;
+}
+
+.message {
+  font-size: 13px;
+  width: 100%;
+  padding-left: 25px;
+  text-align: left;
+}
+
 
 /* [TOP] Button Styles from BootStrap */
 .buttonMsg {
@@ -43,7 +62,6 @@
   background-image: none;
   border: 1px solid #007bff;
   border-radius: 5px;
-  margin: 10px 5px 10px 20px;
   padding: 5px 10px;
 }
 .buttonMsg:hover {
@@ -76,21 +94,17 @@
 }
 /* [END] Button Styles from BootStrap  */
 
-.msgLog {
-  width: 100%;
-  padding: 10px 0px 0px 0px;
+.userList {
+  height: 100%;
+  width: 25%;
+  border: 1px solid black;
+  background-color: white;
+  overflow: auto;
 }
 
 .user {
   font-size: 12px;
   width: 100%;
   padding-left: 10px;
-  text-align: left;
-}
-
-.message {
-  font-size: 13px;
-  width: 100%;
-  padding-left: 25px;
   text-align: left;
 }

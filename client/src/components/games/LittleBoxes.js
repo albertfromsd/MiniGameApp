@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-
 const LittleBoxes = ({ roomName }) => {
 
     // a series of divs will show up with random bgColors and textColors
@@ -16,7 +14,6 @@ const LittleBoxes = ({ roomName }) => {
 
     return (
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}> Little Boxes </h2>
         </div>

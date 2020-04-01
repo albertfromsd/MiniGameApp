@@ -13,11 +13,13 @@ import MathHead from '../components/games/MathHead';
 import WiseToMemorize from '../components/games/WiseToMemorize';
 import TypeFasterMaster from '../components/games/TypeFasterMaster';
 import LittleBoxes from '../components/games/LittleBoxes';
-
 import DontComeInsideMe from '../components/games/DontComeInsideMe';
 import DropAFatShot from '../components/games/DropAFatShot';
 
-import styles from '../components/chat/Chat.module.css';
+// [ CSS MODULES ]
+import styles from './Views.module.css';
+import gameStyles from '../components/games/Games.module.css';
+import chatStyles from '../components/chat/Chat.module.css';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
@@ -46,33 +48,43 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         <>
         <NavBar socket={socket} roomName={roomName} />
         <div className={styles.contentRow}>
-            <div className={styles.gameComponent}>
+            <div className={gameStyles.gameComponent}>
                 <Router>
                     <GameSelector path="/" />
-                    <MathHead path="/mathhead" socket={socket} roomName={roomName} />
-                    <TypeFasterMaster path="/typefastermaster" socket={socket} roomName={roomName} />
-                    <WiseToMemorize path="/wisetomemorize" socket={socket} roomName={roomName} />
-                    <LittleBoxes path="/littleboxes" socket={socket} roomName={roomName} />
-                    <DontComeInsideMe path="/dontcomeinsideme" socket={socket} roomName={roomName} />
-                    <DropAFatShot path="/dropafatshot" socket={socket} roomName={roomName} />
+                    <MathHead path="/mathhead" 
+                        socket={socket} 
+                        roomName={roomName} />
+                    <TypeFasterMaster path="/typefastermaster" 
+                        socket={socket} 
+                        roomName={roomName} />
+                    <WiseToMemorize path="/wisetomemorize" 
+                        socket={socket} 
+                        roomName={roomName} />
+                    <LittleBoxes path="/littleboxes" 
+                        socket={socket} 
+                        roomName={roomName} />
+                    <DontComeInsideMe path="/dontcomeinsideme" 
+                        socket={socket} 
+                        roomName={roomName} />
+                    <DropAFatShot path="/dropafatshot" 
+                        socket={socket} 
+                        roomName={roomName} />
                 </Router>
             </div>
-                <br /> <br /> <br />
-            <div className={styles.chatBox}>
+            <div className={chatStyles.chatBox}>
                 <Chat socket={socket} roomName={roomName} />
             </div>
         </div>
-
-    </>
-    )
-}
+        </>
+    );
+};
 
 function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
         userScore: state.userScore
-    };
+    }
 };
 
 export default connect(mapStateToProps)(GameRoom);

@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-
 const WiseToMemorize = ({ roomName }) => {
 
     // generate a random string
@@ -27,7 +25,6 @@ const WiseToMemorize = ({ roomName }) => {
 
     return(
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Wise to Memorize</h2>
         </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import styles from './Chat.module.css';
+import chatStyles from './Chat.module.css';
 
 const FormMsg = ({ socket, userName, roomName }) => {
     const [ msgState, setMsgState ] = useState({
@@ -40,18 +40,18 @@ const FormMsg = ({ socket, userName, roomName }) => {
     }
 
     return (
-        <form onSubmit={onSubmitHandler}>
+        <form onSubmit={onSubmitHandler}
+            className={chatStyles.chatFormBox}>
 
             <input
             type="text"
-            className={styles.inputMsg}
+            className={chatStyles.inputMsg}
             name="message"
             value={msgState.message}
             placeholder="Enter message here"
             onChange={onChangeHandler}/>
 
-            <button type="submit" className={styles.buttonMsg}>Send</button>
-            <button onClick={resetButton} className={styles.buttonReset}>Reset</button>
+            <button type="submit" className={chatStyles.buttonMsg}>Send</button>
 
         </form>
     )
