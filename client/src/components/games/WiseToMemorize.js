@@ -8,7 +8,7 @@ import NavBar from '../NavBar';
 const WiseToMemorize = ({ roomName }) => {
 
     // generate a random string
-    // show the string for about 3-5 sex
+    // show the string for about 3-5 secs
     // string will vanish
     // input field will be invisible, not even password status
     // points will be based off time to type it

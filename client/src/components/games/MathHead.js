@@ -4,10 +4,17 @@ import { connect } from 'react-redux';
 import styles from './Games.module.css';
 
 import NavBar from '../NavBar';
+import { navigate } from '@reach/router';
 
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
-    // FORM VISIBILITY
+
+    if (userName == null || userName.length < 1 ) {
+        navigate('/')
+    };
+
+    // ELEMENT VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
+    const [ resultsVisibility, setResultsVisibility ] = useState("hidden");
 
     // CREATING QUESTION AND ANSWER
     const [ difficulty, setDifficulty ] = useState("Easy");
@@ -20,37 +27,38 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const [ resultColor, setResultColor ] = useState("white");
 
     // ANSWER TIMER
-    const [ qCreatedAt, setQCreatedAt ] = useState("");
-    const [ qAnsweredAt, setQAnsweredAt ] = useState("");
-    const [ timeToAnswer, setTimeToAnswer ] = useState(null);
+    const [timer, setTimer] = useState("");
+    const [totalTime, setTotalTime] = useState(0);
 
-    // WINNER
-    const [ winnerId, setWinnerId ] = useState(null);
 
     useEffect( () => {
-        console.log(userName +roomName);
         socket.emit('enteredMathHead', {
             userName,
             roomName,
+            totalTime,
             gameName: "Math Head"
          });
 
          socket.on("mathHeadQuestionShared", data => {
             setFormVisibility("visible");
+            setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket]);
+    }, [socket, roomName]);
 
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
     }
 
-    // [ TOP ] Create question in client and use sockets to share with all players
+    // [ TOP ] Create question and use sockets to share with all players
     const createQuestion = e => {
         // Start timer
-        console.log("-----------------")
-        setQCreatedAt( new Date().getTime() );
+        let now = new Date();
+        // let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
+        let questionTime = now.getTime();
+        setTimer(questionTime);
+        setTotalTime(0);
 
         setResultMsg([]);
         setFormVisibility("visible");
@@ -88,62 +96,62 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         let max;
         let min;
         if (difficulty == "Easy") {
-            max = 15;
+            max = 21;
             min = 2;
         }
         if (difficulty == "Medium") {
-            max = 50;
+            max = 52;
             min = 3;
         }
         if (difficulty == "Hard") {
-            max = 100;
+            max = 102;
             min = 11;
         }
         if (difficulty == "Genius") {
-            max = 1000;
+            max = 1002;
             min = 101;
         } 
         generateProblem(max, min);
     }
-    // Display/set question and answer after creation
-    // useEffect( () => {
-    // }, [socket, question]);
     // [ END ] Create question and use sockets to share will players
-
-
-    let timeDiff;
 
     const submitAnswer = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
 
-            // [TOP] Timer calculation not working
-            setQAnsweredAt( new Date().getTime() );
-            timeDiff = ( (qAnsweredAt - qCreatedAt )/1000000000000 );
-            setTimeToAnswer( timeDiff );
-            // [END] Timer calculation not working
+            let now = new Date();
+            // let answerTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
+            let answerTime = now.getTime();
+            let totalTimeTaken = (+answerTime - + timer)/1000;
+            setTimer("");
 
-            setResultMsg(["Correct!",question+" does equal "+formAnswer+"!"]);
+            setResultMsg([
+                "You are correct!",
+                question+" does equal "+formAnswer+"!", 
+                "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
             // RESET FORM
-            setFormAnswer("");
             setFormVisibility("hidden");
-
+            
             // [ SOCKET ] emit after answered correctly
             socket.emit("correctAnswer", 
                 {
+                    socketId: socket.id,
                     userName,
                     roomName,
-                    timeDiff
+                    question,
+                    answer,
+                    totalTimeTaken
                 }
             );
         // wrong answer submitted; set wrong msg and no emit
         } else {
             setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);
             setResultColor("red");
-            setFormAnswer("");
         };
+        setFormAnswer("");
+        setResultsVisibility("visible");
     }; // [END] of function submitAnswer
 
     // [ SOCKET ] Set message after opponent answers correctly
@@ -151,8 +159,14 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         socket.on("questionAnswered", data => {
             console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
-            setResultMsg([data.userName+" answered correctly!"]);
-            setResultColor("green");
+            setResultsVisibility("visible");
+            if (data.userName != userName) {
+                setResultMsg([
+                    data.userName+" wins! ", 
+                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                    "You can get it next time!"]);
+                setResultColor("orange");
+            }
         });
     }, [socket]);
 
@@ -161,10 +175,9 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     return(
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Math Head</h2>
-            <br/>
+                <br/>
             <div>
                 {difficultyLevels.map( (d, i) => {
 
@@ -181,23 +194,10 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
                 })}
             </div>
-            <br/>
+                <br/>
 
             <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
-            <br/>
-
-                {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
-                    <>
-                    <p style={{color: resultColor}} key={i}>{msg}</p>
-                        <br/>
-                    </>
-                )}
-                {timeToAnswer != null 
-                    ? <p style={{color: resultColor}}>Answered in {timeToAnswer} seconds</p>
-                    : <p></p>
-                }
-                
-            <br/>
+                <br/>
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
@@ -211,8 +211,19 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                         placeholder="Enter you answer here"
                         value={formAnswer}
                         onChange={e=>setFormAnswer(e.target.value)}/>
-                    <input type="submit" value="Submit your answer"/>
+                    <input type="submit" value="Submit"/>
                 </form>
+            </div>
+                <br/>
+            <div className={resultsVisibility == "hidden" 
+                ? styles.hiddenForm 
+                : styles.visibleForm}>
+                {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
+                    <>
+                    <p style={{color: resultColor}} key={i}>{msg}</p>
+                        <br/>
+                    </>
+                )}
             </div>
         </div>
         </>
@@ -223,7 +234,7 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
+        userScore: state.userScore,
     };
 };
 

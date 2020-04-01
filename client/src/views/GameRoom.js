@@ -1,92 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Router, navigate } from '@reach/router';
+import io from 'socket.io-client';
+import { navigate, Router } from '@reach/router';
 import { connect } from 'react-redux';
 
 // [ STYLES ]
 import styles from "./Views.module.css";
 
-
 // [ COMPONENTS ]
 import NavBar from "../components/NavBar";
+import GameSelector from "../components/games/GameSelector";
 
+// [ GAMES ]
+import MathHead from '../components/games/MathHead';
+import WiseToMemorize from '../components/games/WiseToMemorize';
+import TypeFasterMaster from '../components/games/TypeFasterMaster';
+import LittleBoxes from '../components/games/LittleBoxes';
 
-const GameRoom = ({ socket, dispatch, userName, roomName }) => {
-    // insert check if user submitted a userName
-    // if (!userName || !socket ) {
-    //     navigate('/');
-    // };
-    const [gameName, setGameName] = useState("");
+import DontComeInsideMe from '../components/games/DontComeInsideMe';
+import DropAFatShot from '../components/games/DropAFatShot';
+
+const GameRoom = ({ dispatch, userName, roomName }) => {
+
+    if (userName == null || userName.length < 1 ) {
+        navigate('/')
+    };
+
+    const [ socket ] = useState( () => io(':8000') );
 
     dispatch({
-        type: 'SETGAMENAME',
-        gameName: gameName,
-      });
+        type: 'SETSOCKET',
+        socket: socket,
+    });
 
-    const gameSelector = e => {
-        let game = e.target.value;
-        setGameName(game);
-        console.log("game name:" + gameName);
-        navigate('/'+roomName+'/'+e.target.value);
-    };
+    useEffect( () => {
+        socket.on('welcome', data => {
+            console.log(data);
+        });
+
+        return () => {
+            socket.disconnect();
+        }
+    }, [socket]);
 
     return (
         <>
-        <NavBar roomName={roomName}/>
-        <div className={styles.flexColCen}>
-            <h2 className={styles.textWhite}>Welcome, {userName}!</h2>
-            <h3 className={styles.textWhite}>You are in  Room {roomName}</h3>
-                <br/>
-            <h3 className={styles.textWhite}>Pick a game below:</h3>
-                <br/>
-            <div className={styles.flexRowCen}>
-                <div className={styles.flexColCen}>
-                    <button 
-                        onClick={gameSelector} 
-                        value="mathhead"
-                        className={styles.btn}>
-                            Math Head
-                    </button>{" "}
-                    <br/>
-                        <button 
-                        onClick={gameSelector} 
-                        value="wisetomemorize"
-                        className={styles.btn}>
-                            Wise to Memorize
-                    </button>{" "}
-                        <br/>
-                    <button 
-                        onClick={gameSelector} 
-                        value="typefastermaster"
-                        className={styles.btn}>
-                            Type Faster Master
-                    </button>{" "}
-                    <br/>
-                </div>
-                <div className={styles.flexColCen}>
-                <button 
-                    onClick={gameSelector} 
-                    value="littleboxes"
-                    className={styles.btn}>
-                        Little Boxes
-                </button>{" "}
-                    <br/>
-                <button 
-                    onClick={gameSelector} 
-                    value="dontcomeinsideme"
-                    className={styles.btn}>
-                        Don't Come Inside Me
-                </button>{" "}
-                    <br/>
-                <button 
-                    onClick={gameSelector} 
-                    value="dropafatshot"
-                    className={styles.btn}>
-                        Drop a Fat Shot
-                </button>{" "}
-                    <br/>
-                </div>
-            </div>
-        </div>
+        <NavBar roomName={roomName} />
+        <Router>
+            <GameSelector path="/" />
+            <MathHead path="/mathhead" socket={socket}/>
+            <TypeFasterMaster path="/typefastermaster" socket={socket}/>
+            <WiseToMemorize path="/wisetomemorize" socket={socket}/>
+            <LittleBoxes path="/:roomName/littleboxes" socket={socket}/>
+            <DontComeInsideMe path="/:roomName/dontcomeinsideme" socket={socket}/>
+            <DropAFatShot path="/:roomName/dropafatshot" socket={socket} />
+        </Router>
     </>
     )
 }
