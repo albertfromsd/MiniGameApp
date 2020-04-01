@@ -12,4 +12,5 @@ random-words react-reveal
 
 
 [ENV]
+
 need to create your own .env inside /server folder
