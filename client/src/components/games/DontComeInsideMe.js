@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-
 const DontComeInsideMe = ({ roomName }) => {
 
     // at random setTimeout, prompt will shout "Come to me!"
@@ -15,7 +13,6 @@ const DontComeInsideMe = ({ roomName }) => {
 
     return (
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Don't Come Inside Me!</h2>
         </div>

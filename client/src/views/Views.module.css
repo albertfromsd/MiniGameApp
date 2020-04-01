@@ -16,6 +16,14 @@
     align-items: center;
 }
 
+.contentRow {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-evenly;
+    height: 70%;
+    width: 100%;
+}
+
 .onlyDiv {
     margin: 100px;
 }

@@ -10,8 +10,6 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
-import NavBar from '../NavBar';
-
 var randomWords = require('random-words');
 
 
