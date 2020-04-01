@@ -100,8 +100,16 @@
     justify-content: flex-end;
 }
 
+.buttonRow {
+    width: 400px;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+}
+
+
 label {
-    font-size: 20px;
+    font-size: 18px;
     width: 35%;
     text-align: right;
     padding-right: 15px;

@@ -7,7 +7,6 @@ module.exports = {
     createRoom(req, res) {
         GameRoom.create(req.body)
         .then( (newRoom) => {
-                
             const token = jwt.sign({
                 id: newRoom._id,
                 roomName: newRoom.roomName,
@@ -21,6 +20,7 @@ module.exports = {
 
             // add creator id as host
             // also add to list of players in room
+
         })
         .catch(err => res.status(400).json(err));
     },
