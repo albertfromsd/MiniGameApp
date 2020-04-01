@@ -43,11 +43,26 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket, roomName, totalTime]);
 
+        socket.on("targetAnswered", data => {
+            setFormVisibility("hidden");
+            setResultsVisibility("visible");
+            if (data.userName != userName) {
+                setResultMsg([
+                    data.userName+" wins! ", 
+                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                    "You can get it next time!"]);
+                setResultColor("orange");
+            }
+        });
+
+    }, [socket, roomName]);
+    
+    // Change difficulty
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
-    }
+    };
 
     // [ TOP ] Create question and use sockets to share with all players
     const createTarget = e => {
@@ -87,7 +102,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     question: (num1+" "+operator+" "+num2),
                     answer: result
                 });
-        } // [END] sub-function generateProblem
+        }; // [END] sub-function generateProblem
 
         // Question changes based on difficulty
         let max;
@@ -107,7 +122,9 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         if (difficulty == "Genius") {
             max = 1002;
             min = 101;
-        } ;
+        } else {
+            setDifficulty("Easy");
+        };
         generateProblem(max, min);
     };
     // [ END ] Create question and use sockets to share will players
@@ -150,24 +167,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         setFormAnswer("");
         setResultsVisibility("visible");
     }; // [END] of function findResult
-
-    // [ SOCKET ] Set message after opponent answers correctly
-    useEffect( () => {
-        socket.on("targetAnswered", data => {
-            setFormVisibility("hidden");
-            setResultsVisibility("visible");
-            if (data.userName != userName) {
-                setResultMsg([
-                    data.userName+" wins! ", 
-                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
-                    "You can get it next time!"]);
-                setResultColor("orange");
-            }
-        });
-    }, [socket, roomName]);
-
-    // [BUTTONS]
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
 
     return(
         <>
