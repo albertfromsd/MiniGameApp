@@ -104,44 +104,44 @@ io.on("connection", socket => {
     });
 
     //  // [ TYPE FASTER MASTER ]
-    //  io.in(room).emit('message', 'what is going on, party people?');
-    //  io.to(room).emit("enteredTypeFaster", data=> {
-    //     miniGame.users = [];
-    //     miniGame.roomName = data.roomName;
-    //     miniGame.users.push(data.userName);
-
-    //     //Share question after generated
-    //     io.sockets.in(room).on("typeFasterQuestionGenerated", data => {
-    //         io.in(room).emit("typeFasterQuestionShared", data);
-    //     });
-
-    //     //Alert players when someone gets it right
-    //     io.sockets.in(room).on("correctAnswer", data => {
-    //         io.in(room).emit("questionAnswered", data);
-    //     });
-    //     console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
-       
-    // });
-
-     // [ TYPE FASTER MASTER ]
-     socket.emit('message', 'what is going on, party people?');
-     socket.emit("enteredTypeFaster", data=> {
+     io.in(room).emit('message', 'what is going on, party people?');
+     io.to(room).on("enteredTypeFaster", data=> {
         miniGame.users = [];
         miniGame.roomName = data.roomName;
         miniGame.users.push(data.userName);
 
         //Share question after generated
-        socket.on("typeFasterQuestionGenerated", data => {
+        io.sockets.in(room).on("typeFasterQuestionGenerated", data => {
             io.in(room).emit("typeFasterQuestionShared", data);
         });
 
         //Alert players when someone gets it right
-        socket.on("correctAnswer", data => {
-            socket.broadcast.emit("questionAnswered", data);
+        io.sockets.in(room).on("correctAnswer", data => {
+            io.in(room).emit("questionAnswered", data);
         });
         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
        
     });
+
+     // [ TYPE FASTER MASTER ]
+    //  socket.emit('message', 'what is going on, party people?');
+    //  socket.on("enteredTypeFaster", data=> {
+    //     miniGame.users = [];
+    //     miniGame.roomName = data.roomName;
+    //     miniGame.users.push(data.userName);
+
+    //     //Share question after generated
+    //     socket.on("typeFasterQuestionGenerated", data => {
+    //         io.in(room).emit("typeFasterQuestionShared", data);
+    //     });
+
+    //     //Alert players when someone gets it right
+    //     socket.on("correctAnswer", data => {
+    //         socket.broadcast.emit("questionAnswered", data);
+    //     });
+    //     console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
+       
+    // });
 
     // [ USER LOGOUT ]
     socket.on("disconnect", () => {
