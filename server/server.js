@@ -132,7 +132,7 @@ io.on("connection", socket => {
 
         //Share question after generated
         socket.on("typeFasterQuestionGenerated", data => {
-            socket.emit("typeFasterQuestionShared", data);
+            io.in(room).emit("typeFasterQuestionShared", data);
         });
 
         //Alert players when someone gets it right
