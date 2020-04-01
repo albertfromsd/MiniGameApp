@@ -51,6 +51,9 @@ let miniGame = {
     "gameName" : "",
 };
 
+// maybe use namespace here {represents variable names, not correct syntax}
+// const {roomName} = io.of('/'+ {roomName} )
+
 let room = "";
 
 io.on("connection", socket => {
