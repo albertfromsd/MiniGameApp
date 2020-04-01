@@ -19,11 +19,11 @@ const WiseToMemorize = ({ roomName }) => {
 
     const generateRandomString = e => {
         // click button to generate random string at a random setTimeout
-    }
+    };
 
     const submitHandler = e => {
         
-    }
+    };
 
     return(
         <>

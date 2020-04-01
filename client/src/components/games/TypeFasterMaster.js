@@ -19,7 +19,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
-        navigate('/')
+        navigate('/');
     };
 
     // generate random string at random setTimeouts at random places on the screen
@@ -44,6 +44,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
    
     useEffect( () => {
+
         socket.emit('enteredTypeFaster', {
             userName,
             roomName,
@@ -68,21 +69,34 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         
     }, [socket, roomName, userName, totalTime]);
 
+        if(difficulty === ""){
+            setMessage("❤ Please select your minigame level...❤");
+        };
+        console.log(userName +roomName);
+        socket.emit('enteredTypeFaster', {
+            userName,
+            roomName,
+            totalTime
+         });
+
+        //  if(totalTime > 0){
+        //     socket.emit('total time',  totalTime);
+        //  }
 
     const changeDifficulty = event =>{
         const {name, value} = event.target;
         setDifficulty(event.target.name);
-    }
+    };
 
     const createTarget = event =>{
         //For knowing question generated time
-         let now = new Date();
+        let now = new Date();
         //  let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
         let questionTime = now.getTime();
-         setTimer(questionTime);
-         setTotalTime(0);
+        setTimer(questionTime);
+        setTotalTime(0);
 
-         let targetString;
+        let targetString;
         if(difficulty === "Easy"){
             targetString = randomWords(3);
         }
@@ -102,7 +116,9 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         {
             question: targetString,
         });
-    }
+    };
+    
+    setMessage("Create and Play !!!");
 
     const findResult = (event) =>{
         event.preventDefault();
@@ -124,8 +140,8 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         }; 
 
         socket.emit("targetAnswered", data => {
-             setFormVisibility("hidden");
-             setResultsVisibility("visible");
+            setFormVisibility("hidden");
+            setResultsVisibility("visible");
         });
 
         //RESET FORM
@@ -139,7 +155,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             roomName,
             totalTime
         });
-    }
+    };
 
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
 
@@ -150,12 +166,11 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                 <InputLabel htmlFor="component-outlined">Name</InputLabel>
                 <OutlinedInput id="component-outlined" label="Name" />
             </FormControl>
-             <p className={styles.textWhite}>{resultMsg}</p>
+            <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
-           {
-                totalTime > 0 
-           ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
-            : <p></p>
+            { totalTime > 0 
+                ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
+                : <p></p>
             }
             <br/>
             <h2  className={styles.textWhite}>Type Faster Master</h2>
@@ -171,7 +186,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                     className={(d == difficulty ? styles.activeBtn : styles.inactiveBtn)}>
                         {d}
                 </button>
-             ))}
+            ))}
             </div>
             <br/>
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
@@ -186,7 +201,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                 value={userInput} 
                 onChange= {e => setUserInput(e.target.value)} 
                 // onPaste = {e=> e.preventDefault()}
-                 />
+                />
                 <button name="submitButton" style={{backgroundColor: 'pink'}} type="submit">Go!</button>
                 </form>  
                 </div>

@@ -6,19 +6,7 @@ import { connect } from 'react-redux';
 // [STYLES]
 import styles from './Views.module.css';
 
-// [NAVBAR]
-// import NavBar from '../components/NavBar';
-
-// [GAMES]
-// import MathHead from '../components/games/MathHead';
-// import WiseToMemorize from '../components/games/WiseToMemorize';
-// import TypeFasterMaster from '../components/games/TypeFasterMaster';
-// import LittleBoxes from '../components/games/LittleBoxes';
-
-// import DontComeInsideMe from '../components/games/DontComeInsideMe';
-// import DropAFatShot from '../components/games/DropAFatShot';
-
-const Lobby = ({ socket, dispatch }) => {
+const Lobby = ({ dispatch }) => {
     const [ formState, setFormState ] = useState({
         uName: "",
         rName: "",
