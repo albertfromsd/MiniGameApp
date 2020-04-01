@@ -30,8 +30,17 @@ const NavBar = ({ roomName, dispatch }) => {
                     </li>
                     <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
+                    DropDown
                     </a>
+                        <select className="nav-link dropdown-toggle">
+                            <option>MathHead</option>
+                            <option> Type Faster Master</option>
+                            <option>Little Boxes </option>
+                            <option>Don't Come Inside Me </option>
+                            <option>Wise To Memorize</option>
+                            <option>Drop a Fat Shot</option>
+                        </select>
+                  
                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a className="dropdown-item" href="#">Action</a>
                         <a className="dropdown-item" href="#">Another action</a>
