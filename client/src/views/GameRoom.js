@@ -57,6 +57,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                     <DropAFatShot path="/dropafatshot" socket={socket} roomName={roomName} />
                 </Router>
             </div>
+                <br /> <br /> <br />
             <div className={styles.chatBox}>
                 <Chat socket={socket} roomName={roomName} />
             </div>
