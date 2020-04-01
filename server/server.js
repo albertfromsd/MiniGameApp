@@ -91,6 +91,10 @@ io.on("connection", socket => {
         io.emit("refreshChatLog", chatLog);
     });
 
+    socket.on("navigateParty", data => {
+        io.emit("partyNavigator", data);
+    });
+
     // [ MATH HEAD ]
     socket.on("enteredMathHead", data => {
         miniGame.users = [];

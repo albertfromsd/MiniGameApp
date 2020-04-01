@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { navigate, Link } from '@reach/router';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import LogoutButton from './loginreg/LogoutButton';
 
 import styles from './NavBar.module.css';
 
-const NavBar = ({ roomName, dispatch }) => {
-
+const NavBar = ({ socket, roomName, dispatch }) => {
+    
     const navLink = e => {
         navigate('/'+roomName+"/"+e.target.value);
     };
+
+    const navigateLobby = e => {
+        socket.emit("navigateParty", 
+            {
+                roomName,
+                gameName: ""
+            }
+        );
+    };
+
+    // useEffect( () => {
+    //     socket.on("partyNavigator", data => {
+    //         navigate('/'+data.roomName+'/'+data.gameName);
+    //     });
+    // }, [socket]);
+    
 
     return (
         <>
@@ -36,7 +52,7 @@ const NavBar = ({ roomName, dispatch }) => {
                         <a className="dropdown-item" href="#">Action</a>
                         <a className="dropdown-item" href="#">Another action</a>
                         <div className="dropdown-divider"></div>
-                        <Link to={"/"+roomName}>Game Room Lobby</Link>
+                        <button onClick={navigateLobby}>Game Room Lobby</button>
                     </div>
                     </li>
                 </ul>
