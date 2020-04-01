@@ -6,20 +6,19 @@ import styles from './Games.module.css';
 
 const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 
-    const [gameName, setGameName] = useState("");
+    let gameName;
 
     const gameSelector = e => {
-        let game = e.target.value;
-        setGameName(game);
+        gameName = e.target.value;
 
         dispatch({
             type: 'SETGAMENAME',
-            gameName: gameName,
+            gameName,
         });
 
         dispatch({
             type: 'SETROOMNAME',
-            gameName: roomName,
+            gameName,
         });
 
         socket.emit("navigateParty", 

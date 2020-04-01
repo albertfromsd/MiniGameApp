@@ -24,12 +24,20 @@ import chatStyles from '../components/chat/Chat.module.css';
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
     // const gameName = useSelector( (state) => state.gameName);
-    
+
     if (userName == null || userName.length < 1 ) {
         navigate('/');
     };
 
     const [ socket ] = useState( () => io(':8000') );
+
+    socket.emit("enteredGameRoom", 
+        {
+            socketId: socket.id,
+            userName,
+            roomName,
+        }
+    );
 
     dispatch({
         type: 'SETSOCKET',
@@ -52,7 +60,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     return (
         <>
-        <NavBar socket={socket} roomName={roomName} />
+        <NavBar socket={socket} 
+            roomName={roomName} />
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>

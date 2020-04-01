@@ -7,7 +7,7 @@ import LogoutButton from './loginreg/LogoutButton';
 import styles from './NavBar.module.css';
 
 const NavBar = ({ socket, roomName, dispatch }) => {
-    
+
     const navLink = e => {
         navigate('/'+roomName+"/"+e.target.value);
     };
@@ -20,12 +20,6 @@ const NavBar = ({ socket, roomName, dispatch }) => {
             }
         );
     };
-
-    // useEffect( () => {
-    //     socket.on("partyNavigator", data => {
-    //         navigate('/'+data.roomName+'/'+data.gameName);
-    //     });
-    // }, [socket]);
     
 
     return (
