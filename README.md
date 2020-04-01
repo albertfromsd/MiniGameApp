@@ -3,7 +3,6 @@
 Dependencies:
 
 [SERVER]
-
 express mongoose cors jsonwebtoken bcrypt dotenv cookie-parser socket.io express-session
 
 [CLIENT]
@@ -13,5 +12,4 @@ random-words react-reveal
 
 
 [ENV]
-
 need to create your own .env inside /server folder
