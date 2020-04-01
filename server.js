@@ -137,7 +137,7 @@ io.on("connection", socket => {
 
         //Alert players when someone gets it right
         socket.on("correctAnswer", data => {
-            socket.broadcast.emit("questionAnswered", data);
+            socket.broadcast.emit("targetAnswered", data);
         });
         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
        
