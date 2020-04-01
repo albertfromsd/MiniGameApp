@@ -1,0 +1,18 @@
+.msgLog {
+    width: 100%;
+    padding: 10px 0px 0px 0px;
+}
+
+.user {
+    font-size: 12px;
+    width: 100%;
+    padding-left: 10px;
+    text-align: left;
+}
+
+.message {
+    font-size: 13px;
+    width: 100%;
+    padding-left: 25px;
+    text-align: left;
+}
