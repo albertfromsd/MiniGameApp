@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { navigate, Router } from '@reach/router';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 // [ COMPONENTS ]
 import NavBar from "../components/NavBar";
@@ -23,6 +23,8 @@ import chatStyles from '../components/chat/Chat.module.css';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
+    // const gameName = useSelector( (state) => state.gameName);
+    
     if (userName == null || userName.length < 1 ) {
         navigate('/');
     };
@@ -37,6 +39,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     useEffect( () => {
         socket.on('welcome', data => {
             console.log(data);
+        });
+
+        socket.on("partyNavigator", data => {
+            navigate('/'+data.roomName+'/'+data.gameName);
         });
 
         return () => {
@@ -82,6 +88,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 function mapStateToProps(state) {
     return {
         socket: state.socket,
+        gameName: state.gameName,
         userName: state.userName,
         userScore: state.userScore
     }
