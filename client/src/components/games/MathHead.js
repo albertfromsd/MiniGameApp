@@ -53,7 +53,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const createTarget = e => {
         // Start timer
         let now = new Date();
-        // let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
         let questionTime = now.getTime();
         setTimer(questionTime);
         setTotalTime(0);
@@ -66,7 +65,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         const getRandomInt = (maxNum, minNum) => {
             let num = Math.floor(Math.random() * (maxNum - minNum) + minNum );
             return num;
-        }; // [END] function getRandomInt
+        }; // [END] subfunction getRandomInt
 
         const generateProblem = (max, min) => {
             const num1 = getRandomInt(max, min);
@@ -155,7 +154,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     // [ SOCKET ] Set message after opponent answers correctly
     useEffect( () => {
         socket.on("targetAnswered", data => {
-            console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
             setResultsVisibility("visible");
             if (data.userName != userName) {

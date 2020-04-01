@@ -51,6 +51,11 @@ let miniGame = {
     "gameName" : "",
 };
 
+// maybe use namespace here {represents variable names, not correct syntax}
+// const {roomName} = io.of('/'+ {roomName} )
+
+let room = "";
+
 io.on("connection", socket => {
 
     // [ USER LOGIN ]
@@ -64,7 +69,13 @@ io.on("connection", socket => {
     userList.push(socket.id);
 
     //[WELCOME]
-    socket.emit('welcome', "Socket successfully connected. Happy!!")
+    socket.emit('welcome', "Socket successfully connected. Happy!!");
+    // socket.emit('connect');
+    // socket.on('room created', data => {
+    //     room = data.roomName;
+    //     socket.join(room);
+    //     console.log("joined room" +room);
+    // })
 
     // [ AUTO REFRESH LOGS/LIST]
     io.emit('refreshChatLog', chatLog);
@@ -96,15 +107,23 @@ io.on("connection", socket => {
     });
 
      // [ TYPE FASTER MASTER ]
-     socket.on("enteredTypeFaster", data => {
+     socket.emit('message', 'what is going on, party people?');
+     socket.emit("enteredTypeFaster", data=> {
         miniGame.users = [];
         miniGame.roomName = data.roomName;
         miniGame.users.push(data.userName);
 
+        //Share question after generated
+        socket.on("typeFasterTargetGenerated", data => {
+            io.emit("typeFasterTargetShared", data);;
+        });
+
+        //Alert players when someone gets it right
+        socket.on("correctAnswer", data => {
+            socket.broadcast.emit("targetAnswered", data);
+        });
         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
-        // socket.on('total time', time =>{
-        //     console.log("Time Taken: " +time);
-        // })
+       
     });
 
     // [ USER LOGOUT ]

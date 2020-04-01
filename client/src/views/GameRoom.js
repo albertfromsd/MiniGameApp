@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 // [ COMPONENTS ]
 import NavBar from "../components/NavBar";
 import GameSelector from "../components/games/GameSelector";
+import Chat from '../components/chat/Chat';
 
 // [ GAMES ]
 import MathHead from '../components/games/MathHead';
@@ -15,6 +16,8 @@ import LittleBoxes from '../components/games/LittleBoxes';
 
 import DontComeInsideMe from '../components/games/DontComeInsideMe';
 import DropAFatShot from '../components/games/DropAFatShot';
+
+import styles from '../components/chat/Chat.module.css';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
@@ -42,15 +45,23 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     return (
         <>
         <NavBar socket={socket} roomName={roomName} />
-        <Router>
-            <GameSelector path="/" socket={socket}/>
-            <MathHead path="/mathhead" socket={socket}/>
-            <TypeFasterMaster path="/typefastermaster" socket={socket}/>
-            <WiseToMemorize path="/wisetomemorize" socket={socket}/>
-            <LittleBoxes path="/littleboxes" socket={socket}/>
-            <DontComeInsideMe path="/dontcomeinsideme" socket={socket}/>
-            <DropAFatShot path="/dropafatshot" socket={socket} />
-        </Router>
+        <div className={styles.contentRow}>
+            <div className={styles.gameComponent}>
+                <Router>
+                    <GameSelector path="/" />
+                    <MathHead path="/mathhead" socket={socket} roomName={roomName} />
+                    <TypeFasterMaster path="/typefastermaster" socket={socket} roomName={roomName} />
+                    <WiseToMemorize path="/wisetomemorize" socket={socket} roomName={roomName} />
+                    <LittleBoxes path="/littleboxes" socket={socket} roomName={roomName} />
+                    <DontComeInsideMe path="/dontcomeinsideme" socket={socket} roomName={roomName} />
+                    <DropAFatShot path="/dropafatshot" socket={socket} roomName={roomName} />
+                </Router>
+            </div>
+            <div className={styles.chatBox}>
+                <Chat socket={socket} roomName={roomName} />
+            </div>
+        </div>
+
     </>
     )
 }
