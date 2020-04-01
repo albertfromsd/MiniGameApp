@@ -9,6 +9,7 @@ import styles from "./Views.module.css";
 // [ COMPONENTS ]
 import NavBar from "../components/NavBar";
 import GameSelector from "../components/games/GameSelector";
+import Chat from '../components/chat/Chat';
 
 // [ GAMES ]
 import MathHead from '../components/games/MathHead';
@@ -44,16 +45,23 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     return (
         <>
-        <NavBar roomName={roomName} />
-        <Router>
-            <GameSelector path="/" />
-            <MathHead path="/mathhead" socket={socket}/>
-            <TypeFasterMaster path="/typefastermaster" socket={socket}/>
-            <WiseToMemorize path="/wisetomemorize" socket={socket}/>
-            <LittleBoxes path="/littleboxes" socket={socket}/>
-            <DontComeInsideMe path="/dontcomeinsideme" socket={socket}/>
-            <DropAFatShot path="/dropafatshot" socket={socket} />
-        </Router>
+        <NavBar socket={socket} roomName={roomName} />
+        <div className={styles.contentRow}>
+            <div className={styles.gameComponent}>
+                <Router>
+                    <GameSelector path="/" />
+                    <MathHead path="/mathhead" socket={socket} roomName={roomName} />
+                    <TypeFasterMaster path="/typefastermaster" socket={socket} roomName={roomName} />
+                    <WiseToMemorize path="/wisetomemorize" socket={socket} roomName={roomName} />
+                    <LittleBoxes path="/littleboxes" socket={socket} roomName={roomName} />
+                    <DontComeInsideMe path="/dontcomeinsideme" socket={socket} roomName={roomName} />
+                    <DropAFatShot path="/dropafatshot" socket={socket} roomName={roomName} />
+                </Router>
+            </div>
+            <div className={styles.chatBox}>
+                <Chat socket={socket} roomName={roomName} />
+            </div>
+        </div>
     </>
     )
 }

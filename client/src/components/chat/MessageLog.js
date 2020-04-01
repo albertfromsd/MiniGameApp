@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'teact-redux';
+import { connect } from 'react-redux';
 
 import styles from './Chat.module.css';
 
 const MessageLog = ({ socket, userName, roomName }) => {
+  
     const [ chatroomLog, setChatroomLog ] = useState([]);
 
       useEffect( () => {
@@ -17,8 +18,6 @@ const MessageLog = ({ socket, userName, roomName }) => {
         }
 
       }, [socket]);
-
-
 
     return (
         <>
