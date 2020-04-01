@@ -37,7 +37,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             gameName: "Math Head"
          });
 
-         socket.on("mathHeadQuestionShared", data => {
+         socket.on("mathHeadTargetShared", data => {
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setQuestion(data.question);
@@ -83,7 +83,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                 result = num1*num2;
             };
 
-            socket.emit("mathHeadQuestionGenerated", 
+            socket.emit("mathHeadTargetGenerated", 
                 {
                     question: (num1+" "+operator+" "+num2),
                     answer: result
@@ -154,7 +154,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     // [ SOCKET ] Set message after opponent answers correctly
     useEffect( () => {
-        socket.on("questionAnswered", data => {
+        socket.on("targetAnswered", data => {
             console.log("Data from mathHead client: "+data);
             setFormVisibility("hidden");
             setResultsVisibility("visible");
@@ -166,7 +166,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                 setResultColor("orange");
             }
         });
-    }, [socket]);
+    }, [socket, roomName]);
 
     // [BUTTONS]
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
