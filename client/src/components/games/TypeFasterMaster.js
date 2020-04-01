@@ -68,11 +68,11 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     }, [socket]);
 
     // Difficulty
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
     const changeDifficulty = event =>{
         const {name, value} = event.target;
         setDifficulty(event.target.name);
-    }
+    };
 
     // Create Target String
     const createTarget = event =>{
@@ -85,17 +85,19 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         let targetString;
         if(difficulty === "Easy"){
             targetString = randomWords(3);
-        }
-        else if (difficulty == "Medium"){
+        };
+        if (difficulty == "Medium"){
             targetString = randomWords(6);
-        }
-        else if(difficulty == "Hard"){
+        };
+        if(difficulty == "Hard"){
             targetString = randomWords(9);
-        }
-        else if(difficulty == "Genius"){
+        };
+        if(difficulty == "Genius"){
             //join used to remove the comma between the words that is being created by randomWords()
             targetString = Math.random().toString(36).substring(2, 20) + randomWords(4).join('');
-        }
+        } else {
+            setDifficulty("Easy");
+        };
         socket.emit("typeFasterQuestionGenerated", 
         {
             question: targetString,
@@ -105,21 +107,22 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     // Answer submission/confirmation
     const findResult = (event) =>{
         event.preventDefault();
+
         let now = new Date();
         let answerTime = now.getTime();(now.getSeconds()).toString();
         let totalTimeTaken = (+answerTime - + timer)/1000;
         setTimer("");
+
         if(difficulty == "Genius"){
             if(userInput === string){
                 setMessage(" 🏆🏆 You got it!..");
                 setTotalTime(totalTimeTaken);
-            }
-        }
-        else{
+            };
+        } else {
             if(userInput === string.join('')){
                 setMessage(" 🏆🏆You got it!..");
                 setTotalTime(totalTimeTaken);
-            }
+            };
         }; 
 
         //RESET FORM
@@ -145,8 +148,8 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
             {
-                totalTime > 0 
-            ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
+            totalTime > 0 
+            ? <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
             : <p></p>
             }
             <br/>
