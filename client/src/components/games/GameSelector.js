@@ -1,5 +1,4 @@
 import React, {useState, useEffect } from 'react';
-import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 import styles from './Games.module.css';

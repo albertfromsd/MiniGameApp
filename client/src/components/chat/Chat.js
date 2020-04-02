@@ -21,7 +21,7 @@ const Chat = ( { socket, userName, roomName } ) => {
   return (
     <>
       <div>
-        <MessageLog socket={socket} />
+        <MessageLog socket={socket} className={chatStyles.chatLogMsgs}/>
         <FormMsg socket={socket} />
       </div>
     </>

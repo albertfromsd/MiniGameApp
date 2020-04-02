@@ -46,7 +46,10 @@ const NavBar = ({ socket, roomName, dispatch }) => {
                         <a className="dropdown-item" href="#">Action</a>
                         <a className="dropdown-item" href="#">Another action</a>
                         <div className="dropdown-divider"></div>
-                        <button onClick={navigateLobby}>Game Room Lobby</button>
+                        <button onClick={navigateLobby} 
+                            className={styles.navButton}>
+                                Game Room Lobby
+                        </button>
                     </div>
                     </li>
                 </ul>

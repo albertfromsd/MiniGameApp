@@ -5,7 +5,7 @@
 .chatBox {
   display: flex;
   flex-flow: column;
-  justify-content: flex-end;
+  margin-right: 10%;
   width: 25%;
   height: 100%;
   border: 1px solid green;
@@ -33,8 +33,7 @@
 }
 
 .inputMsg {
-  margin: 5%;
-  width: 90%;
+  width: 100%;
   line-height: 1;
   background-color: rgb(186, 229, 247);
   border: 1px solid rgb(139, 139, 241);
@@ -42,7 +41,6 @@
 
 .msgLog {
   width: 100%;
-  padding: 10px 0px 0px 0px;
   border: 1px solid red;
   background-color: white;
 }
@@ -50,8 +48,12 @@
 .message {
   font-size: 13px;
   width: 100%;
-  padding-left: 25px;
+  padding: 5px;
   text-align: left;
+  color: blue;
+  background-color: aliceblue;
+  border: 1px solid blue;
+  border-radius: 5px;
 }
 
 
