@@ -34,6 +34,16 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     const [ socket ] = useState( () => io(':8000') );
 
+    useEffect( () => {
+        socket.emit("enteredGameRoom", 
+            {
+                userName,
+                roomName,
+            }
+        );
+    }, [socket, userName, roomName]);
+
+
     dispatch({
         type: 'SETSOCKET',
         socket: socket,
