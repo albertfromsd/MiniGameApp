@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React from 'react';
 import { Router } from '@reach/router';
 import { connect } from 'react-redux';
 

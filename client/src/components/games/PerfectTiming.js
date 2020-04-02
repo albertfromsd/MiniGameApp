@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-
 const PerfectTiming = ({ roomName }) => {
     
     // DontComeInsideMe is a better version of this
@@ -17,7 +15,6 @@ const PerfectTiming = ({ roomName }) => {
 
     return (
         <>
-        <NavBar roomName={roomName} />
         <div className={styles.entirePage}>
             <h2 className={styles.textWhite}>Perfect Timing</h2>
         </div>

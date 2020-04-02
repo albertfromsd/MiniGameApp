@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import NavBar from '../NavBar';
-import { navigate } from '@reach/router';
-
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
     if (userName == null || userName.length < 1 ) {
-        navigate('/')
+        navigate('/');
     };
 
     // ELEMENT VISIBILITY
@@ -39,23 +37,37 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             gameName: "Math Head"
          });
 
-         socket.on("mathHeadQuestionShared", data => {
+         socket.on("mathHeadTargetShared", data => {
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
         });
-    }, [socket, roomName]);
 
+        socket.on("targetAnswered", data => {
+            setFormVisibility("hidden");
+            setResultsVisibility("visible");
+            if (data.userName != userName) {
+                setResultMsg([
+                    data.userName+" wins! ", 
+                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                    "You can get it next time!"]);
+                setResultColor("orange");
+            }
+        });
+
+    }, [socket, roomName]);
+    
+    // Change difficulty
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
     const changeDifficulty = e => {
         setDifficulty(e.target.value);
-    }
+    };
 
     // [ TOP ] Create question and use sockets to share with all players
-    const createQuestion = e => {
+    const createTarget = e => {
         // Start timer
         let now = new Date();
-        // let questionTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
         let questionTime = now.getTime();
         setTimer(questionTime);
         setTotalTime(0);
@@ -68,7 +80,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         const getRandomInt = (maxNum, minNum) => {
             let num = Math.floor(Math.random() * (maxNum - minNum) + minNum );
             return num;
-        }; // [END] function getRandomInt
+        }; // [END] subfunction getRandomInt
 
         const generateProblem = (max, min) => {
             const num1 = getRandomInt(max, min);
@@ -85,12 +97,12 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                 result = num1*num2;
             };
 
-            socket.emit("mathHeadQuestionGenerated", 
+            socket.emit("mathHeadTargetGenerated", 
                 {
                     question: (num1+" "+operator+" "+num2),
                     answer: result
                 });
-        } // [END] sub-function generateProblem
+        }; // [END] sub-function generateProblem
 
         // Question changes based on difficulty
         let max;
@@ -98,24 +110,26 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         if (difficulty == "Easy") {
             max = 21;
             min = 2;
-        }
+        };
         if (difficulty == "Medium") {
             max = 52;
             min = 3;
-        }
+        };
         if (difficulty == "Hard") {
             max = 102;
             min = 11;
-        }
+        };
         if (difficulty == "Genius") {
             max = 1002;
             min = 101;
-        } 
+        } else {
+            setDifficulty("Easy");
+        };
         generateProblem(max, min);
-    }
+    };
     // [ END ] Create question and use sockets to share will players
 
-    const submitAnswer = e => {
+    const findResult = e => {
         e.preventDefault();
         if (formAnswer == answer ) {
 
@@ -152,26 +166,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
         };
         setFormAnswer("");
         setResultsVisibility("visible");
-    }; // [END] of function submitAnswer
-
-    // [ SOCKET ] Set message after opponent answers correctly
-    useEffect( () => {
-        socket.on("questionAnswered", data => {
-            console.log("Data from mathHead client: "+data);
-            setFormVisibility("hidden");
-            setResultsVisibility("visible");
-            if (data.userName != userName) {
-                setResultMsg([
-                    data.userName+" wins! ", 
-                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
-                    "You can get it next time!"]);
-                setResultColor("orange");
-            }
-        });
-    }, [socket]);
-
-    // [BUTTONS]
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
+    }; // [END] of function findResult
 
     return(
         <>
@@ -196,7 +191,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             </div>
                 <br/>
 
-            <button onClick={createQuestion} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
+            <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
                 <br/>
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
@@ -205,7 +200,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     <br/>
                     <br/>
                     <br/>
-                <form onSubmit={submitAnswer}>
+                <form onSubmit={findResult}>
                     <input 
                         type="text"
                         placeholder="Enter you answer here"
@@ -227,7 +222,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             </div>
         </div>
         </>
-    )
+    );
 };
 
 function mapStateToProps(state) {

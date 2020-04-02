@@ -5,7 +5,7 @@ import MessageLog from './MessageLog';
 import UserList from '../loginreg/UserList';
 import FormMsg from './FormMsg';
 
-import styles from './Chat.module.css';
+import chatStyles from './Chat.module.css';
 
 const Chat = ( { socket, userName, roomName } ) => {
 
@@ -19,24 +19,12 @@ const Chat = ( { socket, userName, roomName } ) => {
   }, [socket]);
 
   return (
-    <div className="App">
-      <h1>Chatroom App</h1>
-      <div className={styles.chatLogBox}>
-        <div className={styles.chatLogMsgs}>
-          <MessageLog socket={socket}/>
-        </div>
-        {/* [END] div chatLogMsgs */}
-        <div className={styles.userList}>
-          <UserList socket={socket}/>
-        </div>
-        {/* [END] div userList */}
+    <>
+      <div>
+        <MessageLog socket={socket} className={chatStyles.chatLogMsgs}/>
+        <FormMsg socket={socket} />
       </div>
-      <div className={styles.formBox}>
-        <FormMsg socket={socket}/>
-      </div>
-      {/* [END] div formBox */}
-    </div>
-    // [END] div App
+    </>
   );
 }
 

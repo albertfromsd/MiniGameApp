@@ -10,8 +10,6 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
-import NavBar from '../NavBar';
-
 var randomWords = require('random-words');
 
 
@@ -48,9 +46,9 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             roomName,
             totalTime,
             gameName : "TypeFasterMaster"
-         });
+        });
 
-         socket.on("typeFasterQuestionShared", data => {
+        socket.on("typeFasterQuestionShared", data => {
             setFormVisibility("visible");
             setString(data.question);
         });
@@ -67,25 +65,63 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         
     }, [socket]);
 
+    // Difficulty
+    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
+    const changeDifficulty = event =>{
+        const {name, value} = event.target;
+        setDifficulty(event.target.name);
+    };
 
+    // Create Target String
+    const createTarget = event =>{
+        //For knowing question generated time
+        let now = new Date();
+        let questionTime = now.getTime();
+        setTimer(questionTime);
+        setTotalTime(0);
+
+        let targetString;
+        if(difficulty === "Easy"){
+            targetString = randomWords(3);
+        };
+        if (difficulty == "Medium"){
+            targetString = randomWords(6);
+        };
+        if(difficulty == "Hard"){
+            targetString = randomWords(9);
+        };
+        if(difficulty == "Genius"){
+            //join used to remove the comma between the words that is being created by randomWords()
+            targetString = Math.random().toString(36).substring(2, 20) + randomWords(4).join('');
+        } else {
+            setDifficulty("Easy");
+        };
+        socket.emit("typeFasterQuestionGenerated", 
+        {
+            question: targetString,
+        });
+    }
+
+    // Answer submission/confirmation
     const findResult = (event) =>{
         event.preventDefault();
+
         let now = new Date();
-        let answerTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
-        let totalTimeTaken = +answerTime - +timer;
+        let answerTime = now.getTime();(now.getSeconds()).toString();
+        let totalTimeTaken = (+answerTime - + timer)/1000;
         setTimer("");
+
         if(difficulty == "Genius"){
             if(userInput === string){
                 setMessage(" 🏆🏆 You got it!..");
                 setTotalTime(totalTimeTaken);
-            }
-        }
-        else{
+            };
+        } else {
             if(userInput === string.join('')){
                 setMessage(" 🏆🏆You got it!..");
                 setTotalTime(totalTimeTaken);
-            }
-        } 
+            };
+        }; 
 
         //RESET FORM
         setUserInput("");
@@ -98,56 +134,21 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             roomName,
             totalTime
         });
-    }
-
-
-    const changeDifficulty = event =>{
-        const {name, value} = event.target;
-        setDifficulty(event.target.name);
-    }
-
-    const createTarget = event =>{
-        //For knowing question generated time
-         let now = new Date();
-         let questionTime = (now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString();
-         setTimer(questionTime);
-         setTotalTime(0);
-
-         let targetString;
-        if(difficulty === "Easy"){
-            targetString = randomWords(3);
-        }
-        else if (difficulty == "Medium"){
-            targetString = randomWords(6);
-        }
-        else if(difficulty == "Hard"){
-            targetString = randomWords(9);
-        }
-        else if(difficulty == "Genius"){
-            //join used to remove the comma between the words that is being created by randomWords()
-            targetString = Math.random().toString(36).substring(2, 20) + randomWords(4).join('');
-        }
-        socket.emit("typeFasterQuestionGenerated", 
-        {
-            question: targetString,
-        });
-    }
-
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"]
+    };
 
     return (
         <>
-        <NavBar />
         <div style={{'backgroundColor' : 'white'}} className={styles.entirePage}>
             <FormControl variant="outlined">
                 <InputLabel htmlFor="component-outlined">Name</InputLabel>
                 <OutlinedInput id="component-outlined" label="Name" />
             </FormControl>
-             <p className={styles.textWhite}>{resultMsg}</p>
+
+            <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
-           {
-                totalTime > 0 
-           ?  <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
+            {
+            totalTime > 0 
+            ? <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
             : <p></p>
             }
             <br/>
@@ -164,22 +165,22 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                     className={(d == difficulty ? styles.activeBtn : styles.inactiveBtn)}>
                         {d}
                 </button>
-             ))}
+            ))}
             </div>
             <br/>
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
-           
+            
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                     <p style={{color: 'white'}}> {string} </p>
+                    <p style={{color: 'white'}}> {string} </p>
             <form onSubmit = {e => findResult(e)}>
                 <input 
                 type="text" 
                 value={userInput} 
                 onChange= {e => setUserInput(e.target.value)} 
                 // onPaste = {e=> e.preventDefault()}
-                 />
+                />
                 <button name="submitButton" style={{backgroundColor: 'pink'}} type="submit">Go!</button>
                 </form>  
                 </div>

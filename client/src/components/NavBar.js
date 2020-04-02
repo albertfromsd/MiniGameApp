@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { navigate, Link } from '@reach/router';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import LogoutButton from './loginreg/LogoutButton';
 
 import styles from './NavBar.module.css';
 
-const NavBar = ({ roomName, dispatch }) => {
+const NavBar = ({ socket, roomName, dispatch }) => {
 
     const navLink = e => {
-        navigate('/'+e.target.value);
-    }
+        navigate('/'+roomName+"/"+e.target.value);
+    };
+
+    const navigateLobby = e => {
+        socket.emit("navigateParty", 
+            {
+                roomName,
+                gameName: ""
+            }
+        );
+    };
+    
 
     return (
         <>
@@ -30,30 +40,26 @@ const NavBar = ({ roomName, dispatch }) => {
                     </li>
                     <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    DropDown
+                        Dropdown
                     </a>
-                        <select className="nav-link dropdown-toggle">
-                            <option>MathHead</option>
-                            <option> Type Faster Master</option>
-                            <option>Little Boxes </option>
-                            <option>Don't Come Inside Me </option>
-                            <option>Wise To Memorize</option>
-                            <option>Drop a Fat Shot</option>
-                        </select>
-                  
                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a className="dropdown-item" href="#">Action</a>
                         <a className="dropdown-item" href="#">Another action</a>
                         <div className="dropdown-divider"></div>
-                        <Link to={"/"+roomName}>Game Room Lobby</Link>
+                        <button onClick={navigateLobby} 
+                            className={styles.navButton}>
+                                Game Room Lobby
+                        </button>
                     </div>
                     </li>
                 </ul>
             </div>
+
         </nav>
         </>
-    )
-}
+    );
+};
+
 function mapStateToProps(state) {
     return {
         socket: state.socket,

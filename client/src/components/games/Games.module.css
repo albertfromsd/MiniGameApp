@@ -11,7 +11,6 @@
     align-items: center;
 }
 
-
 .flexColCen {
     display: flex;
     flex-flow: column;
@@ -28,6 +27,11 @@
 
 .onlyDiv {
     margin: 100px;
+}
+
+.gameComponent {
+    width: 75%;
+    height: 65%;
 }
 
 .textRed {

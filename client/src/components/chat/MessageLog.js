@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'teact-redux';
+import { connect } from 'react-redux';
 
-import styles from './Chat.module.css';
+import chatStyles from './Chat.module.css';
 
 const MessageLog = ({ socket, userName, roomName }) => {
+  
     const [ chatroomLog, setChatroomLog ] = useState([]);
 
       useEffect( () => {
@@ -18,18 +19,14 @@ const MessageLog = ({ socket, userName, roomName }) => {
 
       }, [socket]);
 
-
-
     return (
         <>
-        <div className={styles.msgLog}>
           {chatroomLog.map ( (msg, i) => 
-            <div className={styles.messageBubble}>
-              <p key={i} className={styles.user}>{msg.user}:</p>
-              <p className={styles.message}>{msg.message}</p>
-            </div>
+            <>
+              <p key={i} className={chatStyles.user}>{msg.user}:</p>
+              <p className={chatStyles.message}>{msg.message}</p>
+            </>
           )}
-        </div>
         </>
     );
 

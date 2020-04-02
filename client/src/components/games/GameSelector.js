@@ -1,30 +1,31 @@
 import React, {useState, useEffect } from 'react';
-import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
-
-import NavBar from '../NavBar';
 
 import styles from './Games.module.css';
 
 const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 
-    const [gameName, setGameName] = useState("");
+    let gameName;
 
     const gameSelector = e => {
-        let game = e.target.value;
-        setGameName(game);
+        gameName = e.target.value;
 
         dispatch({
             type: 'SETGAMENAME',
-            gameName: gameName,
+            gameName,
         });
 
         dispatch({
             type: 'SETROOMNAME',
-            gameName: roomName,
+            gameName,
         });
 
-        navigate('/'+roomName+'/'+e.target.value);
+        socket.emit("navigateParty", 
+            {
+                roomName,
+                gameName
+            }
+        );
     };
 
     return (
@@ -87,12 +88,13 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
             </div>
         </div>
         </>
-    )
-}
+    );
+};
 
 function mapStateToProps(state) {
     return {
         socket: state.socket,
+        gameName: state.gameName,
         userName: state.userName,
         userScore: state.userScore
     };
