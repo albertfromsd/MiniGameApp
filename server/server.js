@@ -66,6 +66,25 @@ let rooms = {};
 
 io.on("connection", socket => {
 
+    // [ USER LOGIN ]
+    connectedClients++;
+    console.log(" ");
+    console.log("[------LOGIN-----]");
+    console.log("User: "+socket.id+" has entered the app!");
+    console.log(connectedClients+" of clients are connected");
+    
+    chatLog.push({user: "System", message: "[ User "+socket.id+" has entered the room!  ]"});
+    userList.push(socket.id);
+
+    //[WELCOME]
+    socket.emit('welcome', "Socket successfully connected. Happy!!");
+    // socket.emit('connect');
+    // socket.on('room created', data => {
+    //     room = data.roomName;
+    //     socket.join(room);
+    //     console.log("joined room" +room);
+    // })
+
     // // [ USER LOGIN ]
     // connectedClients++;
     // console.log(" ");
@@ -160,6 +179,54 @@ io.on("connection", socket => {
                 socket.broadcast.emit("answeredMathHeadTarget", data);
             });
         });
+        
+    // attempting socket.join
+      
+        //Alert players when someone gets it right
+//         socket.on("correctAnswer", data => {
+//             io.emit("targetAnswered", data);
+//         });
+//     });
+
+    //  // [ TYPE FASTER MASTER ]
+    //  io.in(room).emit('message', 'what is going on, party people?');
+    //  io.to(room).on("enteredTypeFaster", data=> {
+    //     miniGame.users = [];
+    //     miniGame.roomName = data.roomName;
+    //     miniGame.users.push(data.userName);
+       
+    // });
+    //   //Share question after generated
+    //   io.sockets.in(room).on("typeFasterQuestionGenerated", data => {
+    //     io.in(room).emit("typeFasterQuestionShared", data);
+    // });
+
+    // //Alert players when someone gets it right
+    // io.sockets.in(room).on("correctAnswer", data => {
+    //     io.in(room).emit("questionAnswered", data);
+    // });
+    // console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
+
+  // NORMAL
+//      // [ TYPE FASTER MASTER ]
+//      socket.emit('message', 'what is going on, party people?');
+//      socket.on("enteredTypeFaster", data=> {
+//         miniGame.users = [];
+//         miniGame.roomName = data.roomName;
+//         miniGame.users.push(data.userName);
+
+//         //Share question after generated
+//         socket.on("typeFasterQuestionGenerated", data => {
+//             io.emit("typeFasterQuestionShared", data);
+//         });
+
+//         //Alert players when someone gets it right
+//         socket.on("correctAnswer", data => {
+//             socket.broadcast.emit("questionAnswered", data);
+//         });
+//         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
+       
+    });
 
         // [ TYPE FASTER MASTER ]
         //  io.in(room).emit('message', 'what is going on, party people?');
@@ -205,7 +272,6 @@ io.on("connection", socket => {
 
     });
 
-    
 
     // [ USER LOGOUT ]
     socket.on("disconnect", data => {
@@ -223,7 +289,5 @@ io.on("connection", socket => {
         console.log(socket.id+" logged out.");
         console.log(connectedClients+" clients are still connected.");
     });
-    
+
 });
-
-

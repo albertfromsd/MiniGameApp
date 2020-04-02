@@ -6,6 +6,23 @@ import { connect } from 'react-redux';
 // [STYLES]
 import styles from './Views.module.css';
 
+//[Material -UI]
+import {
+    fade,
+    ThemeProvider,
+    withStyles,
+    makeStyles,
+    createMuiTheme,
+  } from '@material-ui/core/styles';
+  import TextField from '@material-ui/core/TextField';
+
+//[ ANIMATION]
+import {Fade} from 'react-reveal';
+
+ 
+import Carousel from 'react-bootstrap/Carousel';
+ 
+
 const Lobby = ({ dispatch }) => {
     const [ formState, setFormState ] = useState({
         uName: "",
@@ -41,15 +58,33 @@ const Lobby = ({ dispatch }) => {
         } else {
             setErrorMsg("Please enter both a user and room name");
         };
-    };
+    }; 
 
     // in /views/GameRoom.js we will have a list of sockets connected, chatbox, + list of games (later we will add total score for session using state or redux)
 
     return (
         <>
-        <div className={[styles.flexColCen, styles.textWhite, styles.onlyDiv].join(' ')}>
+        <div className={[styles.textWhite, styles.onlyDiv].join(' ')}>
             <br/>
-            <h1>Mini Game Party!</h1>
+           
+           <div>
+           <Carousel>
+               <Carousel.Item >
+                   <img  width="90%" height="680px" src={require("../assets/images/game (1).gif")}/>
+               </Carousel.Item>
+               <Carousel.Item>
+                   <img width="90%" height="680px"src={require("../assets/images/game (2).gif")}/>
+               </Carousel.Item>
+               <Carousel.Item>
+                   <img width="90%" height="680px"src={require("../assets/images/game (3).gif")}/>
+               </Carousel.Item>
+           </Carousel>
+           <br/>
+           <br/>
+           </div>
+
+           <div className={[styles.textWhite, styles.onlyDiv].join(' ')}className={styles.flexColCen}>
+           <h1>Join the Party, Join the Fun!</h1>
                 <br/>
             <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
                 <br/> <br/>
@@ -101,6 +136,7 @@ const Lobby = ({ dispatch }) => {
                     </button>
                 </div>
             </form>
+           </div>
         </div>
         </>
     );
