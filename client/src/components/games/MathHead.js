@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import styles from './Games.module.css';
 
 const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
-
+    
+    // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
         navigate('/');
     };
@@ -20,7 +21,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     const [ answer, setAnswer ] = useState();
 
     // POST ANSWER SUBMISSION
-    const [ formAnswer, setFormAnswer ] = useState("");
+    const [ userInput, setUserInput ] = useState("");
     const [ resultMsg, setResultMsg ] = useState([]);
     const [ resultColor, setResultColor ] = useState("white");
 
@@ -30,42 +31,40 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
 
     useEffect( () => {
-        socket.emit('enteredMathHead', {
+        socket.emit('mathHeadEntered', {
             userName,
             roomName,
             totalTime,
-            gameName: "Math Head"
-         });
+            gameName: "mathhead"
+        });
 
-         socket.on("mathHeadTargetShared", data => {
+        socket.on("sharedMathHeadTarget", data => {
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
         });
 
-        socket.on("targetAnswered", data => {
+        socket.on("answeredMathHeadTarget", data => {
             setFormVisibility("hidden");
             setResultsVisibility("visible");
-            if (data.userName != userName) {
-                setResultMsg([
-                    data.userName+" wins! ", 
-                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
-                    "You can get it next time!"]);
-                setResultColor("orange");
-            }
+            setResultMsg([
+                data.userName+" beat you! ", 
+                data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                "You can get it next time!"]);
+            setResultColor("orange");
         });
 
-    }, [socket, roomName]);
+    }, [socket, roomName, userName]);
     
     // Change difficulty
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
-    const changeDifficulty = e => {
-        setDifficulty(e.target.value);
+    const changeDifficulty = event => {
+        setDifficulty(event.target.value);
     };
 
     // [ TOP ] Create question and use sockets to share with all players
-    const createTarget = e => {
+    const createTarget = () => {
         // Start timer
         let now = new Date();
         let questionTime = now.getTime();
@@ -129,27 +128,27 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
     };
     // [ END ] Create question and use sockets to share will players
 
-    const findResult = e => {
-        e.preventDefault();
-        if (formAnswer == answer ) {
+    const findResult = (event) => {
+        event.preventDefault();
+        if ( userInput == answer ) {
 
             let now = new Date();
-            // let answerTime = ((now.getHours()).toString() + (now.getMinutes()).toString() + (now.getSeconds()).toString() + (now.getMilliseconds()).toString())/1000;
             let answerTime = now.getTime();
             let totalTimeTaken = (+answerTime - + timer)/1000;
             setTimer("");
 
             setResultMsg([
-                "You are correct!",
-                question+" does equal "+formAnswer+"!", 
+                "🏆🏆 You got it! 🏆🏆",
+                question+" does equal "+userInput+"!", 
                 "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
             // RESET FORM
+            setUserInput("");
             setFormVisibility("hidden");
             
             // [ SOCKET ] emit after answered correctly
-            socket.emit("correctAnswer", 
+            socket.emit("mathHeadTargetAnswered", 
                 {
                     socketId: socket.id,
                     userName,
@@ -161,10 +160,12 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             );
         // wrong answer submitted; set wrong msg and no emit
         } else {
-            setResultMsg(["WROOONG!", question + " does not equal "+formAnswer+"!"]);
+            setResultMsg([
+                "WRONG!", 
+                question + " does not equal "+userInput+"!"]);
             setResultColor("red");
         };
-        setFormAnswer("");
+        setUserInput("");
         setResultsVisibility("visible");
     }; // [END] of function findResult
 
@@ -186,7 +187,6 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                                 {d}
                         </button>
                     )
-
                 })}
             </div>
                 <br/>
@@ -196,16 +196,16 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                <p className={styles.textWhite}>{question}</p>
-                    <br/>
-                    <br/>
-                    <br/>
+                    <p className={styles.textWhite}>{question}</p>
+                        <br/>
+                        <br/>
+                        <br/>
                 <form onSubmit={findResult}>
                     <input 
                         type="text"
                         placeholder="Enter you answer here"
-                        value={formAnswer}
-                        onChange={e=>setFormAnswer(e.target.value)}/>
+                        value={userInput}
+                        onChange={e=>setUserInput(e.target.value)}/>
                     <input type="submit" value="Submit"/>
                 </form>
             </div>
