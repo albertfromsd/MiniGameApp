@@ -34,31 +34,20 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     const [ socket ] = useState( () => io(':8000') );
 
-    socket.emit("enteredGameRoom", 
-        {
-            socketId: socket.id,
-            userName,
-            roomName,
-        }
-    );
-
     dispatch({
         type: 'SETSOCKET',
         socket: socket,
     });
 
     useEffect( () => {
-        socket.on('welcome', data => {
-            console.log(data);
-        });
-
-        socket.on('connect', () => {
-            socket.emit('room created', {
-                roomName
-            });
-        });
-       
-
+         socket.emit("enteredGameRoom", 
+            {
+                socketId: socket.id,
+                userName,
+                roomName,
+            }
+           );
+        
         socket.on("partyNavigator", data => {
             navigate('/'+data.roomName+'/'+data.gameName);
         });
