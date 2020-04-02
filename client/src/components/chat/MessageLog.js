@@ -21,14 +21,12 @@ const MessageLog = ({ socket, userName, roomName }) => {
 
     return (
         <>
-        <div className={chatStyles.chatLogMsgs} >
           {chatroomLog.map ( (msg, i) => 
-            <div className={chatStyles.messageBubble}>
+            <>
               <p key={i} className={chatStyles.user}>{msg.user}:</p>
               <p className={chatStyles.message}>{msg.message}</p>
-            </div>
+            </>
           )}
-        </div>
         </>
     );
 

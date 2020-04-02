@@ -53,12 +53,15 @@ let miniGame = {
 
 // const rooms = {};
 
-// rooms[key] = []
+// rooms["room1"] = {
+    //currentGameName: "MathHead",
+    //usersAndScores: [{
+        //userName: actualUserName,
+        //totalScore: actualTotalScore
+    //}]
+// };
 
-// maybe use namespace here {represents variable names, not correct syntax}
-// const {roomName} = io.of('/'+ {roomName} )
-
-let room = "";
+let room;
 
 io.on("connection", socket => {
 
@@ -82,6 +85,11 @@ io.on("connection", socket => {
     // })
 
     // [ AUTO REFRESH LOGS/LIST]
+    socket.on("enteredGameRoom", data => {
+        io.emit('refreshChatLog', chatLog);
+        io.emit("refreshUserList", userList);
+    });
+
     io.emit('refreshChatLog', chatLog);
     io.emit("refreshUserList", userList);
 
@@ -104,10 +112,12 @@ io.on("connection", socket => {
 
         console.log(miniGame.users +" inside socket and room name: " +  miniGame.roomName);
         console.log("Squads in game name: " +miniGame.gameName);
+
         //Share question after generated
         socket.on("mathHeadTargetGenerated", data => {
             io.emit("mathHeadTargetShared", data);
         });
+        
         //Alert players when someone gets it right
         socket.on("correctAnswer", data => {
             io.emit("targetAnswered", data);
