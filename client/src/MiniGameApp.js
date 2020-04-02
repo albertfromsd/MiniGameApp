@@ -9,6 +9,9 @@ import LoginReg from './views/LoginReg'; // fix later
 import GameRoom from './views/GameRoom';
 import Lobby from './views/Lobby';
 
+//[BOOtSTRAP]
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 function MiniGameApp({ dispatch }) {
 
 

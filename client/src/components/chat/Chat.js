@@ -13,6 +13,7 @@ const Chat = ( { socket, userName, roomName } ) => {
     socket.on('welcome', data => {
       console.log(data);
     });
+   
     return () => {
       socket.disconnect();
     }

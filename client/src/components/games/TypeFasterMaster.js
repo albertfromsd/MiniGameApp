@@ -4,12 +4,6 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-
 var randomWords = require('random-words');
 
 
@@ -138,11 +132,8 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     return (
         <>
-        <div style={{'backgroundColor' : 'white'}} className={styles.entirePage}>
-            <FormControl variant="outlined">
-                <InputLabel htmlFor="component-outlined">Name</InputLabel>
-                <OutlinedInput id="component-outlined" label="Name" />
-            </FormControl>
+        <div className={styles.entirePage}>
+           
 
             <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
@@ -179,7 +170,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                 type="text" 
                 value={userInput} 
                 onChange= {e => setUserInput(e.target.value)} 
-                // onPaste = {e=> e.preventDefault()}
+                onPaste = {e=> e.preventDefault()}
                 />
                 <button name="submitButton" style={{backgroundColor: 'pink'}} type="submit">Go!</button>
                 </form>  

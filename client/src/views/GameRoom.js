@@ -21,6 +21,9 @@ import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
 import chatStyles from '../components/chat/Chat.module.css';
 
+//[ Animations ]
+import Fade from 'react-reveal';
+
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
     // const gameName = useSelector( (state) => state.gameName);
@@ -49,6 +52,13 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             console.log(data);
         });
 
+        socket.on('connect', () => {
+            socket.emit('room created', {
+                roomName
+            });
+        });
+       
+
         socket.on("partyNavigator", data => {
             navigate('/'+data.roomName+'/'+data.gameName);
         });
@@ -60,8 +70,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     return (
         <>
-        <NavBar socket={socket} 
+       <Fade top big>
+       <NavBar socket={socket} 
             roomName={roomName} />
+            <button className={styles.prettyBtn}>Leave Room</button>
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>
@@ -90,6 +102,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 <Chat socket={socket} roomName={roomName} />
             </div>
         </div>
+       </Fade>
         </>
     );
 };
