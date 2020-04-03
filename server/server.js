@@ -187,8 +187,10 @@ io.on("connection", socket => {
             
             //Alert players when someone gets it right
             socket.on("mathHeadTargetAnswered", mathHeadData => {
-                rooms[data.roomName]["scoreboard"][mathHeadData.userName] =+ mathHeadData.points;
+                rooms[data.roomName]["scoreboard"][mathHeadData.userName] += mathHeadData.points;
+
                 socket.broadcast.emit("answeredMathHeadTarget", mathHeadData);
+
                 io.emit("refreshScoreboard", {
                     userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
                     scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
