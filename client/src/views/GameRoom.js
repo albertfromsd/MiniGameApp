@@ -90,7 +90,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>
-                    <GameSelector path="/" />
+                    <GameSelector path="/" 
+                        socket={socket} />
                     <MathHead path="/mathhead" 
                         socket={socket} 
                         roomName={roomName} />
@@ -112,7 +113,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 </Router>
             </div>
             <div className={chatStyles.chatBox}>
-                <Chat socket={socket} roomName={roomName} />
+                <Chat socket={socket} />
             </div>
         </div>
         </Fade>

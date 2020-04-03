@@ -25,6 +25,10 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
             setScoreList(data.scoreList);
         });
 
+        return () => {
+            socket.disconnect();
+        };
+
     }, [socket, roomName, userName])
 
     return (

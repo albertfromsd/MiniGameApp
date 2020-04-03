@@ -4,8 +4,19 @@ import { connect } from 'react-redux';
 import styles from './Games.module.css';
 
 const GameSelector = ({ socket, dispatch, userName, roomName }) => {
-
+    const [ systemMsg, setSystemMsg ] = useState("");
     let gameName;
+
+    useEffect( () => {
+        socket.on("fullParty", data => {
+            setSystemMsg(data);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+        
+    }, [socket]);
 
     const gameSelector = e => {
         gameName = e.target.value;
@@ -37,6 +48,7 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
                     <br/>
                 <h3 className={styles.textWhite}>Pick a game below:</h3>
                     <br/>
+                <p style={{color: "red"}}>{systemMsg}</p>
                 <div className={styles.flexRowCen}>
                     <div className={styles.flexColCen}>
                         <button 

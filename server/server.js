@@ -117,7 +117,6 @@ io.on("connection", socket => {
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
                 "partyName": data.roomName,
-                "admin": data.userName,
                 "currentGame": "",
                 "partySize": 0,
                 "scoreboard": {},
@@ -146,11 +145,6 @@ io.on("connection", socket => {
         };
 
         // [ SCOREBOARD ]
-        let userList = Object.keys( rooms[data.roomName]["scoreboard"] );
-        let scoreList = Object.values( rooms[data.roomName]["scoreboard"] );
-        let scoreboardList = Object.entries( rooms[data.roomName]["scoreboard"] );
-        console.log("declaration of scoreboardList: "+scoreboardList);
-
         socket.on("scoreboardUpdate", data => {
             io.emit("refreshScoreboard", {
                 userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
@@ -159,12 +153,21 @@ io.on("connection", socket => {
             });
         });
 
+        // [ CHAT ]
+        socket.on("newMsg", data => {
+            let message = {
+                timestamp: data.timestamp,
+                userName: data.userName,
+                msg: data.userInput,
+            }
+            rooms[data.roomName]["chatLog"].push(message);
+            io.emit("updateChatLog", rooms[data.roomName]["chatLog"]);
+        });
+
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["partyName"]);
         console.log("Current Game: " +rooms[data.roomName]["currentGame"]);
         console.log(rooms[data.roomName]["partySize"] +" players inside socket and room name: " +  rooms[data.roomName]["partyName"]);
-        console.log("User List: "+userList);
-        console.log("Scoreboard: "+scoreboardList);
         // [ END ] [SET UP ROOM ]
 
         // [ MATH HEAD ]
