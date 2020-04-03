@@ -28,6 +28,19 @@
     color: white;
 }
 
+.sbUser {
+    text-align: center;
+    font-weight: bold;
+}
+
+.sbScore {
+    text-align: center;
+}
+
+.cellWidth {
+    width: 150px;
+}
+
 .navButton {
     color: orange;
     background-color: transparent;
