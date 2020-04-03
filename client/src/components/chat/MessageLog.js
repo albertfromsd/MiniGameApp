@@ -23,8 +23,8 @@ const MessageLog = ({ socket, userName, roomName }) => {
         <>
           {chatroomLog.map ( (msg, i) => 
             <>
-              <p key={i} className={chatStyles.user}>{msg.user}:</p>
-              <p className={chatStyles.message}>{msg.message}</p>
+              <p key={i} >{msg.user}:</p>
+              <p >{msg.message}</p>
             </>
           )}
         </>
