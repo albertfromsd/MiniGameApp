@@ -37,7 +37,7 @@ const Chat = ( { socket, userName, roomName } ) => {
         { chatLog.map( (message, i) =>
           <div key={i} className={chatStyles.textWhite}>
             <p>{message.userName} says:</p>
-            <p>{message.msg}</p>
+            <p className={chatStyles.message}>{message.msg}</p>
           </div>
         )}
       </div>
