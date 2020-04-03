@@ -1,22 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import styles from './Games.module.css';
+import sbStyles from './GlobalComponents.module.css';
 
 const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
-    const [ scoreBoard, setScoreboard ] = useState([]);
+    const [ userList, setUserList ] = useState([]);
+    const [ scoreList, setScoreList ] = useState([]);
+    const [ scoreboard, setScoreboard ] = useState([]);
+
 
     useEffect( () => {
-        socket.on("updateScoreboard", data => {
-            setScoreboard(data);
+        console.log("Scoreboard component check");
+
+        socket.emit("scoreboardUpdate", 
+            { 
+                userName,
+                roomName,
+            }
+        );
+
+        socket.on("refreshScoreboard", data => {
+            setScoreboard(data.scoreboardList);
+            setUserList(data.userList);
+            setScoreList(data.scoreList);
         });
 
     }, [socket, roomName, userName])
 
     return (
-        <div>
-            
+        <>
+        <div className={[sbStyles.flexRowCen, sbStyles.textWhite].join(' ')}>
+            <table>
+                <tbody>
+                    <tr>
+                        { userList.map( (user, i) =>
+                            <td key={i}>{user}</td>
+                        )}
+                    </tr>
+                    <tr>
+                        { scoreList.map( (score, i) =>
+                            <td key={i}>{score}</td>
+                        )}
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        </>
     )
 }
 

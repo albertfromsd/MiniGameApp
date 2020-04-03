@@ -8,6 +8,7 @@ var randomWords = require('random-words');
 
 
 const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
+    const gameName = "typefastermaster";
 
     // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
@@ -38,10 +39,15 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
     useEffect( () => {
         socket.emit('typeFasterEntered', {
+            socketId: socket.id,
             userName,
             roomName,
             totalTime,
             gameName : "typefastermaster"
+        });
+        
+        socket.on("syncNewUser", data => {
+            navigate("/"+roomName+"/"+data);
         });
 
         socket.on("sharedTypeFasterTarget", data => {
@@ -63,7 +69,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             }
         });
         
-    }, [socket, roomName]);
+    }, [socket, roomName, userName, gameName, userScore]);
 
     // Set difficulty
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
@@ -181,11 +187,6 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         <>
         <div className={styles.entirePage}>
 
-            <FormControl variant="outlined">
-                <InputLabel htmlFor="component-outlined">Name</InputLabel>
-                <OutlinedInput id="component-outlined" label="Name" />
-            </FormControl>
-
             <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
             {
@@ -228,7 +229,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                         placeholder="Type faster here"
                         value={userInput} 
                         onChange= {e => setUserInput(e.target.value)} 
-                        // onPaste = {e=> e.preventDefault()}
+                        onPaste = {e=> e.preventDefault()}
                         />
                     <button name="submitButton" style={{backgroundColor: 'pink'}} type="submit">Go!</button>
                 </form>  
