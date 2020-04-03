@@ -2,7 +2,9 @@ import React from 'react';
 import { Router } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [ STYLES ]
 import './MiniGameApp.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // [ VIEWS ]
 import LoginReg from './views/LoginReg'; // fix later

@@ -16,10 +16,11 @@ import LittleBoxes from '../components/games/LittleBoxes';
 import DontComeInsideMe from '../components/games/DontComeInsideMe';
 import DropAFatShot from '../components/games/DropAFatShot';
 
-// [ CSS MODULES ]
+// [ STYLING ]
 import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
 import chatStyles from '../components/chat/Chat.module.css';
+import Fade from 'react-reveal';
 
 //[ Animations ]
 import Fade from 'react-reveal';
@@ -69,8 +70,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     return (
         <>
-       <Fade top big>
-       <NavBar socket={socket} 
+        <Fade top big>
+        <NavBar socket={socket} 
             roomName={roomName} />
             <button className={styles.prettyBtn}>Leave Room</button>
         <div className={styles.contentRow}>
@@ -101,7 +102,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 <Chat socket={socket} roomName={roomName} />
             </div>
         </div>
-       </Fade>
+        </Fade>
         </>
     );
 };

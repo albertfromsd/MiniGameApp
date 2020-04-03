@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import MiniGameApp from './MiniGameApp';
 
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import * as serviceWorker from './serviceWorker';
 

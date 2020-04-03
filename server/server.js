@@ -3,37 +3,38 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// [ SERVER ]
-const server = app.listen(8000, () => {
-    console.log("Gameroom App server is listening at Port 8000");
-});
+
 // [ CORS ]
 const cors = require('cors');
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }));
+
 // [ COOKIE-PARSER ]
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
 // [ CONFIG ]
 require('./config/mongoose.config');
 require('dotenv').config();
 console.log("SECRET_KEY: "+process.env.SECRET_KEY);
-
 
 // [ MODELS ] add when DB is activated
 // const { Chat } = require('./models/Chat');
 // const { User } = require('./models/User');
 // const { GameRoom } = require('./models/GameRoom');
 
-// [ ROUTES ]
+// [ ROUTES ] will be used when DB is activated
 require('./routes/User.routes')(app);
 require('./routes/GameRoom.routes')(app);
 require('./routes/Chat.routes')(app);
 
 
-// [ SOCKET ]
+// [ SOCKET / SERVER ]
+const server = app.listen(8000, () => {
+    console.log("Mini Game Part server is listening at Port 8000");
+});
 const io = require("socket.io")(server);
 
 let connectedClients = 0;
@@ -55,12 +56,17 @@ let rooms = {};
 
 // rooms = {
 //     "roomName": {
-//         "partyName": "roomName",
-//         "currentGame": "MathHead",
-//         "partySize": 0,
-//         "scoreboard": {
-//             userName: 0
-//         },
+//          "partyName": "roomName",
+//          "currentGame": "MathHead",
+//          "partySize": 0,
+//          "scoreboard": {
+//              "userName": 0
+//          },
+//          "chatLog": [{
+//              "timestamp": data.timestamp,   
+//              "userName": data.userName,
+//              "message": data.message,
+//          }]
 //     };
 // }; // end of example rooms
 
@@ -127,7 +133,6 @@ io.on("connection", socket => {
         //     console.log("joined room" +room);
         // })
 
-
         // [ TOP ] [SET UP ROOM / PARTY ]
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
@@ -164,7 +169,9 @@ io.on("connection", socket => {
 
         // [ END ] [SET UP ROOM ]
 
+
         // [ GAMES HERE ]
+
         // [ MATH HEAD ]
         socket.on("mathHeadEntered", data => {
 
@@ -253,9 +260,15 @@ io.on("connection", socket => {
         socket.on("disconnect", () => {
             rooms[data.roomName]["partySize"]--;
             delete rooms[data.roomName]["scoreboard"][data.userName];
+
             console.log("Party size: "+rooms[data.roomName]["partySize"]);
             console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
 
+            if ( rooms[data.roomName]["partySize"] == 0 ) {
+                delete rooms[data.roomName];
+            };
+
+            
             // userList = userList.filter(user => user != socket.id);
             // io.emit("refreshUserList", userList);
     
