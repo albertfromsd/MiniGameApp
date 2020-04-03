@@ -62,6 +62,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             setResultColor("orange");
         });
 
+
     }, [socket, roomName, userName, gameName, userScore]);
     
     // Change difficulty

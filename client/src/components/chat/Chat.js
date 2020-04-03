@@ -7,24 +7,47 @@ import FormMsg from './FormMsg';
 import chatStyles from './Chat.module.css';
 
 const Chat = ( { socket, userName, roomName } ) => {
+  const [ chatLog, setChatLog ] = useState([]);
+  const [ userInput, setUserInput ] = useState("");
 
   useEffect( () => {
-    socket.on('welcome', data => {
-      console.log(data);
+    socket.on('updateChatLog', data => {
+      setChatLog(data);
     });
-  
-    return () => {
-      socket.disconnect();
-    }
-  }, [socket]);
+
+  }, [socket, roomName, userName]);
+
+  const sendMsg = e => {
+    e.preventDefault();
+    let now = new Date();
+
+    socket.emit("newMsg", 
+      {
+        roomName,
+        userName,
+        userInput,
+      }  
+    );
+  }
 
   return (
-    <>
+    <div>
       <div>
-        <MessageLog socket={socket} className={chatStyles.chatLogMsgs}/>
-        <FormMsg socket={socket} />
+        { chatLog.map( (message, i) =>
+          <div key={i} className={chatStyles.textWhite}>
+            <p>{message.userName} says:</p>
+            <p>{message.msg}</p>
+          </div>
+        )}
       </div>
-    </>
+      <form onSubmit={sendMsg}>
+        <input type="text"
+          placeholder="Type message here"
+          value={userInput}
+          onChange={e=>setUserInput(e.target.value)}/>
+          <input type="submit" value="Send"/>
+      </form>
+    </div>
   );
 }
 
