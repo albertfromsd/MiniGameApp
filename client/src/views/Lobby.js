@@ -67,16 +67,16 @@ const Lobby = ({ dispatch }) => {
         <div className={[styles.textWhite, styles.onlyDiv].join(' ')}>
             <br/>
            
-           <div>
+           <div className={styles.flexColCen}>
            <Carousel>
                <Carousel.Item >
-                   <img  width="90%" height="680px" src={require("../assets/images/game (1).gif")}/>
+                   <img height="480px" src={require("../assets/images/game (1).gif")}/>
                </Carousel.Item>
                <Carousel.Item>
-                   <img width="90%" height="680px"src={require("../assets/images/game (2).gif")}/>
+                   <img height="480px"src={require("../assets/images/game (2).gif")}/>
                </Carousel.Item>
                <Carousel.Item>
-                   <img width="90%" height="680px"src={require("../assets/images/game (3).gif")}/>
+                   <img height="480px"src={require("../assets/images/game (3).gif")}/>
                </Carousel.Item>
            </Carousel>
            <br/>
