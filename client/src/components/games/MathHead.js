@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
-const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
-    
+const MathHead = ({ socket, userName, roomName, userScore }) => {
+    const gameName = "mathhead";
     // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
         navigate('/');
@@ -31,11 +31,18 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
 
 
     useEffect( () => {
-        socket.emit('mathHeadEntered', {
-            userName,
-            roomName,
-            totalTime,
-            gameName: "mathhead"
+        socket.emit( 'mathHeadEntered', 
+            {
+                socketId: socket.id,
+                userName,
+                roomName,
+                totalTime,
+                "gameName": "mathhead", 
+            }
+        );
+
+        socket.on("syncNewUser", data => {
+            navigate("/"+roomName+"/"+data);
         });
 
         socket.on("sharedMathHeadTarget", data => {
@@ -55,7 +62,7 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             setResultColor("orange");
         });
 
-    }, [socket, roomName, userName]);
+    }, [socket, roomName, userName, gameName, userScore]);
     
     // Change difficulty
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
@@ -135,13 +142,17 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
             let now = new Date();
             let answerTime = now.getTime();
             let totalTimeTaken = (+answerTime - + timer)/1000;
+            let points = 10-((+answerTime - + timer)/1000);
+            console.log("points: "+points);
             setTimer("");
 
             setResultMsg([
                 "🏆🏆 You got it! 🏆🏆",
                 question+" does equal "+userInput+"!", 
-                "It took you "+totalTimeTaken+" seconds"]);
+                "It took you "+totalTimeTaken+" seconds",
+                "You earned "+points+" points!"]);
             setResultColor("green");
+
 
             // RESET FORM
             setUserInput("");
@@ -155,7 +166,8 @@ const MathHead = ({ socket, userName, roomName, gameName, userScore }) => {
                     roomName,
                     question,
                     answer,
-                    totalTimeTaken
+                    totalTimeTaken,
+                    points
                 }
             );
         // wrong answer submitted; set wrong msg and no emit

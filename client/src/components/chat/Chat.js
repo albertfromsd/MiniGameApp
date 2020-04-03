@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import MessageLog from './MessageLog';
-import UserList from '../loginreg/UserList';
 import FormMsg from './FormMsg';
 
 import chatStyles from './Chat.module.css';
@@ -13,7 +12,7 @@ const Chat = ( { socket, userName, roomName } ) => {
     socket.on('welcome', data => {
       console.log(data);
     });
-   
+  
     return () => {
       socket.disconnect();
     }

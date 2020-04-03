@@ -4,7 +4,7 @@ import { connect, useSelector } from 'react-redux';
 
 import LogoutButton from './loginreg/LogoutButton';
 
-import styles from './NavBar.module.css';
+import navBarStyles from './GlobalComponents.module.css';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -60,7 +60,7 @@ const NavBar = ({ socket, roomName, dispatch }) => {
                         <a className="dropdown-item" href="#">Another action</a>
                         <div className="dropdown-divider"></div>
                         <button onClick={navigateLobby} 
-                            className={styles.navButton}>
+                            className={navBarStyles.navButton}>
                                 Game Room Lobby
                         </button>
                     </div>
