@@ -10,8 +10,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 
     useEffect( () => {
-        console.log("Scoreboard component check");
-
         socket.emit("scoreboardUpdate", 
             { 
                 userName,
@@ -53,7 +51,6 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore,
     };
 };
 

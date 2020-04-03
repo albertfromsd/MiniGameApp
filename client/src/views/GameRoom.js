@@ -59,7 +59,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             }
         );
         socket.on("refreshScoreboard", data => {
-            console.log("refreshScoreboard: "+data.scoreboardList);
             setScoreboard(data.scoreboardList);
         });
         
@@ -125,8 +124,6 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
     }
 };
-
 export default connect(mapStateToProps)(GameRoom);

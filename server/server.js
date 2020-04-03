@@ -154,11 +154,11 @@ io.on("connection", socket => {
         });
 
         // [ CHAT ]
-        socket.on("newMsg", data => {
+        socket.on("newMsg", msgData => {
             let message = {
-                timestamp: data.timestamp,
-                userName: data.userName,
-                msg: data.userInput,
+                timestamp: msgData.timestamp,
+                userName: msgData.userName,
+                msg: msgData.userInput,
             }
             rooms[data.roomName]["chatLog"].push(message);
             io.emit("updateChatLog", rooms[data.roomName]["chatLog"]);
@@ -204,24 +204,28 @@ io.on("connection", socket => {
 
   // NORMAL
 //      // [ TYPE FASTER MASTER ]
-//      socket.emit('message', 'what is going on, party people?');
-//      socket.on("enteredTypeFaster", data=> {
-//         miniGame.users = [];
-//         miniGame.roomName = data.roomName;
-//         miniGame.users.push(data.userName);
+        socket.emit('message', 'what is going on, party people?');
+        socket.on("enteredTypeFaster", typeFasterEntryData=> {
 
-//         //Share question after generated
-//         socket.on("typeFasterQuestionGenerated", data => {
-//             io.emit("typeFasterQuestionShared", data);
-//         });
+            //Share question after generated
+            socket.on("typeFasterTargetGenerated", typeFasterTarget => {
+                io.emit("sharedTypeFasterTarget", typeFasterTarget);
+            });
 
-//         //Alert players when someone gets it right
-//         socket.on("correctAnswer", data => {
-//             socket.broadcast.emit("questionAnswered", data);
-//         });
-//         console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
-       
-    // });
+            //Alert players when someone gets it right
+            socket.on("typeFasterTargetAnswered", typeFasterAnswerData => {
+                rooms[data.roomName]["scoreboard"][typeFasterAnswerData.userName] += typeFasterAnswerData.points;
+                
+                socket.broadcast.emit("answeredTypeFasterTarget", typeFasterAnswerData);
+
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
+            });
+
+    });
 
             // [ USER LOGOUT ]
         socket.on("disconnect", () => {
