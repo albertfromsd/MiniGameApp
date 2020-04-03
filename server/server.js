@@ -193,9 +193,15 @@ io.on("connection", socket => {
         socket.on("disconnect", () => {
             rooms[data.roomName]["partySize"]--;
             delete rooms[data.roomName]["scoreboard"][data.userName];
+
             console.log("Party size: "+rooms[data.roomName]["partySize"]);
             console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
 
+            if ( rooms[data.roomName]["partySize"] == 0 ) {
+                delete rooms[data.roomName];
+            };
+
+            
             // userList = userList.filter(user => user != socket.id);
             // io.emit("refreshUserList", userList);
     
