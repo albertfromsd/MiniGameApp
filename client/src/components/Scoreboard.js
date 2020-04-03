@@ -13,8 +13,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 
     useEffect( () => {
-        console.log("Scoreboard component check");
-
         socket.emit("scoreboardUpdate", 
             { 
                 userName,
@@ -36,14 +34,14 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
         <div className={[sbStyles.flexRowCen, sbStyles.textWhite].join(' ')}>
         <Table striped bordered hover variant="dark">
          <tbody>
-                    <tr>
+                    <tr className={sbStyles.sbUser}>
                         { userList.map( (user, i) =>
-                            <td key={i}>{user}</td>
+                            <td key={i} className={sbStyles.cellWidth}>{user}</td>
                         )}
                     </tr>
-                    <tr>
+                    <tr className={sbStyles.sbScore}>
                     { scoreList.map( (score, i) =>
-                            <td key={i}>{score}</td>
+                            <td key={i}>{score} </td>
                         )}
                     </tr>
                 </tbody>
@@ -57,7 +55,6 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore,
     };
 };
 

@@ -6,18 +6,12 @@ import styles from './Games.module.css';
 
 var randomWords = require('random-words');
 
-
 const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     const gameName = "typefastermaster";
 
-    // validation check to make sure username is not blank/null
     if (userName == null || userName.length < 1 ) {
         navigate('/')
     };
-
-    // generate random string at random setTimeouts at random places on the screen
-    // each player gets a chance to type that single word the fastest
-    // 1st, 2nd and 3rd get points accordingly
 
     // ELEMENT VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
@@ -51,25 +45,26 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         });
 
         socket.on("sharedTypeFasterTarget", data => {
+            console.log("sharedTypeFasterTarget activated:"+data.target);
             setFormVisibility("visible");
             setResultsVisibility("hidden");
-            setString(data.question);
+            setString(data.target);
+            setTimer(data.createdAt);
         });
 
         socket.on("answeredTypeFasterTarget", data => {
             console.log("Data from typeFaster client: "+data.userName);
             setFormVisibility("hidden");
             setResultsVisibility("visible");
-            if (data.userName != userName) {
-                setResultMsg([
-                    data.userName+" wins! ", 
-                    data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
-                    "You can get it next time!"]);
-                setResultColor("orange");
-            }
+            setResultMsg([
+                data.userName+" wins! ", 
+                "It took that player " +data.totalTimeTaken + " seconds.",
+                "They scored "+data.points+" points!", 
+                "You can get it next time!"]);
+            setResultColor("orange");
         });
         
-    }, [socket, roomName, userName, gameName, userScore]);
+    }, [socket, roomName, userName]);
 
     // Set difficulty
     const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
@@ -90,24 +85,25 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
 
         let targetString;
         if (difficulty === "Easy"){
-            targetString = randomWords(3);
+            targetString = randomWords(2);
         };
         if (difficulty == "Medium"){
-            targetString = randomWords(6);
+            targetString = randomWords(4);
         };
         if (difficulty == "Hard"){
-            targetString = randomWords(9);
+            targetString = randomWords(6);
         };
         if (difficulty == "Genius"){
             //join used to remove the comma between the words that is being created by randomWords()
             targetString = Math.random().toString(36).substring(2, 20) + randomWords(4).join('');
-        } else {
-            setDifficulty("Easy");
         };
+        console.log("stringState: "+string);
+        console.log("targetString created: "+targetString);
 
         socket.emit("typeFasterTargetGenerated", 
         {
-            question: targetString,
+            target: targetString,
+            createdAt: questionTime
         });
     }
 
@@ -118,29 +114,19 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         if ( userInput == string.join('') ) {
             let now = new Date();
             let answerTime = now.getTime();(now.getSeconds()).toString();
-            let totalTimeTaken = (+answerTime - + timer)/1000;
+            let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
+            let points = 40-((+answerTime - + timer)/1000);
             setTimer("");
     
             setResultMsg([
                 "🏆🏆 You got it! 🏆🏆",
+                "You scored "+points+" points!",
                 "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
             //RESET FORM
             setUserInput("");
             setFormVisibility("hidden");
-        }
-        // Later try to refactor into less lines; too many repeated lines
-        if ( difficulty == "Genius" && userInput === string ){
-            let now = new Date();
-            let answerTime = now.getTime();;
-            let totalTimeTaken = (+answerTime - + timer)/1000;
-            setTimer("");
-
-            setResultMsg([
-                "🏆🏆 You got it! Genius!! 🏆🏆",
-                "It took you "+totalTimeTaken+" seconds"]);
-            setResultColor("green");
 
             socket.emit("typeFasterTargetAnswered", 
                 {
@@ -148,18 +134,22 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                     userName,
                     roomName,
                     string,
-                    totalTimeTaken
+                    totalTimeTaken,
+                    points
                 }
             );
         };
+        
         if ( difficulty != "Genius" && userInput === string.join('') ){
             let now = new Date();
             let answerTime = now.getTime();
-            let totalTimeTaken = (+answerTime - + timer)/1000;
+            let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
+            let points = 20-((+answerTime - + timer)/1000);
             setTimer("");
     
             setResultMsg([
-                "🏆🏆 You got it! 🏆🏆",
+                "🏆🏆 You got it! Genius! 🏆🏆",
+                "You scored "+points+" points!",
                 "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
 
@@ -169,7 +159,8 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
                     userName,
                     roomName,
                     string,
-                    totalTimeTaken
+                    totalTimeTaken,
+                    points
                 }
             );
         } else {
@@ -187,13 +178,8 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
         <>
         <div className={styles.entirePage}>
 
-            <p className={styles.textWhite}>{resultMsg}</p>
             <h3 className={styles.textWhite}> <i> {message} {userName}</i>  </h3>
-            {
-            totalTime > 0 
-            ? <p className={styles.textWhite}>Total Time taken: {totalTime} seconds</p>
-            : <p></p>
-            }
+
             <br/>
             <h2  className={styles.textWhite}>Type Faster Master</h2>
                 <br />
@@ -254,7 +240,6 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
     };
 };
 

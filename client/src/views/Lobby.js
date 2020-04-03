@@ -36,7 +36,6 @@ const Lobby = ({ dispatch }) => {
             ...formState,
             [e.target.name]: e.target.value
         });
-        console.log(e.target.name+": "+e.target.value);
     };
 
     const enterRoom = e => {
