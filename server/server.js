@@ -17,8 +17,8 @@ app.use(cookieParser());
 
 // [ CONFIG ]
 require('./config/mongoose.config');
-require('dotenv').config();
-console.log("SECRET_KEY: "+process.env.SECRET_KEY);
+// require('dotenv').config();
+// console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 // [ MODELS ] add when DB is activated
 // const { Chat } = require('./models/Chat');
