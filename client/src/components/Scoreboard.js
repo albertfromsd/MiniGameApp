@@ -41,7 +41,7 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
                     </tr>
                     <tr>
                     { scoreList.map( (score, i) =>
-                            <td key={i}>{score}</td>
+                            <td key={i}>{score} </td>
                         )}
                     </tr>
                 </tbody>

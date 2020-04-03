@@ -14,7 +14,14 @@ const CustomisedButton = ({ socket, roomName, dispatch }) => {
     }
 
     const exitThisGame = event =>{
-        navigate('/'+roomName);
+        let gameName="";
+        socket.emit("navigateParty",
+            {
+                roomName,
+                gameName
+            }
+
+        )
 
     }
     
