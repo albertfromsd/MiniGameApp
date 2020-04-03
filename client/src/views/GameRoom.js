@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { navigate, Router } from '@reach/router';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 // [ COMPONENTS ]
 import NavBar from "../components/NavBar";
+import Scoreboard from "../components/Scoreboard";
 import GameSelector from "../components/games/GameSelector";
 import Chat from '../components/chat/Chat';
 
@@ -16,7 +17,7 @@ import LittleBoxes from '../components/games/LittleBoxes';
 import DontComeInsideMe from '../components/games/DontComeInsideMe';
 import DropAFatShot from '../components/games/DropAFatShot';
 
-// [ CSS MODULES ]
+// [ STYLING ]
 import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
 import chatStyles from '../components/chat/Chat.module.css';
@@ -25,24 +26,12 @@ import chatStyles from '../components/chat/Chat.module.css';
 import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
-
-    // const gameName = useSelector( (state) => state.gameName);
-
     if (userName == null || userName.length < 1 ) {
         navigate('/');
     };
 
     const [ socket ] = useState( () => io(':8000') );
-
-    useEffect( () => {
-        socket.emit("enteredGameRoom", 
-            {
-                userName,
-                roomName,
-            }
-        );
-    }, [socket, userName, roomName]);
-
+    const [ scoreboard, setScoreboard ] = useState([]);
 
     dispatch({
         type: 'SETSOCKET',
@@ -50,13 +39,29 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     });
 
     useEffect( () => {
-         socket.emit("enteredGameRoom", 
+        socket.emit("enteredGameRoom", 
             {
                 socketId: socket.id,
                 userName,
                 roomName,
+                "gameName": "",
             }
-           );
+        );
+
+        socket.on("syncNewUser", data => {
+            navigate("/"+roomName+"/"+data);
+        });
+
+        socket.emit("scoreboardUpdate", 
+            { 
+                userName,
+                roomName,
+            }
+        );
+        socket.on("refreshScoreboard", data => {
+            console.log("refreshScoreboard: "+data.scoreboardList);
+            setScoreboard(data.scoreboardList);
+        });
         
         socket.on("partyNavigator", data => {
             navigate('/'+data.roomName+'/'+data.gameName);
@@ -65,14 +70,23 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         return () => {
             socket.disconnect();
         };
-    }, [socket]);
+    }, [socket, userName, roomName]);
+
+    // <div className={styles.textWhite}>
+    // { scoreboard.map( (score, i) => 
+    //     <p key={i}>{score}</p>
+    // )}
+    // </div>
 
     return (
         <>
-       <Fade top big>
-       <NavBar socket={socket} 
+        <Fade top big>
+        <NavBar socket={socket} 
             roomName={roomName} />
             <button className={styles.prettyBtn}>Leave Room</button>
+        <Scoreboard socket={socket}
+            roomName={roomName}
+            userName={userName} />
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>
@@ -101,7 +115,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 <Chat socket={socket} roomName={roomName} />
             </div>
         </div>
-       </Fade>
+        </Fade>
         </>
     );
 };
@@ -109,7 +123,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 function mapStateToProps(state) {
     return {
         socket: state.socket,
-        gameName: state.gameName,
         userName: state.userName,
         userScore: state.userScore
     }

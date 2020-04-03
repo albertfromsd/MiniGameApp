@@ -1,0 +1,27 @@
+* {
+    padding: 15px;
+
+}
+
+.flexRowCen {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexColCen {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.textWhite {
+    color: white;
+}
+
+.navButton {
+    color: orange;
+    background-color: transparent;
+}
