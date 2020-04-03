@@ -12,10 +12,6 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
             setSystemMsg(data);
         });
 
-        return () => {
-            socket.disconnect();
-        };
-        
     }, [socket]);
 
     const gameSelector = e => {

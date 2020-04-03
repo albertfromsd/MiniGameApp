@@ -14,11 +14,7 @@ const Chat = ( { socket, userName, roomName } ) => {
     socket.on('updateChatLog', data => {
       setChatLog(data);
     });
-  
-    return () => {
-      socket.disconnect();
-    };
-    
+
   }, [socket, roomName, userName]);
 
   const sendMsg = e => {
