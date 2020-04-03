@@ -22,7 +22,7 @@ require('dotenv').config();
 console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 
-// [ MODELS ]
+// [ MODELS ] add when DB is activated
 // const { Chat } = require('./models/Chat');
 // const { User } = require('./models/User');
 // const { GameRoom } = require('./models/GameRoom');
@@ -34,8 +34,8 @@ require('./routes/Chat.routes')(app);
 
 
 // [ SOCKET ]
-
 const io = require("socket.io")(server);
+
 let connectedClients = 0;
 let chatLog = [];
 let userList = [];
@@ -51,101 +51,165 @@ let miniGame = {
     "gameName" : "",
 };
 
-let room = "";
+let rooms = {};
+
+// rooms = {
+//     "roomName": {
+//         "partyName": "roomName",
+//         "currentGame": "MathHead",
+//         "partySize": 0,
+//         "scoreboard": {
+//             userName: 0
+//         },
+//     };
+// }; // end of example rooms
 
 io.on("connection", socket => {
 
-    // [ USER LOGIN ]
-    connectedClients++;
-    console.log(" ");
-    console.log("[------LOGIN-----]");
-    console.log("User: "+socket.id+" has entered the app!");
-    console.log(connectedClients+" of clients are connected");
+    // // [ USER LOGIN ]
+    // connectedClients++;
+    // console.log(" ");
+    // console.log("[------LOGIN-----]");
+    // console.log("User: "+data.userName+" has entered the party!");
+    // console.log(connectedClients+" of clients are connected");
 
-    chatLog.push({user: "System", message: "[ User "+socket.id+" has entered the room! ]"});
-    userList.push(socket.id);
-
-    //[WELCOME]
-    socket.emit('welcome', "Socket successfully connected. Happy!!")
-    // socket.emit('connect');
-    // socket.on('room created', data => {
-    //     room = data.roomName;
-    //     socket.join(room);
-    //     console.log("joined room" +room);
-    // })
+    // chatLog.push({user: "System", message: "[ User "+data.userName+" has entered the room! ]"});
+    // userList.push(data.userName);
 
     // [ AUTO REFRESH LOGS/LIST]
-    io.emit('refreshChatLog', chatLog);
-    io.emit("refreshUserList", userList);
-
-    // [ NEW MESSAGE ]
-    socket.on("new message", newMsg => {
-        chatLog.push(newMsg);
-        io.emit("refreshChatLog", chatLog);
-    });
-
-    // [ MATH HEAD ]
-    socket.on("enteredMathHead", data => {
-        miniGame.users = [];
-        miniGame.roomName = data.roomName;
-        miniGame.users.push(data.userName);
-        miniGame.gameName = data.gameName;
-
-        console.log(miniGame.users +" inside socket and room name: " +  miniGame.roomName);
-        console.log("Squads in game name: " +miniGame.gameName);
-        //Share question after generated
-        socket.on("mathHeadQuestionGenerated", data => {
-            io.emit("mathHeadQuestionShared", data);
-        });
-        //Alert players when someone gets it right
-        socket.on("correctAnswer", data => {
-            io.emit("questionAnswered", data);
-        });
-    });
-
-    //  // [ TYPE FASTER MASTER ]
-    //  io.in(room).emit('message', 'what is going on, party people?');
-    //  io.to(room).emit("enteredTypeFaster", data=> {
-    //     miniGame.users = [];
-    //     miniGame.roomName = data.roomName;
-    //     miniGame.users.push(data.userName);
-
-    //     //Share question after generated
-    //     io.sockets.in(room).on("typeFasterQuestionGenerated", data => {
-    //         io.in(room).emit("typeFasterQuestionShared", data);
-    //     });
-
-    //     //Alert players when someone gets it right
-    //     io.sockets.in(room).on("correctAnswer", data => {
-    //         io.in(room).emit("questionAnswered", data);
-    //     });
-    //     console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
-       
+    // socket.on("enteredGameRoom", data => {
+    //     io.emit('refreshChatLog', chatLog);
+    //     io.emit("refreshUserList", userList);
     // });
 
-     // [ TYPE FASTER MASTER ]
-     socket.emit('message', 'what is going on, party people?');
-     socket.emit("enteredTypeFaster", data=> {
-        miniGame.users = [];
-        miniGame.roomName = data.roomName;
-        miniGame.users.push(data.userName);
+    // io.emit('refreshChatLog', chatLog);
+    // io.emit("refreshUserList", userList);
 
-        //Share question after generated
-        socket.on("typeFasterTargetGenerated", data => {
-            socket.emit("typeFasterTargetShared", data);;
-        });
+    // // [ NEW MESSAGE ]
+    // socket.on("new message", newMsg => {
+    //     chatLog.push(newMsg);
+    //     io.emit("refreshChatLog", chatLog);
+    // });
 
-        //Alert players when someone gets it right
-        socket.on("correctAnswer", data => {
-            socket.broadcast.emit("targetAnswered", data);
-        });
-        console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
-       
+    // [ GLOBAL EVENT LISTENERS ]    
+    socket.on("navigateParty", data => {
+        io.emit("partyNavigator", data);
     });
 
+    // [ ENTER GAMEROOM ]
+    socket.on("enteredGameRoom", data => {
+
+        //[WELCOME]
+        socket.emit('welcome', "Socket successfully connected. Happy!!");
+        // socket.emit('connect');
+        // socket.on('room created', data => {
+        //     room = data.roomName;
+        //     socket.join(room);
+        //     console.log("joined room" +room);
+        // })
+
+
+        // [ TOP ] [SET UP ROOM / PARTY ]
+        if ( !rooms[data.roomName] ) {
+            rooms[data.roomName] = {
+                "partyName": data.roomName,
+                "currentGame": "",
+                "partySize": 0,
+                "scoreboard": {}
+            };
+            console.log(rooms[data.roomName]["partyName"] + " created");
+            console.log("Current party size: "+rooms[data.roomName]["partySize"]);
+        }
+
+        // 6 max per room / party
+        if ( rooms[data.roomName]["partySize"] > 5 ) {
+            console.log("Player tried to join the full room: "+rooms[data.roomName]["roomName"]);
+            socket.emit("fullParty", "That party is full");
+            //not sure what to put here to stop function
+        };
+
+        // add user to scoreboard if room not full
+        if ( !rooms[data.roomName]["scoreboard"][data.userName] ) {
+            rooms[data.roomName]["scoreboard"][data.userName] = 0;
+            rooms[data.roomName]["partySize"] += 1;
+        };
+
+        let userList = Object.keys( rooms[data.roomName]["scoreboard"] );
+        let scoreboardList = Object.entries( rooms[data.roomName]["scoreboard"] );
+
+        console.log("Room name: " + rooms[data.roomName]["partyName"]);
+        console.log("Current Game: " +rooms[data.roomName]["currentGame"]);
+        console.log(rooms[data.roomName]["partySize"] +" players inside socket and room name: " +  rooms[data.roomName]["partyName"]);
+        console.log("User List: "+userList);
+        console.log("Scoreboard: "+scoreboardList);
+
+        // [ END ] [SET UP ROOM ]
+
+        // [ GAMES HERE ]
+        // [ MATH HEAD ]
+        socket.on("mathHeadEntered", data => {
+
+            // [ MATH HEAD EVENT LISTENERS ]
+            //Share question after generated
+            socket.on("mathHeadTargetGenerated", data => {
+                io.emit("sharedMathHeadTarget", data);
+            });
+            
+            //Alert players when someone gets it right
+            socket.on("mathHeadTargetAnswered", data => {
+                socket.broadcast.emit("answeredMathHeadTarget", data);
+            });
+        });
+
+        // [ TYPE FASTER MASTER ]
+        //  io.in(room).emit('message', 'what is going on, party people?');
+        // //  io.to(room).emit("typeFasterEntered", data=> {
+        // //     miniGame.users = [];
+        // //     miniGame.roomName = data.roomName;
+        // //     miniGame.users.push(data.userName);
+
+        //     io.in(room)
+
+        //     //Share question after generated
+        //     io.sockets.in(room).on("typeFasterTargetGenerated", data => {
+        //         io.in(room).emit("sharedTypeFasterTarget", data);
+        //     });
+
+        //     //Alert players when someone gets it right
+        //     io.sockets.in(room).on("typeFasterTargetAnswered", data => {
+        //         io.in(room).emit("answeredTypeFasterTarget", data);
+        //     });
+        //     console.log(miniGame.users +" inside socket and room " +  miniGame.roomName);
+        // // });
+
+        // DISCONNECT 
+        socket.on("disconnect", () => {
+            rooms[data.roomName]["partySize"]--;
+            delete rooms[data.roomName]["scoreboard"][data.userName];
+            console.log("Party size: "+rooms[data.roomName]["partySize"]);
+            console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
+
+            // userList = userList.filter(user => user != socket.id);
+            // io.emit("refreshUserList", userList);
+    
+            // //server not removing the disconnected users from the userlist
+            // miniGame.users = miniGame.users.filter(userName => userName != userName);
+            // console.log("Minigame user list: "+miniGame.users);
+            // io.emit("refreshMiniGameUserList", miniGame.users);
+    
+            // console.log(" ");
+            // console.log("[------LOGOUT-----]");
+            // console.log(socket.id+" logged out.");
+            // console.log(connectedClients+" clients are still connected.");
+        });
+
+    });
+
+    
+
     // [ USER LOGOUT ]
-    socket.on("disconnect", () => {
-        connectedClients--;
+    socket.on("disconnect", data => {
+        rooms[data.roomName];
         userList = userList.filter(user => user != socket.id);
         io.emit("refreshUserList", userList);
 
@@ -161,7 +225,5 @@ io.on("connection", socket => {
     });
     
 });
-
-
 
 
