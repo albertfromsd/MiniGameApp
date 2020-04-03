@@ -4,6 +4,7 @@ import { connect, useSelector } from 'react-redux';
 
 import CustomisedButton from './CustomisedButton';
 
+import navBarStyles from './GlobalComponents.module.css';
 
 //[ BOOTSTRAP ]
 import Navbar from 'react-bootstrap/Navbar';
@@ -56,7 +57,6 @@ const NavBar = ({ socket, roomName, dispatch }) => {
                 <CustomisedButton roomName={roomName}/>
             </Navbar.Collapse>
         </Navbar>
-       
         </>
     );
 };

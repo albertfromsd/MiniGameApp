@@ -3,37 +3,38 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// [ SERVER ]
-const server = app.listen(8000, () => {
-    console.log("Gameroom App server is listening at Port 8000");
-});
+
 // [ CORS ]
 const cors = require('cors');
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }));
+
 // [ COOKIE-PARSER ]
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
 // [ CONFIG ]
 require('./config/mongoose.config');
 require('dotenv').config();
 console.log("SECRET_KEY: "+process.env.SECRET_KEY);
-
 
 // [ MODELS ] add when DB is activated
 // const { Chat } = require('./models/Chat');
 // const { User } = require('./models/User');
 // const { GameRoom } = require('./models/GameRoom');
 
-// [ ROUTES ]
+// [ ROUTES ] will be used when DB is activated
 require('./routes/User.routes')(app);
 require('./routes/GameRoom.routes')(app);
 require('./routes/Chat.routes')(app);
 
 
-// [ SOCKET ]
+// [ SOCKET / SERVER ]
+const server = app.listen(8000, () => {
+    console.log("Mini Game Part server is listening at Port 8000");
+});
 const io = require("socket.io")(server);
 
 let connectedClients = 0;
@@ -145,11 +146,6 @@ io.on("connection", socket => {
         };
 
         // [ SCOREBOARD ]
-        let userList = Object.keys( rooms[data.roomName]["scoreboard"] );
-        let scoreList = Object.values( rooms[data.roomName]["scoreboard"] );
-        let scoreboardList = Object.entries( rooms[data.roomName]["scoreboard"] );
-        console.log("declaration of scoreboardList: "+scoreboardList);
-
         socket.on("scoreboardUpdate", data => {
             io.emit("refreshScoreboard", {
                 userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
@@ -158,12 +154,21 @@ io.on("connection", socket => {
             });
         });
 
+        // [ CHAT ]
+        socket.on("newMsg", data => {
+            let message = {
+                timestamp: data.timestamp,
+                userName: data.userName,
+                msg: data.userInput,
+            }
+            rooms[data.roomName]["chatLog"].push(message);
+            io.emit("updateChatLog", rooms[data.roomName]["chatLog"]);
+        });
+
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["partyName"]);
         console.log("Current Game: " +rooms[data.roomName]["currentGame"]);
         console.log(rooms[data.roomName]["partySize"] +" players inside socket and room name: " +  rooms[data.roomName]["partyName"]);
-        console.log("User List: "+userList);
-        console.log("Scoreboard: "+scoreboardList);
         // [ END ] [SET UP ROOM ]
 
         // [ MATH HEAD ]

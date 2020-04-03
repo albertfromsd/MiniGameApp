@@ -144,7 +144,8 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             let now = new Date();
             let answerTime = now.getTime();
             let totalTimeTaken = (+answerTime - + timer)/1000;
-            let points = Math.floor(10-((+answerTime - + timer)/1000));
+            let points = 10-((+answerTime - + timer)/1000);
+
             console.log("points: "+points);
             setTimer("");
 

@@ -32,7 +32,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
     return (
         <>
-        
 
         <div className={[sbStyles.flexRowCen, sbStyles.textWhite].join(' ')}>
         <Table striped bordered hover variant="dark">
@@ -63,3 +62,4 @@ function mapStateToProps(state) {
 };
 
 export default connect(mapStateToProps)(Scoreboard);
+

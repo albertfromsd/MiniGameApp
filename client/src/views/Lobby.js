@@ -66,7 +66,6 @@ const Lobby = ({ dispatch }) => {
         <>
         <div className={[styles.textWhite, styles.onlyDiv].join(' ')}>
             <br/>
-           
            <div className={styles.flexColCen}>
            <Carousel>
                <Carousel.Item >
@@ -85,6 +84,7 @@ const Lobby = ({ dispatch }) => {
 
            <div className={[styles.textWhite, styles.onlyDiv, styles.flexColCen].join(' ')}>
            <h1>Join the Party, Join the Fun!</h1>
+
                 <br/>
             <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
                 <br/> <br/>
@@ -136,7 +136,7 @@ const Lobby = ({ dispatch }) => {
                     </button>
                 </div>
             </form>
-           </div>
+            </div>
         </div>
         </>
     );
