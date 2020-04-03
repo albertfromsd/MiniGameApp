@@ -52,6 +52,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
+            setTimer(data.createdAt);
         });
 
         socket.on("answeredMathHeadTarget", data => {
@@ -73,7 +74,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     };
 
     // [ TOP ] Create question and use sockets to share with all players
-    const createTarget = () => {
+    const createTarget = (e) => {
         // Start timer
         let now = new Date();
         let questionTime = now.getTime();
@@ -90,10 +91,14 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             return num;
         }; // [END] subfunction getRandomInt
 
-        const generateProblem = (max, min) => {
+        let max;
+        let min;
+        let maxOp;
+        let minOp;
+        const generateProblem = (max, min, maxOp, minOp) => {
             const num1 = getRandomInt(max, min);
             const num2 = getRandomInt(max, min);
-            const operator = operators[getRandomInt(3, 0)];
+            const operator = operators[getRandomInt(maxOp, minOp)];
             let result;
             if (operator == "+") {
                 result = num1+num2;
@@ -108,54 +113,76 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             socket.emit("mathHeadTargetGenerated", 
                 {
                     question: (num1+" "+operator+" "+num2),
-                    answer: result
+                    answer: result,
+                    createdAt: questionTime
                 });
         }; // [END] sub-function generateProblem
 
         // Question changes based on difficulty
-        let max;
-        let min;
+
         if (difficulty == "Easy") {
             max = 21;
             min = 2;
+            maxOp = 2;
+            minOp = 0;
         };
         if (difficulty == "Medium") {
             max = 52;
-            min = 3;
+            min = 5;
+            maxOp = 3;
+            minOp = 0;
         };
         if (difficulty == "Hard") {
             max = 102;
             min = 11;
+            maxOp = 3;
+            minOp = 0;
         };
         if (difficulty == "Genius") {
             max = 1002;
-            min = 101;
+            min = 11;
+            maxOp = 3;
+            minOp = 0;
         } else {
             setDifficulty("Easy");
         };
-        generateProblem(max, min);
+        generateProblem(max, min, maxOp, minOp);
     };
     // [ END ] Create question and use sockets to share will players
 
     const findResult = (event) => {
         event.preventDefault();
-        if ( userInput == answer ) {
 
+        if ( userInput == answer ) {
+            // time and score
             let now = new Date();
             let answerTime = now.getTime();
-            let totalTimeTaken = (+answerTime - + timer)/1000;
-            let points = 10-((+answerTime - + timer)/1000);
+            let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
+            let points = 15-totalTimeTaken;
+
+            // if ( difficulty == "Easy") {
+            //     points = 10-totalTimeTaken;
+            // };
+            // if ( difficulty == "Medium") {
+            //     points = 15-totalTimeTaken;
+            // };
+            // if ( difficulty == "Hard") {
+            //     points = 20-totalTimeTaken;
+            // };
+            // if ( difficulty == "Genius") {
+            //     points = 40-totalTimeTaken;
+            // };
 
             console.log("points: "+points);
             setTimer("");
-
+            
+            // results
             setResultMsg([
                 "🏆🏆 You got it! 🏆🏆",
                 question+" does equal "+userInput+"!", 
-                "It took you "+totalTimeTaken+" seconds",
-                "You earned "+points+" points!"]);
+                "You scored "+points+" points!",
+                "It took you "+totalTimeTaken+" seconds",]);
             setResultColor("green");
-
 
             // RESET FORM
             setUserInput("");
@@ -244,6 +271,7 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
+        userScore: state.userScore,
     };
 };
 

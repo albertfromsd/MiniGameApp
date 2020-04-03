@@ -145,6 +145,17 @@ io.on("connection", socket => {
             }
         };
 
+        // if null user is added to list
+        if ( rooms[data.roomName]["scoreboard"][null] ) {
+            delete rooms[data.roomName]["scoreboard"][null];
+            rooms[data.roomName]["partySize"]--;
+            io.emit("refreshScoreboard", {
+                userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                scoreboardList: Object.entries( rooms[data.roomName] ),
+            });
+        };
+
         // [ SCOREBOARD ]
         socket.on("scoreboardUpdate", data => {
             io.emit("refreshScoreboard", {
@@ -203,12 +214,10 @@ io.on("connection", socket => {
             });
         });
 
-  // NORMAL
-//      // [ TYPE FASTER MASTER ]
-        socket.emit('message', 'what is going on, party people?');
-        socket.on("enteredTypeFaster", typeFasterEntryData=> {
 
-            //Share question after generated
+        // [ TYPE FASTER MASTER ]
+        socket.on("typeFasterEntered", typeFasterEntryData=> {
+
             socket.on("typeFasterTargetGenerated", typeFasterTarget => {
                 io.emit("sharedTypeFasterTarget", typeFasterTarget);
             });
