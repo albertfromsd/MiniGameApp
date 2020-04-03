@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import styles from './Games.module.css';
 
+import  CustomisedButton from '../CustomisedButton';
+
 const MathHead = ({ socket, userName, roomName, userScore }) => {
     const gameName = "mathhead";
     // validation check to make sure username is not blank/null
@@ -61,7 +63,6 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
                 "You can get it next time!"]);
             setResultColor("orange");
         });
-
 
     }, [socket, roomName, userName, gameName, userScore]);
     
@@ -144,6 +145,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             let answerTime = now.getTime();
             let totalTimeTaken = (+answerTime - + timer)/1000;
             let points = 10-((+answerTime - + timer)/1000);
+
             console.log("points: "+points);
             setTimer("");
 

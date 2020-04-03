@@ -15,7 +15,7 @@ const Chat = ( { socket, userName, roomName } ) => {
       setChatLog(data);
     });
 
-  }, [socket, roomName, userName]);
+  }, [socket, roomName]);
 
   const sendMsg = e => {
     e.preventDefault();
@@ -28,6 +28,7 @@ const Chat = ( { socket, userName, roomName } ) => {
         userInput,
       }  
     );
+    setUserInput("");
   }
 
   return (
