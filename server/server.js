@@ -283,9 +283,6 @@ io.on("connection", socket => {
             // console.log(connectedClients+" clients are still connected.");
         });
 
-    });
-
-
     // [ USER LOGOUT ]
     socket.on("disconnect", data => {
         rooms[data.roomName];
