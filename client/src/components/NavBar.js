@@ -6,6 +6,11 @@ import LogoutButton from './loginreg/LogoutButton';
 
 import styles from './NavBar.module.css';
 
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+
+
+
 const NavBar = ({ socket, roomName, dispatch }) => {
 
     const navLink = e => {
@@ -24,6 +29,14 @@ const NavBar = ({ socket, roomName, dispatch }) => {
 
     return (
         <>
+           {/* <Navbar bg="primary" variant="dark">
+            <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+            <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#features">Features</Nav.Link>
+            <Nav.Link href="#pricing">Pricing</Nav.Link>
+            </Nav>
+        </Navbar> */}
         <nav className="navbar navbar-expand navbar-dark bg-dark md-light">
             <a className="navbar-brand" href="#"></a>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

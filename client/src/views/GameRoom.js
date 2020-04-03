@@ -22,6 +22,9 @@ import gameStyles from '../components/games/Games.module.css';
 import chatStyles from '../components/chat/Chat.module.css';
 import Fade from 'react-reveal';
 
+//[ Animations ]
+import Fade from 'react-reveal';
+
 const GameRoom = ({ dispatch, userName, roomName }) => {
 
     // const gameName = useSelector( (state) => state.gameName);
@@ -41,16 +44,21 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         );
     }, [socket, userName, roomName]);
 
+
     dispatch({
         type: 'SETSOCKET',
         socket: socket,
     });
 
     useEffect( () => {
-        socket.on('welcome', data => {
-            console.log(data);
-        });
-
+         socket.emit("enteredGameRoom", 
+            {
+                socketId: socket.id,
+                userName,
+                roomName,
+            }
+           );
+        
         socket.on("partyNavigator", data => {
             navigate('/'+data.roomName+'/'+data.gameName);
         });
@@ -62,9 +70,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
     return (
         <>
-        <Fade top big >
+        <Fade top big>
         <NavBar socket={socket} 
             roomName={roomName} />
+            <button className={styles.prettyBtn}>Leave Room</button>
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>
