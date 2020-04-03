@@ -117,6 +117,7 @@ io.on("connection", socket => {
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
                 "partyName": data.roomName,
+                "admin": data.userName,
                 "currentGame": "",
                 "partySize": 0,
                 "scoreboard": {},

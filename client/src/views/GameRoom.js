@@ -126,4 +126,6 @@ function mapStateToProps(state) {
         userName: state.userName,
     }
 };
+
 export default connect(mapStateToProps)(GameRoom);
+
