@@ -32,13 +32,16 @@ const Chat = ( { socket, userName, roomName } ) => {
   }
 
   return (
-    <div>
-      <div>
+    <div style={{'height' : '60%'}}>
+      <div className={chatStyles.chatBox}>
         { chatLog.map( (message, i) =>
-          <div key={i} className={chatStyles.textWhite}>
-            <p>{message.userName} says:</p>
-            <p className={chatStyles.message}>{message.msg}</p>
-          </div>
+          message.userName === userName
+          ? <div key={i} className={chatStyles.sentMessage}>
+              <p style={{'backgroundColor' : 'royalblue'}}> {message.msg} </p>
+           </div>
+          :<div key={i} className={chatStyles.recievedMessage}>
+            <p style={{'backgroundColor' : 'silver'}}> {message.userName.toLocaleUpperCase()} : {message.msg}</p>
+           </div>
         )}
       </div>
       <form onSubmit={sendMsg}>

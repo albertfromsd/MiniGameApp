@@ -9,7 +9,7 @@ var randomWords = require('random-words');
 const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
     const gameName = "typefastermaster";
 
-    if (userName == null || userName.length < 1 ) {
+    if ( userName == null || userName.length < 1 ) {
         navigate('/')
     };
 
@@ -115,7 +115,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             let now = new Date();
             let answerTime = now.getTime();(now.getSeconds()).toString();
             let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
-            let points = 40-((+answerTime - + timer)/1000);
+            let points = 20-((+answerTime - + timer)/1000);
             setTimer("");
     
             setResultMsg([

@@ -30,7 +30,13 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         navigate('/');
     };
 
-    const [ socket ] = useState( () => io(':8000') );
+    //create socket for port :8000
+    // const [ socket ] = useState( () => io(':8000') );
+    
+    //craete socket for deployed version
+    const [ socket ] = useState( () => io('/api') );
+
+
     const [ scoreboard, setScoreboard ] = useState([]);
 
     dispatch({
@@ -39,6 +45,12 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     });
 
     useEffect( () => {
+
+        // socket.emit("join room", {
+        //     userName,
+        //     roomName
+        // })
+
         socket.emit("enteredGameRoom", 
             {
                 socketId: socket.id,
@@ -82,7 +94,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         <Fade top big>
         <NavBar socket={socket} 
             roomName={roomName} />
-            <button className={styles.prettyBtn}>Leave Room</button>
         <Scoreboard socket={socket}
             roomName={roomName}
             userName={userName} />
@@ -111,9 +122,9 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                         roomName={roomName} />
                 </Router>
             </div>
-            <div className={chatStyles.chatBox}>
+            <>
                 <Chat socket={socket} />
-            </div>
+            </>
         </div>
         </Fade>
         </>

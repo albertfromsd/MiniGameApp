@@ -27,7 +27,7 @@ console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 // [ ROUTES ] will be used when DB is activated
 require('./routes/User.routes')(app);
-require('./routes/GameRoom.routes')(app);
+require('./routes/Gameroom.routes')(app);
 require('./routes/Chat.routes')(app);
 
 
@@ -73,6 +73,14 @@ let rooms = {};
 // }; // end of example rooms
 
 io.on("connection", socket => {
+    //[USER JOIN ROOM ]
+    // socket.on("join room", ({userName, roomName})=>{
+    //     console.log("After user joined the room!");
+    //     console.log(userName + roomName);
+    //     const {user} = addUser({userName, roomName});
+    //     console.log(user.roomName);
+    //     console.log("************");
+    // })
 
     // [ USER LOGIN ]
     connectedClients++;
