@@ -30,7 +30,13 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         navigate('/');
     };
 
-    const [ socket ] = useState( () => io(':8000') );
+    //create socket for port :8000
+    // const [ socket ] = useState( () => io(':8000') );
+    
+    //craete socket for deployed version
+    const [ socket ] = useState( () => io('/api') );
+
+
     const [ scoreboard, setScoreboard ] = useState([]);
 
     dispatch({
