@@ -1,4 +1,13 @@
-"# MiniGameApp" 
+"# Mini Game Party!" 
+Project started: 2020/03
+
+Co-developed by [ Scallops ]: 
+Albert Ahn
+Prativa Pyakurel
+
+Designed using MERN and socket.io.
+A website that contains several mini games for groups of friends to play.
+
 
 Dependencies:
 

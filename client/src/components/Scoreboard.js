@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
+// [ STYLING ]
 import sbStyles from './GlobalComponents.module.css';
 
 //[ BOOTSTRAP ]
@@ -26,14 +27,14 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
             setScoreList(data.scoreList);
         });
 
-    }, [socket, roomName, userName])
+    }, [socket, roomName, userName]);
 
     return (
         <>
 
         <div className={[sbStyles.flexRowCen, sbStyles.textWhite].join(' ')}>
         <Table striped bordered hover variant="dark">
-         <tbody>
+        <tbody>
                     <tr className={sbStyles.sbUser}>
                         { userList.map( (user, i) =>
                             <td key={i} className={sbStyles.cellWidth}>{user}</td>
@@ -48,8 +49,8 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
         </Table>
         </div>
         </>
-    )
-}
+    );
+};
 
 function mapStateToProps(state) {
     return {

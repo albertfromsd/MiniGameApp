@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [ STYLING ]
 import styles from './Games.module.css';
 
 var randomWords = require('random-words');
@@ -105,21 +106,21 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             target: targetString,
             createdAt: questionTime
         });
-    }
+    };
 
     // Answer submission/confirmation
     const findResult = (event) =>{
         event.preventDefault();
 
-        if ( userInput == string.join('') ) {
+        if ( difficulty == "Genius" && userInput == string.join('') ) {
             let now = new Date();
             let answerTime = now.getTime();(now.getSeconds()).toString();
             let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
-            let points = 20-((+answerTime - + timer)/1000);
+            let points = 40-((+answerTime - + timer)/1000);
             setTimer("");
     
             setResultMsg([
-                "🏆🏆 You got it! 🏆🏆",
+                "🏆🏆 You got it! Genius! 🏆🏆",
                 "You scored "+points+" points!",
                 "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
@@ -140,7 +141,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             );
         };
         
-        if ( difficulty != "Genius" && userInput === string.join('') ){
+        if ( difficulty != "Genius" && userInput == string.join('') ){
             let now = new Date();
             let answerTime = now.getTime();
             let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
@@ -148,7 +149,7 @@ const TypeFasterMaster = ({  socket, userName, roomName, userScore })  => {
             setTimer("");
     
             setResultMsg([
-                "🏆🏆 You got it! Genius! 🏆🏆",
+                "🏆🏆 You got it! 🏆🏆",
                 "You scored "+points+" points!",
                 "It took you "+totalTimeTaken+" seconds"]);
             setResultColor("green");
