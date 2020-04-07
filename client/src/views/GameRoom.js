@@ -20,9 +20,8 @@ import DropAFatShot from '../components/games/DropAFatShot';
 // [ STYLING ]
 import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
-import chatStyles from '../components/chat/Chat.module.css';
 
-//[ Animations ]
+// [ ANIMATIONS ]
 import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
@@ -30,14 +29,11 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         navigate('/');
     };
 
-    //create socket for port :8000
+    // create socket for localhost:8000
     // const [ socket ] = useState( () => io(':8000') );
     
-    //craete socket for deployed version
-    const [ socket ] = useState( () => io('/api') );
-
-
-    const [ scoreboard, setScoreboard ] = useState([]);
+    // create socket for deployed version
+    const [ socket ] = useState( () => io() );
 
     dispatch({
         type: 'SETSOCKET',
@@ -63,16 +59,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         socket.on("syncNewUser", data => {
             navigate("/"+roomName+"/"+data);
         });
-
-        socket.emit("scoreboardUpdate", 
-            { 
-                userName,
-                roomName,
-            }
-        );
-        socket.on("refreshScoreboard", data => {
-            setScoreboard(data.scoreboardList);
-        });
         
         socket.on("partyNavigator", data => {
             navigate('/'+data.roomName+'/'+data.gameName);
@@ -95,7 +81,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             <div className={gameStyles.gameComponent}>
                 <Router>
                     <GameSelector path="/" 
-                        socket={socket} />
+                        socket={socket} 
+                        roomName={roomName} />
                     <MathHead path="/mathhead" 
                         socket={socket} 
                         roomName={roomName} />
