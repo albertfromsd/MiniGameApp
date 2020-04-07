@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [ COMPONENTS ]
+import CustomisedButton from '../CustomisedButton';
+import CountdownTimer from '../CountdownTimer';
+
+// [ STYLING ]
 import styles from './Games.module.css';
 
-import  CustomisedButton from '../CustomisedButton';
 
 const MathHead = ({ socket, userName, roomName, userScore }) => {
     const gameName = "mathhead";
@@ -18,7 +22,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     const [ resultsVisibility, setResultsVisibility ] = useState("hidden");
 
     // CREATING QUESTION AND ANSWER
-    const [ difficulty, setDifficulty ] = useState("Easy");
+    const [ difficulty, setDifficulty ] = useState("Medium");
     const [ question, setQuestion ] = useState();
     const [ answer, setAnswer ] = useState();
 
@@ -68,7 +72,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     }, [socket, roomName, userName, gameName, userScore]);
     
     // Change difficulty
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
+    const difficultyLevels = [ "Easy", "Medium", "Hard", "Genius" ];
     const changeDifficulty = event => {
         setDifficulty(event.target.value);
     };
@@ -238,6 +242,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
+                    <CountdownTimer startTime="20" />
                     <p className={styles.textWhite}>{question}</p>
                         <br/>
                         <br/>

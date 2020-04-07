@@ -65,24 +65,24 @@ const Lobby = ({ dispatch }) => {
         <>
         <div className={[styles.textWhite, styles.onlyDiv].join(' ')}>
             <br/>
-           <div className={styles.flexColCen}>
-           <Carousel>
-               <Carousel.Item >
-                   <img height="420px" src={require("../assets/images/game (1).gif")}/>
-               </Carousel.Item>
-               <Carousel.Item>
-                   <img height="420px"src={require("../assets/images/game (2).gif")}/>
-               </Carousel.Item>
-               <Carousel.Item>
-                   <img height="420px"src={require("../assets/images/game (3).gif")}/>
-               </Carousel.Item>
-           </Carousel>
-           <br/>
-           <br/>
-           </div>
+            <div className={styles.flexColCen}>
+            <Carousel>
+                <Carousel.Item >
+                    <img height="420px" alt="minigameparty.gif" src={require("../assets/images/game (1).gif")}/>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img height="420px" alt="mathhead" src={require("../assets/images/game (2).gif")}/>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img height="420px" alt="typefastermaster" src={require("../assets/images/game (3).gif")}/>
+                </Carousel.Item>
+            </Carousel>
+            <br/>
+            <br/>
+            </div>
 
-           <div className={[styles.textWhite, styles.onlyDiv, styles.flexColCen].join(' ')}>
-           <h1>Join the Party, Join the Fun!</h1>
+            <div className={[styles.textWhite, styles.onlyDiv, styles.flexColCen].join(' ')}>
+            <h1>Join the Party, Join the Fun!</h1>
 
                 <br/>
             <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
