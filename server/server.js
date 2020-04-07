@@ -8,7 +8,12 @@ app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    
+    // below for EC2 instance
+    origin: 'http://18.224.202.0'
+
+    // below for localhost
+    // origin: 'http://localhost:3000'
 }));
 
 // [ COOKIE-PARSER ]
@@ -33,7 +38,7 @@ require('./routes/Chat.routes')(app);
 
 // [ SOCKET / SERVER ]
 const server = app.listen(8000, () => {
-    console.log("Mini Game Part server is listening at Port 8000");
+    console.log("Mini Game Party server is listening at Port 8000");
 });
 const io = require("socket.io")(server);
 

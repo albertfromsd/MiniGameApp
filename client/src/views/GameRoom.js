@@ -34,7 +34,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     // const [ socket ] = useState( () => io(':8000') );
     
     //craete socket for deployed version
-    const [ socket ] = useState( () => io('http://18.224.202.0/api:8000') );
+    const [ socket ] = useState( () => io('http://18.224.202.0:8000') );
 
 
     const [ scoreboard, setScoreboard ] = useState([]);
@@ -83,12 +83,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         };
     }, [socket, userName, roomName]);
 
-    // <div className={styles.textWhite}>
-    // { scoreboard.map( (score, i) => 
-    //     <p key={i}>{score}</p>
-    // )}
-    // </div>
-
     return (
         <>
         <Fade top big>
@@ -123,7 +117,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 </Router>
             </div>
             <>
-                <Chat socket={socket} />
+                <Chat socket={socket} 
+                    roomName = {roomName} />
             </>
         </div>
         </Fade>
@@ -135,7 +130,7 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(GameRoom);
