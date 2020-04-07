@@ -34,7 +34,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     // const [ socket ] = useState( () => io(':8000') );
     
     //craete socket for deployed version
-    const [ socket ] = useState( () => io('http://18.224.202.0:8000') );
+    const [ socket ] = useState( () => io('http://18.224.202.0/api:8000') );
 
 
     const [ scoreboard, setScoreboard ] = useState([]);
