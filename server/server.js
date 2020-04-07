@@ -8,12 +8,12 @@ app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 app.use(cors({
     credentials: true,
-    
+
     // below for EC2 instance
-    origin: 'http://18.224.202.0'
+    // origin: 'http://18.224.202.0'
 
     // below for localhost
-    // origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000'
 }));
 
 // [ COOKIE-PARSER ]

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import MessageLog from './MessageLog';
-import FormMsg from './FormMsg';
-
 import chatStyles from './Chat.module.css';
 
 const Chat = ( { socket, userName, roomName } ) => {
@@ -26,6 +23,7 @@ const Chat = ( { socket, userName, roomName } ) => {
         roomName,
         userName,
         userInput,
+        timestamp: now,
       }  
     );
     setUserInput("");
@@ -38,10 +36,10 @@ const Chat = ( { socket, userName, roomName } ) => {
           message.userName === userName
           ? <div key={i} className={chatStyles.sentMessage}>
               <p style={{'backgroundColor' : 'royalblue'}}> {message.msg} </p>
-           </div>
-          :<div key={i} className={chatStyles.recievedMessage}>
+            </div>
+          : <div key={i} className={chatStyles.recievedMessage}>
             <p style={{'backgroundColor' : 'silver'}}> {message.userName.toLocaleUpperCase()} : {message.msg}</p>
-           </div>
+            </div>
         )}
       </div>
       <form onSubmit={sendMsg}>
