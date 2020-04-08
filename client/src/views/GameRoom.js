@@ -32,10 +32,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     };
 
     // create socket for localhost:8000
-    const [ socket ] = useState( () => io(':8000') );
+    // const [ socket ] = useState( () => io(':8000') );
     
     // create socket for deployed version
-    // const [ socket ] = useState( () => io() );
+    const [ socket ] = useState( () => io() );
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
