@@ -39,8 +39,6 @@ const socketIo = require('socket.io');
 const io = socketIo(server);
 
 let connectedClients = 0;
-let userList = [];
-
 let rooms = {};
 
 io.on("connection", socket => {
@@ -62,6 +60,7 @@ io.on("connection", socket => {
 
     // [ ENTER GAMEROOM ]
     socket.on("enteredGameRoom", data => {
+        console.log(data.userName+" entered the game room");
 
         // [ TOP ] [SET UP ROOM / PARTY ]
         if ( !rooms[data.roomName] ) {
@@ -82,8 +81,9 @@ io.on("connection", socket => {
         // 6 max per room / party
         if ( rooms[data.roomName]["partySize"] > 5 ) {
             console.log("");
-            console.log("Player tried to join the full room: "+rooms[data.roomName]["roomName"]);
+            console.log("Player tried to join the full party room: "+rooms[data.roomName]["partyName"]);
             socket.emit("fullParty", "That party is full");
+            return;
             //not sure what to put here to stop function
         };
 
@@ -141,18 +141,20 @@ io.on("connection", socket => {
         // PARTY SYNC
         socket.on("navigateParty", data => {
             rooms[data.roomName]["admin"]["currentGame"] = data.gameName;
+            console.log("Current game: "+rooms[data.roomName]["admin"]["currentGame"]);
             io.emit("partyNavigator", data);
         }); // [end] party sync
 
 
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["partyName"]);
-        console.log("Current Game: " +rooms[data.roomName]["currentGame"]);
+        console.log("Current Game: " +rooms[data.roomName]["admin"]["currentGame"]);
         console.log(rooms[data.roomName]["partySize"] +" players inside room: " +  rooms[data.roomName]["partyName"]);
 
 
         // [ MATH HEAD ]
         socket.on("mathHeadEntered", mathHeadEntryData => {
+            console.log(mathHeadEntryData.userName+" entered Math Head");
 
             // set current game only when admin enters
             // [unfinished] non-admin gets redirected, but admin goes to game
@@ -186,6 +188,7 @@ io.on("connection", socket => {
 
         // [ TYPE FASTER MASTER ]
         socket.on("typeFasterEntered", typeFasterEntryData=> {
+            console.log(typeFasterEntryData.userName+" entered TypeFasterMaster");
 
             socket.on("typeFasterTargetGenerated", typeFasterTarget => {
                 io.emit("sharedTypeFasterTarget", typeFasterTarget);
@@ -209,7 +212,9 @@ io.on("connection", socket => {
         socket.on("disconnect", () => {
             delete rooms[data.roomName]["scoreboard"][data.userName];
             rooms[data.roomName]["partySize"]--;
+
             connectedClients--;
+            console.log("User logged OUT: "+connectedClients+" remaining");
 
             console.log("Party size: "+rooms[data.roomName]["partySize"]);
             console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
@@ -226,18 +231,5 @@ io.on("connection", socket => {
         });// [END] user exits room
 
     }); // [END] socket.on("enteredGameRoom") 
-
-    // [ USER EXITS BROWSER ]
-    socket.on("disconnect", () => {
-        connectedClients--;
-
-        if ( rooms[data.roomName]["partySize"] == 0 ) {
-            delete rooms[data.roomName];
-        } 
-
-        console.log("");
-        console.log("[------LOGOUT-----]");
-        console.log(connectedClients+" are still connected");
-    });// [END] user exits browser
 
 }); // [END] io.on("connection")
