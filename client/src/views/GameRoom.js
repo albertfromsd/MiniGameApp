@@ -39,7 +39,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         socket: socket,
     });
 
-    useEffect( () => {
+    // useEffect( () => {
         socket.emit("enteredGameRoom", 
             {
                 userName,
@@ -47,7 +47,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 gameName,
             }
         );
-    }, [] );
+    // }, [] );
 
     useEffect( () => {
         if( userName === null || 

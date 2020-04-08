@@ -30,7 +30,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const [ timer, setTimer ] = useState("");
     const [ totalTime, setTotalTime ] = useState(0);
        
-    useEffect( () => {
+    // useEffect( () => {
         socket.emit('typeFasterEntered', 
             {
                 socketId: socket.id,
@@ -40,7 +40,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
                 gameName,
             }
         );
-    }, [] );
+    // }, [] );
 
 
     useEffect( () => {  
