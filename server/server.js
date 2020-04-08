@@ -1,8 +1,8 @@
 // [ EXPRESS ]
 const express = require('express');
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use( express.json() );
+app.use( express.urlencoded({ extended: true }) );
 
 // [ CORS ] only for localhost
 const cors = require('cors');
@@ -156,6 +156,11 @@ io.on("connection", socket => {
             };
         };
 
+        if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
+            console.log("Admin current game: "+rooms[data.roomName]["admin"]["currentGame"]);
+            socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
+        };
+
         // // if null user is added to list
         // if ( rooms[data.roomName]["scoreboard"][null] ) {
         //     delete rooms[data.roomName]["scoreboard"][null];
@@ -192,6 +197,7 @@ io.on("connection", socket => {
         })
 
         socket.on("navigateParty", data => {
+            rooms[data.roomName]["admin"]["currentGame"] = data.gameName;
             io.emit("partyNavigator", data);
         });
 

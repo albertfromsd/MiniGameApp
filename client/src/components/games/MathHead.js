@@ -12,10 +12,6 @@ import styles from './Games.module.css';
 
 const MathHead = ({ socket, userName, roomName }) => {
     const gameName = "mathhead";
-    // validation check to make sure username is not blank/null
-    if ( userName == null || userName.length < 1 || userName == undefined ) {
-        navigate('/');
-    };
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
@@ -40,6 +36,11 @@ const MathHead = ({ socket, userName, roomName }) => {
 
 
     useEffect( () => {
+        // validation check to make sure username is not blank/null
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+
         socket.emit( 'mathHeadEntered', 
             {
                 socketId: socket.id,

@@ -27,15 +27,9 @@ import Fade from 'react-reveal';
 const GameRoom = ({ dispatch, userName, roomName }) => {
     const gameName = "";
 
-    if ( userName == null || userName.length < 1 || userName == undefined ) {
-        navigate('/');
-    };
-
-    // create socket for localhost:8000
-    // const [ socket ] = useState( () => io(':8000') );
-    
-    // create socket for deployed version
-    const [ socket ] = useState( () => io() );
+    // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
+    const [ socket ] = useState( () => io(':8000') );
+    // const [ socket ] = useState( () => io() );
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
@@ -46,7 +40,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     });
 
     useEffect( () => {
-
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+        
         // socket.emit("join room", {
         //     userName,
         //     roomName
@@ -54,7 +51,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
         socket.emit("enteredGameRoom", 
             {
-                socketId: socket.id,
                 userName,
                 roomName,
                 gameName,
@@ -125,8 +121,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 </Router>
             </div>
             <>
-                <Chat socket={socket} 
-                    roomName = {roomName} />
+            <Chat socket={socket} 
+                roomName = {roomName} />
             </>
         </div>
         </Fade>

@@ -10,9 +10,9 @@ var randomWords = require('random-words');
 const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const gameName = "typefastermaster";
 
-    if ( userName == null || userName.length < 1 || userName == undefined ) {
-        navigate('/');
-    };
+
+    // ADMIN STATE BOOLEAN
+    const [ adminState, setAdminState ] = useState(false);
 
     // ELEMENT VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
@@ -31,7 +31,11 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const [ timer, setTimer ] = useState("");
     const [ totalTime, setTotalTime ] = useState(0);
 
-    useEffect( () => {
+    useEffect( () => {  
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+        
         socket.emit('typeFasterEntered', {
             socketId: socket.id,
             userName,
