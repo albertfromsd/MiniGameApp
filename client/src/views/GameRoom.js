@@ -25,11 +25,11 @@ import gameStyles from '../components/games/Games.module.css';
 import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
-    const gameName = "";
+    const gameName = " ";
 
     // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
-    // const [ socket ] = useState( () => io(':8000') );
-    const [ socket ] = useState( () => io() );
+    const [ socket ] = useState( () => io(':8000') );
+    // const [ socket ] = useState( () => io() );
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
@@ -39,16 +39,23 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         socket: socket,
     });
 
-    socket.emit("enteredGameRoom", 
-        {
-            userName,
-            roomName,
-            gameName,
-        }
-    );
+    useEffect( () => {
+        socket.emit("enteredGameRoom", 
+            {
+                userName,
+                roomName,
+                gameName,
+            }
+        );
+    }, [] );
 
     useEffect( () => {
-        if ( userName == null || userName.length < 1 || userName == undefined ) {
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
             navigate('/');
         };
         

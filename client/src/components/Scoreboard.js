@@ -15,7 +15,12 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 
     useEffect( () => {
-        if ( userName == null || userName.length < 1 || userName == undefined ) {
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
             navigate('/');
         };
 

@@ -10,7 +10,6 @@ var randomWords = require('random-words');
 const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const gameName = "typefastermaster";
 
-
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
 
@@ -30,19 +29,29 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     // ANSWER TIMER
     const [ timer, setTimer ] = useState("");
     const [ totalTime, setTotalTime ] = useState(0);
+       
+    useEffect( () => {
+        socket.emit('typeFasterEntered', 
+            {
+                socketId: socket.id,
+                userName,
+                roomName,
+                totalTime,
+                gameName,
+            }
+        );
+    }, [] );
+
 
     useEffect( () => {  
-        if ( userName == null || userName.length < 1 || userName == undefined ) {
+        if( userName == null || 
+            userName.length < 1 || 
+            userName == undefined || 
+            roomName == null || 
+            roomName.length < 1 || 
+            roomName == undefined ) {
             navigate('/');
         };
-        
-        socket.emit('typeFasterEntered', {
-            socketId: socket.id,
-            userName,
-            roomName,
-            totalTime,
-            gameName,
-        });
         
         socket.on("syncNewUser", data => {
             navigate("/"+roomName+"/"+data);

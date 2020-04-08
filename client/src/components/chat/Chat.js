@@ -12,9 +12,15 @@ const Chat = ( { socket, userName, roomName } ) => {
   const [ adminState, setAdminState ] = useState(false);
 
   useEffect( () => {
-    if ( userName == null || userName.length < 1 || userName == undefined ) {
+    if (  userName == null || 
+          userName.length < 1 || 
+          userName == undefined || 
+          roomName == null || 
+          roomName.length < 1 || 
+          roomName == undefined ) {
         navigate('/');
     };
+
     socket.on('updateChatLog', data => {
       setChatLog(data);
     });
