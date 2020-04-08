@@ -25,6 +25,13 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
             setScoreboard(data.scoreboardList);
             setUserList(data.userList);
             setScoreList(data.scoreList);
+
+            dispatch({
+                type: "SETSCOREBOARD",
+                scoreboard: data.scoreboardList,
+                userList: data.userList,
+                scoreList: data.scoreList,
+            });
         });
 
     }, [socket, roomName, userName]);
@@ -54,7 +61,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
     };
 };

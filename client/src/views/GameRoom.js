@@ -25,7 +25,9 @@ import gameStyles from '../components/games/Games.module.css';
 import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
-    if (userName == null || userName.length < 1 ) {
+    const gameName = "";
+
+    if ( userName == null || userName.length < 1 || userName == undefined ) {
         navigate('/');
     };
 
@@ -34,6 +36,9 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     
     // create socket for deployed version
     const [ socket ] = useState( () => io() );
+
+    // ADMIN STATE BOOLEAN
+    const [ adminState, setAdminState ] = useState(false);
 
     dispatch({
         type: 'SETSOCKET',
@@ -52,12 +57,28 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 socketId: socket.id,
                 userName,
                 roomName,
-                "gameName": "",
+                gameName,
             }
         );
 
-        socket.on("syncNewUser", data => {
-            navigate("/"+roomName+"/"+data);
+        socket.emit("scoreboardUpdate", 
+            { 
+                userName,
+                roomName,
+                gameName,
+            }
+        );
+
+        socket.emit("chatLogUpdate",
+            {
+                userName,
+                roomName,
+                gameName,
+            }
+        )
+
+        socket.on("syncNewUser", currentGame => {
+            navigate("/"+roomName+"/"+currentGame);
         });
         
         socket.on("partyNavigator", data => {
@@ -115,7 +136,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
     };
 };
