@@ -33,10 +33,8 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     // useEffect( () => {
         socket.emit('typeFasterEntered', 
             {
-                socketId: socket.id,
                 userName,
                 roomName,
-                totalTime,
                 gameName,
             }
         );
