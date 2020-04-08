@@ -34,7 +34,8 @@ const Chat = ( { socket, userName, roomName } ) => {
       }  
     );
     setUserInput("");
-  }
+
+  };
 
   return (
     <div style={{'height' : '60%'}}>
@@ -62,10 +63,7 @@ const Chat = ( { socket, userName, roomName } ) => {
 
 function mapStateToProps(state) {
   return {
-      socket: state.socket,
       userName: state.userName,
-      roomName: state.roomName,
-      userScore: state.userScore,
   };
 };
 

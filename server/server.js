@@ -93,13 +93,11 @@ io.on("connection", socket => {
             rooms[data.roomName]["partySize"]++;
             // if party started without new user
             if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
-                console.log("Admin current game: "+rooms[data.roomName]["admin"]["currentGame"]);
                 socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
             };
         };
 
         if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
-            console.log("Admin current game: "+rooms[data.roomName]["admin"]["currentGame"]);
             socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
         };
 
