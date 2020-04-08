@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { navigate } from '@reach/router';
 
 import chatStyles from './Chat.module.css';
 
@@ -7,12 +8,18 @@ const Chat = ( { socket, userName, roomName } ) => {
   const [ chatLog, setChatLog ] = useState([]);
   const [ userInput, setUserInput ] = useState("");
 
+  // ADMIN STATE BOOLEAN
+  const [ adminState, setAdminState ] = useState(false);
+
   useEffect( () => {
+    if ( userName == null || userName.length < 1 || userName == undefined ) {
+        navigate('/');
+    };
     socket.on('updateChatLog', data => {
       setChatLog(data);
     });
 
-  }, [socket, roomName]);
+  }, [socket, roomName, userName]);
 
   const sendMsg = e => {
     e.preventDefault();
@@ -27,7 +34,8 @@ const Chat = ( { socket, userName, roomName } ) => {
       }  
     );
     setUserInput("");
-  }
+
+  };
 
   return (
     <div style={{'height' : '60%'}}>
@@ -55,10 +63,7 @@ const Chat = ( { socket, userName, roomName } ) => {
 
 function mapStateToProps(state) {
   return {
-      socket: state.socket,
       userName: state.userName,
-      roomName: state.roomName,
-      userScore: state.userScore,
   };
 };
 

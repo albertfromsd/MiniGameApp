@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { navigate } from '@reach/router';
 
 // [ STYLING ]
 import sbStyles from './GlobalComponents.module.css';
@@ -14,6 +15,10 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 
     useEffect( () => {
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+
         socket.emit("scoreboardUpdate", 
             { 
                 userName,
