@@ -214,6 +214,7 @@ io.on("connection", socket => {
             rooms[data.roomName]["partySize"]--;
 
             connectedClients--;
+            console.log("");
             console.log("User logged OUT: "+connectedClients+" remaining");
 
             console.log("Party size: "+rooms[data.roomName]["partySize"]);
