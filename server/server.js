@@ -39,58 +39,17 @@ const socketIo = require('socket.io');
 const io = socketIo(server);
 
 let connectedClients = 0;
-let chatLog = [];
 let userList = [];
-
-let miniGame = {
-    "roomName" : "",
-    "users" : [{
-        "name" : "",
-        "score" : "",
-        "totalTime": ""
-    }],
-    "users" : [],
-    "gameName" : "",
-};
 
 let rooms = {};
 
-// rooms = {
-//     "roomName": {
-//          "partyName": "roomName",
-//          "admin": {
-//              "name": userWhoEnteredFirst,
-//              "currentGame": "MathHead",
-//          },
-//          "partySize": 0,
-//          "scoreboard": {
-//              "Prativa": 0,
-//              "Albert": 0
-//          },
-//          "chatLog": [{
-//              "timestamp": data.timestamp,   
-//              "userName": data.userName,
-//              "message": data.message,
-//          }]
-//     };
-// }; // end of example rooms
-
 io.on("connection", socket => {
-    //[USER JOIN ROOM ]
-    // socket.on("join room", ({userName, roomName})=>{
-    //     console.log("After user joined the room!");
-    //     console.log(userName + roomName);
-    //     const {user} = addUser({userName, roomName});
-    //     console.log(user.roomName);
-    //     console.log("************");
-    // })
 
     // [ USER LOGIN ]
     connectedClients++;
     console.log(" ");
     console.log("[------LOGIN-----]");
-    console.log("User: "+socket.id+" has entered the app!");
-    console.log(connectedClients+" of clients are connected");
+    console.log(connectedClients+" total clients are connected to the entire site");
 
     //[WELCOME]
     // socket.emit('welcome', "Socket successfully connected. Happy!!");
@@ -100,23 +59,6 @@ io.on("connection", socket => {
     //     socket.join(room);
     //     console.log("joined room" +room);
     // })
-
-    // [ AUTO REFRESH LOGS/LIST]
-    // socket.on("enteredGameRoom", data => {
-    //     io.emit('refreshChatLog', chatLog);
-    //     io.emit("refreshUserList", userList);
-    // });
-
-    // io.emit('refreshChatLog', chatLog);
-    // io.emit("refreshUserList", userList);
-
-    // // [ NEW MESSAGE ]
-    // socket.on("new message", newMsg => {
-    //     chatLog.push(newMsg);
-    //     io.emit("refreshChatLog", chatLog);
-    // });
-
-
 
     // [ ENTER GAMEROOM ]
     socket.on("enteredGameRoom", data => {
@@ -179,7 +121,9 @@ io.on("connection", socket => {
                 scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
                 scoreboardList: Object.entries( rooms[data.roomName] ),
             });
-        });
+        }); // [end] scoreboard
+
+        // [ END ] [SET UP ROOM ]
 
         // [ CHAT ]
         socket.on("newMsg", msgData => {
@@ -194,19 +138,20 @@ io.on("connection", socket => {
         
         socket.on("chatLogUpdate", data => {
             io.emit("updateChatLog", rooms[data.roomName]["chatLog"])
-        })
+        }); // [end] chat
 
+        // PARTY SYNC
         socket.on("navigateParty", data => {
             rooms[data.roomName]["admin"]["currentGame"] = data.gameName;
             io.emit("partyNavigator", data);
-        });
+        }); // [end] party sync
 
 
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["partyName"]);
         console.log("Current Game: " +rooms[data.roomName]["currentGame"]);
-        console.log(rooms[data.roomName]["partySize"] +" players inside socket and room name: " +  rooms[data.roomName]["partyName"]);
-        // [ END ] [SET UP ROOM ]
+        console.log(rooms[data.roomName]["partySize"] +" players inside room: " +  rooms[data.roomName]["partyName"]);
+
 
         // [ MATH HEAD ]
         socket.on("mathHeadEntered", mathHeadEntryData => {
@@ -238,7 +183,7 @@ io.on("connection", socket => {
                     scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
                 });
             });
-        });
+        }); // [end] mathhead
 
 
         // [ TYPE FASTER MASTER ]
@@ -260,34 +205,28 @@ io.on("connection", socket => {
                     scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
                 });
             });
+        }); // [end] typefastermaster
 
-    });
-
-            // [ USER LOGOUT ]
+        // [ USER EXITS ROOM ]
         socket.on("disconnect", () => {
+            delete rooms[data.roomName]["scoreboard"][data.userName];
             rooms[data.roomName]["partySize"]--;
             connectedClients--;
-            delete rooms[data.roomName]["scoreboard"][data.userName];
 
             console.log("Party size: "+rooms[data.roomName]["partySize"]);
             console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
 
             if ( rooms[data.roomName]["partySize"] == 0 ) {
                 delete rooms[data.roomName];
+            } else {
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
             };
+        });// [END] user exits room
 
-            userList = userList.filter(user => user != socket.id);
-            io.emit("refreshUserList", userList);
-
-            //server not removing the disconnected users from the userlist
-            miniGame.users = miniGame.users.filter(userName => userName != userName);
-            console.log("Minigame user list: "+miniGame.users);
-            io.emit("refreshMiniGameUserList", miniGame.users);
-
-            console.log(" ");
-            console.log("[------LOGOUT-----]");
-            console.log(socket.id+" logged out.");
-            console.log(connectedClients+" clients are still connected.");
-        });// [END] socket.on("disconnect")
     }); // [END] socket.on("enteredGameRoom") 
+
 }); // [END] io.on("connection")
