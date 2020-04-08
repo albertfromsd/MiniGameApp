@@ -39,6 +39,14 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         socket: socket,
     });
 
+    socket.emit("enteredGameRoom", 
+        {
+            userName,
+            roomName,
+            gameName,
+        }
+    );
+
     useEffect( () => {
         if ( userName == null || userName.length < 1 || userName == undefined ) {
             navigate('/');
@@ -48,14 +56,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         //     userName,
         //     roomName
         // })
-
-        socket.emit("enteredGameRoom", 
-            {
-                userName,
-                roomName,
-                gameName,
-            }
-        );
 
         socket.emit("scoreboardUpdate", 
             { 

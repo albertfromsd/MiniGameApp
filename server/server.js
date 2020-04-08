@@ -227,4 +227,17 @@ io.on("connection", socket => {
 
     }); // [END] socket.on("enteredGameRoom") 
 
+    // [ USER EXITS BROWSER ]
+    socket.on("disconnect", () => {
+        connectedClients--;
+
+        if ( rooms[data.roomName]["partySize"] == 0 ) {
+            delete rooms[data.roomName];
+        } 
+
+        console.log("");
+        console.log("[------LOGOUT-----]");
+        console.log(connectedClients+" are still connected");
+    });// [END] user exits browser
+
 }); // [END] io.on("connection")
