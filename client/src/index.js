@@ -34,11 +34,13 @@ function reducer( state, action ) {
             return{
                 ...state,
                 gameName : action.gameName,
-            }
-        case 'CHANGETOTALSCORE':
-            return {
-            ...state,
-            userScore: action.userScore
+            };
+        case 'SETSCOREBOARD':
+            return{
+                ...state,
+                scoreboard : action.scoreboard,
+                userList: action.userList,
+                scoreList: action.scoreList
             };
         case 'LOGOUT':
             return {

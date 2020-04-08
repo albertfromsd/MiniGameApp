@@ -4,15 +4,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// [ CORS ]
+// [ CORS ] only for localhost
 const cors = require('cors');
 app.use(cors({
     credentials: true,
-
-    // below for EC2 instance
-    // origin: 'http://18.224.202.0'
-
-    // below for localhost
     origin: 'http://localhost:3000'
 }));
 
@@ -40,7 +35,8 @@ require('./routes/Chat.routes')(app);
 const server = app.listen(8000, () => {
     console.log("Mini Game Party server is listening at Port 8000");
 });
-const io = require("socket.io")(server);
+const socketIo = require('socket.io');
+const io = socketIo(server);
 
 let connectedClients = 0;
 let chatLog = [];
@@ -62,8 +58,10 @@ let rooms = {};
 // rooms = {
 //     "roomName": {
 //          "partyName": "roomName",
-//          "admin": userWhoEnteredFirst
-//          "currentGame": "MathHead",
+//          "admin": {
+//              "name": userWhoEnteredFirst,
+//              "currentGame": "MathHead",
+//          },
 //          "partySize": 0,
 //          "scoreboard": {
 //              "Prativa": 0,
@@ -118,10 +116,7 @@ io.on("connection", socket => {
     //     io.emit("refreshChatLog", chatLog);
     // });
 
-    // [ GLOBAL EVENT LISTENERS ]    
-    socket.on("navigateParty", data => {
-        io.emit("partyNavigator", data);
-    });
+
 
     // [ ENTER GAMEROOM ]
     socket.on("enteredGameRoom", data => {
@@ -130,8 +125,10 @@ io.on("connection", socket => {
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
                 "partyName": data.roomName,
-                "admin": data.userName,
-                "currentGame": "",
+                "admin": {
+                    "name": data.userName,
+                    "currentGame": data.gameName,
+                },
                 "partySize": 0,
                 "scoreboard": {},
                 "chatLog": [],
@@ -149,25 +146,26 @@ io.on("connection", socket => {
         };
 
         // add user to scoreboard if room not full
-        if ( !rooms[data.roomName]["scoreboard"][data.userName] ) {
+        if ( !rooms[data.roomName]["scoreboard"][data.userName] && data.userName != null ) {
             rooms[data.roomName]["scoreboard"][data.userName] = 0;
             rooms[data.roomName]["partySize"]++;
             // if party started without new user
-            if ( data.gameName != rooms[data.roomName]["currentGame"] ) {
-                socket.emit("syncNewUser", rooms[data.roomName]["currentGame"]);
-            }
+            if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
+                console.log("Admin current game: "+rooms[data.roomName]["admin"]["currentGame"]);
+                socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
+            };
         };
 
-        // if null user is added to list
-        if ( rooms[data.roomName]["scoreboard"][null] ) {
-            delete rooms[data.roomName]["scoreboard"][null];
-            rooms[data.roomName]["partySize"]--;
-            io.emit("refreshScoreboard", {
-                userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
-                scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
-                scoreboardList: Object.entries( rooms[data.roomName] ),
-            });
-        };
+        // // if null user is added to list
+        // if ( rooms[data.roomName]["scoreboard"][null] ) {
+        //     delete rooms[data.roomName]["scoreboard"][null];
+        //     rooms[data.roomName]["partySize"]--;
+        //     io.emit("refreshScoreboard", {
+        //         userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+        //         scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+        //         scoreboardList: Object.entries( rooms[data.roomName] ),
+        //     });
+        // };
 
         // [ SCOREBOARD ]
         socket.on("scoreboardUpdate", data => {
@@ -188,6 +186,15 @@ io.on("connection", socket => {
             rooms[data.roomName]["chatLog"].push(message);
             io.emit("updateChatLog", rooms[data.roomName]["chatLog"]);
         });
+        
+        socket.on("chatLogUpdate", data => {
+            io.emit("updateChatLog", rooms[data.roomName]["chatLog"])
+        })
+
+        socket.on("navigateParty", data => {
+            io.emit("partyNavigator", data);
+        });
+
 
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["partyName"]);
@@ -201,9 +208,9 @@ io.on("connection", socket => {
             // set current game only when admin enters
             // [unfinished] non-admin gets redirected, but admin goes to game
             // if ( mathHeadEntryData.userName == rooms[data.roomName]["admin"] ) {
-            //     rooms[data.roomName]["currentGame"] = "mathhead";
+            //     rooms[data.roomName]["admin"]["currentGame"] = "mathhead";
             // } else {
-            //     socket.emit("syncNewUser", rooms[data.roomName]["currentGame"]);
+            //     socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
             // };
             // [unfinished]
 

@@ -101,10 +101,7 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
-        gameName: state.gameName,
         userName: state.userName,
-        userScore: state.userScore
     };
 };
 
