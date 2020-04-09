@@ -26,17 +26,19 @@ import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
     const gameName = " ";
-    console.log("GameRoom.js before socket instantiation");
+
     // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
-    // const [ socket ] = useState( () => io(':8000') );
-    const [ socket ] = useState( () => io() );
+    console.log("GameRoom.js before socket instantiation");
+
+    const [ socket ] = useState( () => io(':8000') );
+    // const [ socket ] = useState( () => io() );
+
     console.log("GameRoom.js after socket instantiation");
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
 
     console.log("GameRoom.js check before enteredGameRoom");
-
     useEffect( () => {
         socket.emit("enteredGameRoom", 
             {
@@ -52,7 +54,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         });
         
     }, [] );
-
     console.log("GameRoom.js check after enteredGameRoom");
     console.log("-------------------");
     console.log("GameRoom.js check before useEffect");
