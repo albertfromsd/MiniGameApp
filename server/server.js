@@ -5,11 +5,11 @@ app.use( express.json() );
 app.use( express.urlencoded({ extended: true }) );
 
 // [ CORS ] only for localhost
-const cors = require('cors');
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:3000'
-}));
+// const cors = require('cors');
+// app.use(cors({
+//     credentials: true,
+//     origin: 'http://localhost:3000'
+// }));
 
 // [ COOKIE-PARSER ]
 const cookieParser = require('cookie-parser');
@@ -17,8 +17,8 @@ app.use(cookieParser());
 
 // [ CONFIG ]
 require('./config/mongoose.config');
-require('dotenv').config();
-console.log("SECRET_KEY: "+process.env.SECRET_KEY);
+// require('dotenv').config();
+// console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 // [ MODELS ] add when DB is activated
 // const { Chat } = require('./models/Chat');
@@ -26,22 +26,20 @@ console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 // const { GameRoom } = require('./models/GameRoom');
 
 // [ ROUTES ] will be used when DB is activated
-require('./routes/User.routes')(app);
-require('./routes/Gameroom.routes')(app);
-require('./routes/Chat.routes')(app);
-
+// require('./routes/User.routes')(app);
+// require('./routes/Gameroom.routes')(app);
+// require('./routes/Chat.routes')(app);
 
 // [ SOCKET / SERVER ]
 
 // below example from online article
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+// const http = require('http').Server(app);
+// const io = require('socket.io')(http);
 
 // below Coding Dojo method
-// const server = app.listen(8000, () => {
-//     console.log("Mini Game Party server is listening at Port 8000");
-// });
-// const io = require("socket.io")(server);
+const server = app.listen(8000);
+const socketIo = require('socket.io');
+const io = socketIo(server);
 
 let connectedClients = 0;
 let rooms = {};
