@@ -30,8 +30,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
     console.log("GameRoom.js before socket instantiation");
 
-    const [ socket ] = useState( () => io(':8000') );
-    // const [ socket ] = useState( () => io() );
+    // const [ socket ] = useState( () => io(':8000') );
+    const [ socket ] = useState( () => io() );
 
     console.log("GameRoom.js after socket instantiation");
 
