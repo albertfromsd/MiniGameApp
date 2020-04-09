@@ -35,13 +35,9 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
 
-    dispatch({
-        type: 'SETSOCKET',
-        socket: socket,
-    });
-
     console.log("GameRoom.js check before enteredGameRoom");
-    // useEffect( () => {
+
+    useEffect( () => {
         socket.emit("enteredGameRoom", 
             {
                 userName,
@@ -49,10 +45,18 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 gameName,
             }
         );
-    // }, [] );
+
+        dispatch({
+            type: 'SETSOCKET',
+            socket: socket,
+        });
+        
+    }, [] );
+
     console.log("GameRoom.js check after enteredGameRoom");
     console.log("-------------------");
     console.log("GameRoom.js check before useEffect");
+
     useEffect( () => {
         if( userName === null || 
             userName.length < 1 || 
