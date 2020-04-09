@@ -32,11 +32,16 @@ require('./routes/Chat.routes')(app);
 
 
 // [ SOCKET / SERVER ]
-const server = app.listen(8000, () => {
-    console.log("Mini Game Party server is listening at Port 8000");
-});
-const socketIo = require('socket.io');
-const io = socketIo(server);
+
+// below example from online article
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+// below Coding Dojo method
+// const server = app.listen(8000, () => {
+//     console.log("Mini Game Party server is listening at Port 8000");
+// });
+// const io = require("socket.io")(server);
 
 let connectedClients = 0;
 let rooms = {};
