@@ -29,7 +29,7 @@ function MiniGameApp({ dispatch }) {
 
 function mapStateToProps(state) {
   return {
-      userName: state.userName,
+      // userName: state.userName,
   };
 };
 

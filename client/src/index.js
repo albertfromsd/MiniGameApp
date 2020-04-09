@@ -54,7 +54,16 @@ function reducer( state, action ) {
     };
 };
 
-const store = createStore( reducer );
+    const initialState = {
+        socket: null,
+        userName: null,
+        userScore: null,
+        roomName: null,
+        gameName : null
+    };
+  
+
+const store = createStore( reducer, initialState );
   // [END] [ REDUX ]
 
 ReactDOM.render(
