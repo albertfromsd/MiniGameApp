@@ -45,7 +45,7 @@ let connectedClients = 0;
 let rooms = {};
 
 io.on("connection", socket => {
-
+    let username = null, roomNumber = null;
     // [ USER LOGIN ]
     connectedClients++;
     console.log(" ");
@@ -60,6 +60,9 @@ io.on("connection", socket => {
     //     socket.join(room);
     //     console.log("joined room" +room);
     // })
+    // socket.on("disconnect", () ) {
+
+    // }
 
     // [ ENTER GAMEROOM ]
     socket.on("enteredGameRoom", data => {
@@ -79,7 +82,7 @@ io.on("connection", socket => {
             };
             console.log("");
             console.log(rooms[data.roomName]["partyName"] + " created");
-        }
+        };
 
         // 6 max per room / party
         if ( rooms[data.roomName]["partySize"] > 5 ) {
@@ -211,29 +214,30 @@ io.on("connection", socket => {
             });
         }); // [end] typefastermaster
 
-        // [ USER EXITS ROOM ]
-        socket.on("disconnect", () => {
-            delete rooms[data.roomName]["scoreboard"][data.userName];
-            rooms[data.roomName]["partySize"]--;
-
-            connectedClients--;
-            console.log("");
-            console.log("User logged OUT: "+connectedClients+" remaining");
-
-            console.log("Party size: "+rooms[data.roomName]["partySize"]);
-            console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
-
-            if ( rooms[data.roomName]["partySize"] == 0 ) {
-                delete rooms[data.roomName];
-            } else {
-                io.emit("refreshScoreboard", {
-                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
-                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
-                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
-                });
-            };
-        });// [END] user exits room
-
     }); // [END] socket.on("enteredGameRoom") 
+
+    // [ USER EXITS ROOM ]
+    // declare variables you need before nested sockets i.e. data.xxx
+    socket.on("disconnect", () => {
+        // delete rooms[data.roomName]["scoreboard"][data.userName];
+        // rooms[data.roomName]["partySize"]--;
+
+        connectedClients--;
+        console.log("");
+        console.log("User logged OUT: "+connectedClients+" remaining");
+
+        // console.log("Party size: "+rooms[data.roomName]["partySize"]);
+        // console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
+
+        // if ( rooms[data.roomName]["partySize"] == 0 ) {
+        //     delete rooms[data.roomName];
+        // } else {
+        //     io.emit("refreshScoreboard", {
+        //         userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+        //         scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+        //         scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+        //     });
+        // };
+    });// [END] user exits room
 
 }); // [END] io.on("connection")
