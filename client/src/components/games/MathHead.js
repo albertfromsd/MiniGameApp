@@ -2,23 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [ COMPONENTS ]
+import CustomisedButton from '../CustomisedButton';
+import CountdownTimer from '../CountdownTimer';
+
+// [ STYLING ]
 import styles from './Games.module.css';
 
-import  CustomisedButton from '../CustomisedButton';
 
-const MathHead = ({ socket, userName, roomName, userScore }) => {
+const MathHead = ({ socket, userName, roomName }) => {
     const gameName = "mathhead";
-    // validation check to make sure username is not blank/null
-    if (userName == null || userName.length < 1 ) {
-        navigate('/');
-    };
+
+    // ADMIN STATE BOOLEAN
+    const [ adminState, setAdminState ] = useState(false);
 
     // ELEMENT VISIBILITY
     const [ formVisibility, setFormVisibility ] = useState("hidden");
     const [ resultsVisibility, setResultsVisibility ] = useState("hidden");
 
     // CREATING QUESTION AND ANSWER
-    const [ difficulty, setDifficulty ] = useState("Easy");
+    const [ difficulty, setDifficulty ] = useState("Medium");
     const [ question, setQuestion ] = useState();
     const [ answer, setAnswer ] = useState();
 
@@ -33,13 +36,18 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
 
 
     useEffect( () => {
+        // validation check to make sure username is not blank/null
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+
         socket.emit( 'mathHeadEntered', 
             {
                 socketId: socket.id,
                 userName,
                 roomName,
                 totalTime,
-                "gameName": "mathhead", 
+                gameName,
             }
         );
 
@@ -65,10 +73,10 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             setResultColor("orange");
         });
 
-    }, [socket, roomName, userName, gameName, userScore]);
+    }, [socket, roomName, userName, gameName]);
     
     // Change difficulty
-    const difficultyLevels = ["Easy", "Medium", "Hard", "Genius"];
+    const difficultyLevels = [ "Easy", "Medium", "Hard", "Genius" ];
     const changeDifficulty = event => {
         setDifficulty(event.target.value);
     };
@@ -120,25 +128,25 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
 
         // Question changes based on difficulty
 
-        if (difficulty == "Easy") {
+        if ( difficulty == "Easy" ) {
             max = 21;
             min = 2;
             maxOp = 2;
             minOp = 0;
         };
-        if (difficulty == "Medium") {
+        if ( difficulty == "Medium" ) {
             max = 52;
             min = 5;
             maxOp = 3;
             minOp = 0;
         };
-        if (difficulty == "Hard") {
+        if ( difficulty == "Hard" ) {
             max = 102;
             min = 11;
             maxOp = 3;
             minOp = 0;
         };
-        if (difficulty == "Genius") {
+        if ( difficulty == "Genius" ) {
             max = 1002;
             min = 11;
             maxOp = 3;
@@ -214,6 +222,11 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
     return(
         <>
         <div className={styles.entirePage}>
+
+            
+        <h3 className={styles.textWhite}> <i> {userName} </i>  </h3>
+            
+                <br />
             <h2 className={styles.textWhite}>Math Head</h2>
                 <br/>
             <div>
@@ -238,6 +251,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
+                    <CountdownTimer startTime="20" />
                     <p className={styles.textWhite}>{question}</p>
                         <br/>
                         <br/>
@@ -269,9 +283,7 @@ const MathHead = ({ socket, userName, roomName, userScore }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore,
     };
 };
 

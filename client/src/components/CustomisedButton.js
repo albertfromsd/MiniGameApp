@@ -8,9 +8,8 @@ import Button from 'react-bootstrap/Button';
 const CustomisedButton = ({ socket, roomName, dispatch }) => {
 
     const exitParty = event =>{
-        socket.emit('disconnect');
+        socket.disconnect();
         navigate('/');
-
     }
 
     const exitThisGame = event =>{

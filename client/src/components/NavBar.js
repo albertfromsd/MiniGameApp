@@ -13,7 +13,18 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 
 
-const NavBar = ({ socket, roomName, dispatch }) => {
+const NavBar = ({ socket, roomName, userName, dispatch }) => {
+
+    useEffect( () => {
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
+            navigate('/');
+        };
+    }, [socket, userName, roomName]);
 
     const navLink = (e, gameName) => {
         console.log(gameName);
@@ -63,9 +74,7 @@ const NavBar = ({ socket, roomName, dispatch }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
     };
 };
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { navigate } from '@reach/router';
 
+// [ STYLING ]
 import sbStyles from './GlobalComponents.module.css';
 
 //[ BOOTSTRAP ]
@@ -13,6 +15,15 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
 
 
     useEffect( () => {
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
+            navigate('/');
+        };
+
         socket.emit("scoreboardUpdate", 
             { 
                 userName,
@@ -24,16 +35,23 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
             setScoreboard(data.scoreboardList);
             setUserList(data.userList);
             setScoreList(data.scoreList);
+
+            dispatch({
+                type: "SETSCOREBOARD",
+                scoreboard: data.scoreboardList,
+                userList: data.userList,
+                scoreList: data.scoreList,
+            });
         });
 
-    }, [socket, roomName, userName])
+    }, [socket, roomName, userName]);
 
     return (
         <>
 
         <div className={[sbStyles.flexRowCen, sbStyles.textWhite].join(' ')}>
         <Table striped bordered hover variant="dark">
-         <tbody>
+        <tbody>
                     <tr className={sbStyles.sbUser}>
                         { userList.map( (user, i) =>
                             <td key={i} className={sbStyles.cellWidth}>{user}</td>
@@ -48,12 +66,11 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
         </Table>
         </div>
         </>
-    )
-}
+    );
+};
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
     };
 };

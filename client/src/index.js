@@ -34,11 +34,13 @@ function reducer( state, action ) {
             return{
                 ...state,
                 gameName : action.gameName,
-            }
-        case 'CHANGETOTALSCORE':
-            return {
-            ...state,
-            userScore: action.userScore
+            };
+        case 'SETSCOREBOARD':
+            return{
+                ...state,
+                scoreboard : action.scoreboard,
+                userList: action.userList,
+                scoreList: action.scoreList
             };
         case 'LOGOUT':
             return {
@@ -50,24 +52,26 @@ function reducer( state, action ) {
         default:
             return state;
     };
-  };
+};
+
+    const initialState = {
+        socket: null,
+        userName: null,
+        userScore: null,
+        roomName: null,
+        gameName : null
+    };
   
-  const initialState = {
-    socket: null,
-    userName: null,
-    userScore: null,
-    roomName: null,
-    gameName : null
-  };
-  
-  const store = createStore( reducer, initialState );
+
+const store = createStore( reducer, initialState );
   // [END] [ REDUX ]
 
 ReactDOM.render(
     <Provider store={store}>
         <MiniGameApp />
     </Provider>
-    , document.getElementById('minigameapp'));
+    , document.getElementById('minigameapp')
+);
 
 
 serviceWorker.unregister();

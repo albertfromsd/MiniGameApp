@@ -1,5 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { navigate } from '@reach/router';
 
 import styles from './Games.module.css';
 
@@ -15,6 +16,10 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
     }, [socket]);
 
     const gameSelector = e => {
+        if ( userName == null || userName.length < 1 || userName == undefined ) {
+            navigate('/');
+        };
+
         gameName = e.target.value;
 
         dispatch({
@@ -101,10 +106,7 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
-        gameName: state.gameName,
         userName: state.userName,
-        userScore: state.userScore
     };
 };
 

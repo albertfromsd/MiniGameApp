@@ -20,52 +20,77 @@ import DropAFatShot from '../components/games/DropAFatShot';
 // [ STYLING ]
 import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
-import chatStyles from '../components/chat/Chat.module.css';
 
-//[ Animations ]
+// [ ANIMATIONS ]
 import Fade from 'react-reveal';
 
 const GameRoom = ({ dispatch, userName, roomName }) => {
-    if (userName == null || userName.length < 1 ) {
-        navigate('/');
-    };
+    const gameName = " ";
 
-    const [ socket ] = useState( () => io(':8000') );
-    const [ scoreboard, setScoreboard ] = useState([]);
+    // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
+    console.log("GameRoom.js before socket instantiation");
 
-    dispatch({
-        type: 'SETSOCKET',
-        socket: socket,
-    });
+    // const [ socket ] = useState( () => io(':8000') );
+    const [ socket ] = useState( () => io() );
+
+    console.log("GameRoom.js after socket instantiation");
+
+    // ADMIN STATE BOOLEAN
+    const [ adminState, setAdminState ] = useState(false);
+
+    console.log("GameRoom.js check before enteredGameRoom");
+    useEffect( () => {
+        socket.emit("enteredGameRoom", 
+            {
+                userName,
+                roomName,
+                gameName,
+            }
+        );
+
+        dispatch({
+            type: 'SETSOCKET',
+            socket: socket,
+        });
+        
+    }, [] );
+    console.log("GameRoom.js check after enteredGameRoom");
+    console.log("-------------------");
+    console.log("GameRoom.js check before useEffect");
 
     useEffect( () => {
-
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
+            navigate('/');
+        };
+        
         // socket.emit("join room", {
         //     userName,
         //     roomName
         // })
 
-        socket.emit("enteredGameRoom", 
-            {
-                socketId: socket.id,
-                userName,
-                roomName,
-                "gameName": "",
-            }
-        );
-
-        socket.on("syncNewUser", data => {
-            navigate("/"+roomName+"/"+data);
-        });
-
         socket.emit("scoreboardUpdate", 
             { 
                 userName,
                 roomName,
+                gameName,
             }
         );
-        socket.on("refreshScoreboard", data => {
-            setScoreboard(data.scoreboardList);
+
+        socket.emit("chatLogUpdate",
+            {
+                userName,
+                roomName,
+                gameName,
+            }
+        )
+
+        socket.on("syncNewUser", currentGame => {
+            navigate("/"+roomName+"/"+currentGame);
         });
         
         socket.on("partyNavigator", data => {
@@ -77,11 +102,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         };
     }, [socket, userName, roomName]);
 
-    // <div className={styles.textWhite}>
-    // { scoreboard.map( (score, i) => 
-    //     <p key={i}>{score}</p>
-    // )}
-    // </div>
+    console.log("GameRoom.js check after useEffect");
 
     return (
         <>
@@ -95,7 +116,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             <div className={gameStyles.gameComponent}>
                 <Router>
                     <GameSelector path="/" 
-                        socket={socket} />
+                        socket={socket} 
+                        roomName={roomName} />
                     <MathHead path="/mathhead" 
                         socket={socket} 
                         roomName={roomName} />
@@ -117,7 +139,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                 </Router>
             </div>
             <>
-                <Chat socket={socket} />
+            <Chat socket={socket} 
+                roomName = {roomName} />
             </>
         </div>
         </Fade>
@@ -127,9 +150,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket,
         userName: state.userName,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(GameRoom);

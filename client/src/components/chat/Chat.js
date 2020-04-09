@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
-import MessageLog from './MessageLog';
-import FormMsg from './FormMsg';
+import { navigate } from '@reach/router';
 
 import chatStyles from './Chat.module.css';
 
@@ -10,12 +8,24 @@ const Chat = ( { socket, userName, roomName } ) => {
   const [ chatLog, setChatLog ] = useState([]);
   const [ userInput, setUserInput ] = useState("");
 
+  // ADMIN STATE BOOLEAN
+  const [ adminState, setAdminState ] = useState(false);
+
   useEffect( () => {
+    if (  userName == null || 
+          userName.length < 1 || 
+          userName == undefined || 
+          roomName == null || 
+          roomName.length < 1 || 
+          roomName == undefined ) {
+        navigate('/');
+    };
+
     socket.on('updateChatLog', data => {
       setChatLog(data);
     });
 
-  }, [socket, roomName]);
+  }, [socket, roomName, userName]);
 
   const sendMsg = e => {
     e.preventDefault();
@@ -26,10 +36,12 @@ const Chat = ( { socket, userName, roomName } ) => {
         roomName,
         userName,
         userInput,
+        timestamp: now,
       }  
     );
     setUserInput("");
-  }
+
+  };
 
   return (
     <div style={{'height' : '60%'}}>
@@ -38,10 +50,10 @@ const Chat = ( { socket, userName, roomName } ) => {
           message.userName === userName
           ? <div key={i} className={chatStyles.sentMessage}>
               <p style={{'backgroundColor' : 'royalblue'}}> {message.msg} </p>
-           </div>
-          :<div key={i} className={chatStyles.recievedMessage}>
+            </div>
+          : <div key={i} className={chatStyles.recievedMessage}>
             <p style={{'backgroundColor' : 'silver'}}> {message.userName.toLocaleUpperCase()} : {message.msg}</p>
-           </div>
+            </div>
         )}
       </div>
       <form onSubmit={sendMsg}>
@@ -57,10 +69,7 @@ const Chat = ( { socket, userName, roomName } ) => {
 
 function mapStateToProps(state) {
   return {
-      socket: state.socket,
       userName: state.userName,
-      roomName: state.roomName,
-      userScore: state.userScore,
   };
 };
 
