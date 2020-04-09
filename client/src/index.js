@@ -52,24 +52,17 @@ function reducer( state, action ) {
         default:
             return state;
     };
-  };
-  
-  const initialState = {
-    socket: null,
-    userName: null,
-    userScore: null,
-    roomName: null,
-    gameName : null
-  };
-  
-  const store = createStore( reducer, initialState );
+};
+
+const store = createStore( reducer );
   // [END] [ REDUX ]
 
 ReactDOM.render(
     <Provider store={store}>
         <MiniGameApp />
     </Provider>
-    , document.getElementById('minigameapp'));
+    , document.getElementById('minigameapp')
+);
 
 
 serviceWorker.unregister();
