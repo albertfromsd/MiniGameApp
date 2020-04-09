@@ -39,6 +39,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         socket: socket,
     });
 
+    console.log("GameRoom.js check top");
     // useEffect( () => {
         socket.emit("enteredGameRoom", 
             {
@@ -92,6 +93,8 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             socket.disconnect();
         };
     }, [socket, userName, roomName]);
+
+    console.log("GameRoom.js check end");
 
     return (
         <>
