@@ -29,17 +29,6 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     // ANSWER TIMER
     const [ timer, setTimer ] = useState("");
     const [ totalTime, setTotalTime ] = useState(0);
-       
-    // useEffect( () => {
-        socket.emit('typeFasterEntered', 
-            {
-                userName,
-                roomName,
-                gameName,
-            }
-        );
-    // }, [] );
-
 
     useEffect( () => {  
         if( userName == null || 
@@ -48,8 +37,17 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
             roomName == null || 
             roomName.length < 1 || 
             roomName == undefined ) {
+                
             navigate('/');
         };
+
+        socket.emit('typeFasterEntered', 
+            {
+                userName,
+                roomName,
+                gameName,
+            }
+        );
         
         socket.on("syncNewUser", data => {
             navigate("/"+roomName+"/"+data);

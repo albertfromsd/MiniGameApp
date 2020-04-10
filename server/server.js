@@ -35,18 +35,21 @@ const server = app.listen(8000);
 const socketIo = require('socket.io');
 const io = socketIo(server);
 
-let connectedClients = 0;
-let rooms = {};
+let rooms = {
+    "name": "",
+    "admin": {
+        "name": "",
+        "currentGame": "",
+    },
+    "partySize": 0,
+    "scoreboard": {},
+    "chatLog": [],
+};
 
 io.on("connection", socket => {
-    // declare unassigned variables for disconnect actions
-    let roomName = null, admin = null, userName = null, scoreboard = null, partySize = null;
-
-    // [ USER LOGIN ]
-    connectedClients++;
-    console.log(" ");
-    console.log("[------LOGIN-----]");
-    console.log(connectedClients+" total clients are connected to the entire site");
+    let roomName = "";
+    let admin = "";
+    let userName = "";
 
     //[WELCOME]
     // socket.emit('welcome', "Socket successfully connected. Happy!!");
@@ -67,7 +70,7 @@ io.on("connection", socket => {
         // [ TOP ] [SET UP ROOM / PARTY ]
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
-                "partyName": data.roomName,
+                "name": data.roomName,
                 "admin": {
                     "name": data.userName,
                     "currentGame": data.gameName,
@@ -77,19 +80,17 @@ io.on("connection", socket => {
                 "chatLog": [],
             };
 
-            roomName = data.roomName;
-            admin = data.userName;
+            admin = rooms[data.roomName]["admin"]["name"];
 
             console.log("");
-            console.log( rooms[data.roomName]["partyName"] + " created" );
-            console.log( "[ADMIN]: " + admin );
+            console.log( "[NEW ROOM]: "+rooms[data.roomName]["name"] );
+            console.log( "[ADMIN]: " + rooms[data.roomName]["admin"]["name"] );
         };
 
         // 6 max per room / party
         if ( rooms[data.roomName]["partySize"] > 5 ) {
-            console.log("");
-            console.log(data.userName+" tried to join the full party room: "+rooms[data.roomName]["partyName"]);
-            socket.emit("fullParty", "That party is full");
+            console.log("Sorry "+data.userName+" "+rooms[data.roomName]["name"]+" is full");
+            socket.emit("fullParty", "That party room is full");
             return;
             //not sure what to put here to stop function
         };
@@ -101,19 +102,16 @@ io.on("connection", socket => {
             rooms[data.roomName]["scoreboard"][data.userName] = 0;
             rooms[data.roomName]["partySize"]++;
 
-            roomName = data.roomName;
-            userName = data.userName;
-
-            // if party already started, sync new user to the same page
-            if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
-                socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
-            };
+            console.log("["+rooms[data.roomName]["name"]+"] Party size: "+ rooms[data.roomName]["partySize"]);
         };
 
-        // if user already exists, but accidentally closed the browser
+        // new user sync with existing party
         if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
             socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
         };
+
+        roomName = data.roomName;
+        userName = data.userName;
 
         // [ SCOREBOARD ]
         socket.on("scoreboardUpdate", data => {
@@ -144,29 +142,20 @@ io.on("connection", socket => {
         // PARTY SYNC
         socket.on("navigateParty", data => {
             rooms[data.roomName]["admin"]["currentGame"] = data.gameName;
-            console.log("Current game: "+rooms[data.roomName]["admin"]["currentGame"]);
+            console.log("Entering new game: "+rooms[data.roomName]["admin"]["currentGame"]);
             io.emit("partyNavigator", data);
         }); // [end] party sync
 
 
         console.log("");
-        console.log("Room name: " + rooms[data.roomName]["partyName"]);
+        console.log("Room name: " + rooms[data.roomName]["name"]);
         console.log("Current Game: " +rooms[data.roomName]["admin"]["currentGame"]);
-        console.log(rooms[data.roomName]["partySize"] +" players inside room: " +  rooms[data.roomName]["partyName"]);
+        console.log(rooms[data.roomName]["partySize"] +" players inside room: " +  rooms[data.roomName]["name"]);
 
 
         // [ MATH HEAD ]
         socket.on("mathHeadEntered", mathHeadEntryData => {
             console.log(mathHeadEntryData.userName+" entered Math Head");
-
-            // set current game only when admin enters
-            // [unfinished] non-admin gets redirected, but admin goes to game
-            // if ( mathHeadEntryData.userName == rooms[data.roomName]["admin"] ) {
-            //     rooms[data.roomName]["admin"]["currentGame"] = "mathhead";
-            // } else {
-            //     socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
-            // };
-            // [unfinished]
 
             // [ MATH HEAD EVENT LISTENERS ]
             //Share question after generated
@@ -213,19 +202,13 @@ io.on("connection", socket => {
 
     // [ USER EXITS ROOM ]
     // declare variables you need before nested sockets i.e. data.xxx
-    socket.on("disconnect", data => {
-        console.log("DC roomName: "+roomName);
-        console.log("DC userName: "+userName);
+    socket.on("disconnect", () => {
         delete rooms[roomName]["scoreboard"][userName];
         rooms[roomName]["partySize"]--;
-        console.log("");
-        console.log(rooms[roomName]["partySize"] + " remaining in " + rooms[roomName]["partyName"]);
 
-        connectedClients--;
         console.log("");
-        console.log("User logged OUT: "+connectedClients+" remaining");
-
-        console.log("Party size: "+rooms[roomName]["partySize"]);
+        console.log("[ LOGOUT NOTICE ]");
+        console.log(rooms[roomName]["partySize"] + " remaining in " + rooms[roomName]["name"]);
         console.log("Players still here: "+ Object.keys(rooms[roomName]["scoreboard"]));
 
         if ( rooms[roomName]["partySize"] == 0 ) {
