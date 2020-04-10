@@ -16,7 +16,13 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
     }, [socket]);
 
     const gameSelector = e => {
-        if ( userName == null || userName.length < 1 || userName == undefined ) {
+        if( userName === null || 
+            userName.length < 1 || 
+            userName === undefined || 
+            roomName === null || 
+            roomName.length < 1 || 
+            roomName === undefined ) {
+            
             navigate('/');
         };
 
