@@ -144,7 +144,6 @@ const Lobby = ({ dispatch }) => {
 function mapStateToProps(state) {
     return {
         userName: state.userName,
-        userScore: state.userScore,
     };
 };
 

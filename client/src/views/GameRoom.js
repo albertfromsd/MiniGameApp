@@ -28,17 +28,12 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     const gameName = " ";
 
     // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
-    console.log("GameRoom.js before socket instantiation");
-
     // const [ socket ] = useState( () => io(':8000') );
     const [ socket ] = useState( () => io() );
-
-    console.log("GameRoom.js after socket instantiation");
 
     // ADMIN STATE BOOLEAN
     const [ adminState, setAdminState ] = useState(false);
 
-    console.log("GameRoom.js check before enteredGameRoom");
     useEffect( () => {
         socket.emit("enteredGameRoom", 
             {
@@ -50,13 +45,45 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 
         dispatch({
             type: 'SETSOCKET',
-            socket: socket,
+            socket,
         });
-        
+
+        dispatch({
+            type: 'SETUSERNAME',
+            userName,
+        });
+
+        dispatch({
+            type: 'SETROOMNAME',
+            roomName,
+        });
+
+        dispatch({
+            type: 'SETGAMENAME',
+            gameName,
+        });
+
+        // will this work?
+        // dispatch(
+        //     {
+        //         type: 'SETSOCKET',
+        //         socket,
+        //     },
+        //     {
+        //         type: 'SETUSERNAME',
+        //         userName,
+        //     },
+        //     {
+        //         type: 'SETROOMNAME',
+        //         roomName,
+        //     },
+        //     {
+        //         type: 'SETGAMENAME',
+        //         gameName,
+        //     },
+        // );
+
     }, [] );
-    console.log("GameRoom.js check after enteredGameRoom");
-    console.log("-------------------");
-    console.log("GameRoom.js check before useEffect");
 
     useEffect( () => {
         if( userName === null || 
@@ -65,6 +92,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             roomName === null || 
             roomName.length < 1 || 
             roomName === undefined ) {
+            
             navigate('/');
         };
         
@@ -73,21 +101,19 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         //     roomName
         // })
 
-        socket.emit("scoreboardUpdate", 
-            { 
-                userName,
-                roomName,
-                gameName,
-            }
-        );
-
         socket.emit("chatLogUpdate",
             {
                 userName,
                 roomName,
-                gameName,
             }
-        )
+        );
+
+        socket.emit("scoreboardUpdate", 
+            { 
+                userName,
+                roomName,
+            }
+        );
 
         socket.on("syncNewUser", currentGame => {
             navigate("/"+roomName+"/"+currentGame);
@@ -101,8 +127,6 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             socket.disconnect();
         };
     }, [socket, userName, roomName]);
-
-    console.log("GameRoom.js check after useEffect");
 
     return (
         <>

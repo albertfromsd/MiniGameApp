@@ -13,7 +13,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
     const [ scoreList, setScoreList ] = useState([]);
     const [ scoreboard, setScoreboard ] = useState([]);
 
-
     useEffect( () => {
         if( userName === null || 
             userName.length < 1 || 
@@ -23,13 +22,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
             roomName === undefined ) {
             navigate('/');
         };
-
-        socket.emit("scoreboardUpdate", 
-            { 
-                userName,
-                roomName,
-            }
-        );
 
         socket.on("refreshScoreboard", data => {
             setScoreboard(data.scoreboardList);

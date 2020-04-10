@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { navigate, Link } from '@reach/router';
 import { connect, useSelector } from 'react-redux';
 
-import CustomisedButton from './CustomisedButton';
+import CustomizedButton from './CustomizedButton';
 
 import navBarStyles from './GlobalComponents.module.css';
 
@@ -31,23 +31,22 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
         navigate('/'+roomName+"/"+gameName);
     };
 
-    const navigateLobby = e => {
-        socket.emit("navigateParty", 
-            {
-                roomName,
-                gameName: ""
-            }
-        );
-    };
+    // const navigateLobby = e => {
+    //     socket.emit("navigateParty", 
+    //         {
+    //             roomName,
+    //             gameName: ""
+    //         }
+    //     );
+    // };
 
-    const exitParty = event =>{
-        console.log("Socket should disconnect");
-        socket.emit('disconnect');
-        navigate('/');
+    // const exitParty = event =>{
+    //     console.log("Socket should disconnect");
+    //     socket.disconnect();
+    //     navigate('/');
 
-    }
+    // }
     
-
     return (
         <>
             <Navbar bg="secondary" variant="dark">
@@ -65,7 +64,7 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                 </NavDropdown>
                 </Nav>
-                <CustomisedButton roomName={roomName}/>
+                <CustomizedButton roomName={roomName}/>
             </Navbar.Collapse>
         </Navbar>
         </>

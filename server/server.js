@@ -5,11 +5,11 @@ app.use( express.json() );
 app.use( express.urlencoded({ extended: true }) );
 
 // [ CORS ] only for localhost
-// const cors = require('cors');
-// app.use(cors({
-//     credentials: true,
-//     origin: 'http://localhost:3000'
-// }));
+const cors = require('cors');
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000'
+}));
 
 // [ COOKIE-PARSER ]
 const cookieParser = require('cookie-parser');
@@ -21,22 +21,16 @@ require('dotenv').config();
 console.log("SECRET_KEY: "+process.env.SECRET_KEY);
 
 // [ MODELS ] add when DB is activated
-// const { Chat } = require('./models/Chat');
-// const { User } = require('./models/User');
-// const { GameRoom } = require('./models/GameRoom');
+const { Chat } = require('./models/Chat.model');
+const { User } = require('./models/User.model');
+const { GameRoom } = require('./models/GameRoom.model');
 
 // [ ROUTES ] will be used when DB is activated
-// require('./routes/User.routes')(app);
-// require('./routes/Gameroom.routes')(app);
-// require('./routes/Chat.routes')(app);
+require('./routes/User.routes')(app);
+require('./routes/Gameroom.routes')(app);
+require('./routes/Chat.routes')(app);
 
 // [ SOCKET / SERVER ]
-
-// below example from online article
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
-
-// below Coding Dojo method
 const server = app.listen(8000);
 const socketIo = require('socket.io');
 const io = socketIo(server);
@@ -45,7 +39,9 @@ let connectedClients = 0;
 let rooms = {};
 
 io.on("connection", socket => {
-    let username = null, roomNumber = null;
+    // declare unassigned variables for disconnect actions
+    let roomName = null, admin = null, userName = null, scoreboard = null, partySize = null;
+
     // [ USER LOGIN ]
     connectedClients++;
     console.log(" ");
@@ -80,43 +76,44 @@ io.on("connection", socket => {
                 "scoreboard": {},
                 "chatLog": [],
             };
+
+            roomName = data.roomName;
+            admin = data.userName;
+
             console.log("");
-            console.log(rooms[data.roomName]["partyName"] + " created");
+            console.log( rooms[data.roomName]["partyName"] + " created" );
+            console.log( "[ADMIN]: " + admin );
         };
 
         // 6 max per room / party
         if ( rooms[data.roomName]["partySize"] > 5 ) {
             console.log("");
-            console.log("Player tried to join the full party room: "+rooms[data.roomName]["partyName"]);
+            console.log(data.userName+" tried to join the full party room: "+rooms[data.roomName]["partyName"]);
             socket.emit("fullParty", "That party is full");
             return;
             //not sure what to put here to stop function
         };
 
         // add user to scoreboard if room not full
-        if ( !rooms[data.roomName]["scoreboard"][data.userName] && data.userName != null ) {
+        if( !rooms[data.roomName]["scoreboard"][data.userName] 
+            && data.userName != null ) {
+
             rooms[data.roomName]["scoreboard"][data.userName] = 0;
             rooms[data.roomName]["partySize"]++;
-            // if party started without new user
+
+            roomName = data.roomName;
+            userName = data.userName;
+
+            // if party already started, sync new user to the same page
             if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
                 socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
             };
         };
 
+        // if user already exists, but accidentally closed the browser
         if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
             socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
         };
-
-        // // if null user is added to list
-        // if ( rooms[data.roomName]["scoreboard"][null] ) {
-        //     delete rooms[data.roomName]["scoreboard"][null];
-        //     rooms[data.roomName]["partySize"]--;
-        //     io.emit("refreshScoreboard", {
-        //         userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
-        //         scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
-        //         scoreboardList: Object.entries( rooms[data.roomName] ),
-        //     });
-        // };
 
         // [ SCOREBOARD ]
         socket.on("scoreboardUpdate", data => {
@@ -180,9 +177,8 @@ io.on("connection", socket => {
             //Alert players when someone gets it right
             socket.on("mathHeadTargetAnswered", mathHeadData => {
                 rooms[data.roomName]["scoreboard"][mathHeadData.userName] += mathHeadData.points;
-
+                
                 socket.broadcast.emit("answeredMathHeadTarget", mathHeadData);
-
                 io.emit("refreshScoreboard", {
                     userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
                     scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
@@ -203,9 +199,8 @@ io.on("connection", socket => {
             //Alert players when someone gets it right
             socket.on("typeFasterTargetAnswered", typeFasterAnswerData => {
                 rooms[data.roomName]["scoreboard"][typeFasterAnswerData.userName] += typeFasterAnswerData.points;
-                
-                socket.broadcast.emit("answeredTypeFasterTarget", typeFasterAnswerData);
 
+                socket.broadcast.emit("answeredTypeFasterTarget", typeFasterAnswerData);
                 io.emit("refreshScoreboard", {
                     userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
                     scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
@@ -218,26 +213,30 @@ io.on("connection", socket => {
 
     // [ USER EXITS ROOM ]
     // declare variables you need before nested sockets i.e. data.xxx
-    socket.on("disconnect", () => {
-        // delete rooms[data.roomName]["scoreboard"][data.userName];
-        // rooms[data.roomName]["partySize"]--;
+    socket.on("disconnect", data => {
+        console.log("DC roomName: "+roomName);
+        console.log("DC userName: "+userName);
+        delete rooms[roomName]["scoreboard"][userName];
+        rooms[roomName]["partySize"]--;
+        console.log("");
+        console.log(rooms[roomName]["partySize"] + " remaining in " + rooms[roomName]["partyName"]);
 
         connectedClients--;
         console.log("");
         console.log("User logged OUT: "+connectedClients+" remaining");
 
-        // console.log("Party size: "+rooms[data.roomName]["partySize"]);
-        // console.log("Players still here: "+ Object.keys(rooms[data.roomName]["scoreboard"]));
+        console.log("Party size: "+rooms[roomName]["partySize"]);
+        console.log("Players still here: "+ Object.keys(rooms[roomName]["scoreboard"]));
 
-        // if ( rooms[data.roomName]["partySize"] == 0 ) {
-        //     delete rooms[data.roomName];
-        // } else {
-        //     io.emit("refreshScoreboard", {
-        //         userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
-        //         scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
-        //         scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
-        //     });
-        // };
+        if ( rooms[roomName]["partySize"] == 0 ) {
+            delete rooms[roomName];
+        } else {
+            io.emit("refreshScoreboard", {
+                userList: Object.keys( rooms[roomName]["scoreboard"] ),
+                scoreList: Object.values( rooms[roomName]["scoreboard"] ),
+                scoreboardList: Object.entries( rooms[roomName]["scoreboard"] ),
+            });
+        };
     });// [END] user exits room
 
 }); // [END] io.on("connection")
