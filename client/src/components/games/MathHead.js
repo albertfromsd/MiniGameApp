@@ -35,17 +35,20 @@ const MathHead = ({ socket, userName, roomName }) => {
 
 
     useEffect( () => {
-        // validation check to make sure username is not blank/null
-        if ( userName == null || userName.length < 1 || userName == undefined ) {
+        if( userName == null || 
+            userName == undefined || 
+            userName.length < 1 || 
+            roomName == null || 
+            roomName == undefined ||
+            roomName.length < 1 ) {
+
             navigate('/');
         };
 
         socket.emit( 'mathHeadEntered', 
             {
-                socketId: socket.id,
                 userName,
                 roomName,
-                totalTime,
                 gameName,
             }
         );

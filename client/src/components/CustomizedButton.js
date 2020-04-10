@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 
 const CustomizedButton = ({ socket, roomName, userName, dispatch }) => {
 
-    const exitParty = event =>{
+    const logout = event =>{
         socket.disconnect();
 
         dispatch({
@@ -33,8 +33,8 @@ const CustomizedButton = ({ socket, roomName, userName, dispatch }) => {
     
     return (
         <>
-        <Button variant="outline-secondary" onClick={exitThisGame}>Return to Game Room</Button>        
-        <Button variant="outline-secondary" onClick={exitParty}>Logout</Button>
+        <Button variant="outline-secondary" onClick={exitThisGame}>Return to Game Room</Button>
+        <Button variant="outline-secondary" onClick={logout}>Logout</Button>
         </>
     );
 };
