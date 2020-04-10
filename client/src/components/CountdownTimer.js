@@ -22,7 +22,7 @@ const CountdownTimer = ({ startTime }) => {
                 milliseconds: Math.floor( (timeDifference / 1000) ),
             }
         };
- 
+
         return timeLeft;
     };
 

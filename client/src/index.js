@@ -47,7 +47,6 @@ function reducer( state, action ) {
                 ...state,
                 socket: null,
                 userName: null,
-                userScore: null,
             };
         default:
             return state;

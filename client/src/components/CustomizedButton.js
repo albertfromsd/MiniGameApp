@@ -5,10 +5,17 @@ import { connect } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 
-const CustomisedButton = ({ socket, roomName, dispatch }) => {
+const CustomizedButton = ({ socket, roomName, userName, dispatch }) => {
 
     const exitParty = event =>{
         socket.disconnect();
+
+        dispatch({
+            type: 'LOGOUT',
+            socket,
+            userName,
+        });
+
         navigate('/');
     }
 
@@ -36,8 +43,7 @@ function mapStateToProps(state) {
     return {
         socket: state.socket,
         userName: state.userName,
-        userScore: state.userScore
     };
 };
 
-export default connect(mapStateToProps)(CustomisedButton);
+export default connect(mapStateToProps)(CustomizedButton);

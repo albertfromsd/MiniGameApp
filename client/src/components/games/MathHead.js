@@ -3,7 +3,6 @@ import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 // [ COMPONENTS ]
-import CustomisedButton from '../CustomisedButton';
 import CountdownTimer from '../CountdownTimer';
 
 // [ STYLING ]
