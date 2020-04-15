@@ -32,8 +32,7 @@ const MathHead = ({ socket, userName, roomName }) => {
     // ANSWER TIMER
     const [ timerStart, setTimerStart ] = useState("");
     const [ totalTime, setTotalTime ] = useState(0);
-    const [ timeAllowed, setTimeAllowed ] = useState(20000);
-
+    const [ timeAllowed, setTimeAllowed ] = useState(0);
 
     useEffect( () => {
         if( userName == null || 
@@ -55,15 +54,18 @@ const MathHead = ({ socket, userName, roomName }) => {
         );
 
         socket.on("syncNewUser", data => {
+            dispatchEvent({})
             navigate("/"+roomName+"/"+data);
         });
 
         socket.on("sharedMathHeadTarget", data => {
+            setFormVisibility("hidden");
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
             setTimerStart(data.createdAt);
+            setTimeAllowed(data.timeAllowed);
         });
 
         socket.on("answeredMathHeadTarget", data => {
@@ -125,7 +127,8 @@ const MathHead = ({ socket, userName, roomName }) => {
                 {
                     question: (num1+" "+operator+" "+num2),
                     answer: result,
-                    createdAt: questionTime
+                    createdAt: questionTime,
+                    timeAllowed: 20000,
                 });
         }; // [END] sub-function generateProblem
 
@@ -223,7 +226,6 @@ const MathHead = ({ socket, userName, roomName }) => {
     }; // [END] of function findResult
 
     return(
-        <>
         <div className={styles.entirePage}>
         <h3 className={styles.textWhite}> <i> {userName} </i>  </h3>
             
@@ -253,8 +255,8 @@ const MathHead = ({ socket, userName, roomName }) => {
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
                     { formVisibility == "hidden"
-                        ? <p> Countdown Timer Here </p>
-                        : <CountdownTimer timeAllowed={timeAllowed} /> }
+                        ? <p> Countdown timer not yet activated </p>
+                        : <CountdownTimer /> }
                     <p className={styles.textWhite}>{question}</p>
                         <br/>
                         <br/>
@@ -280,7 +282,6 @@ const MathHead = ({ socket, userName, roomName }) => {
                 )}
             </div>
         </div>
-        </>
     );
 };
 

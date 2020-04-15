@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { navigate, Link } from '@reach/router';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 import CustomizedButton from './CustomizedButton';
 
@@ -13,7 +13,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 
 
-const NavBar = ({ socket, roomName, userName, dispatch }) => {
+const NavBar = ({ socket, roomName, userName, admin, dispatch }) => {
 
     useEffect( () => {
         if( userName === null || 
@@ -24,6 +24,7 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
             roomName === undefined ) {
             navigate('/');
         };
+
     }, [socket, userName, roomName]);
 
     const navLink = (e, gameName) => {
@@ -64,6 +65,9 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                 </NavDropdown>
                 </Nav>
+                <p className={navBarStyles.textWhite}>Logged in as: <i> { userName } </i></p>
+                    <br />
+                <p className={navBarStyles.textWhite}>Admin:  { admin } </p>
                 <CustomizedButton className={navBarStyles.flexColCen}
                     roomName={roomName}/>
             </Navbar.Collapse>
@@ -75,6 +79,7 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
 function mapStateToProps(state) {
     return {
         userName: state.userName,
+        admin: state.admin,
     };
 };
 
