@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 // [ STYLING ]
 import styles from '../GlobalComponents.module.css';
 
-const CountdownTimer = ({ socket, startTime, allottedTime }) => {
+const CountdownTimer = ({ socket, timeAllowed }) => {
     // const timeAllotted = 20000; // 20 seconds or 20,000 milliseconds
     // const [ timeRemaining, setTimeRemaining ] = useState(timeAllotted)
     const [ startDate, setStartDate ] = useState(new Date());
-    console.log(startDate);
 
-    
     const calculateTimeLeft = () => {
         // below follows the example in online article
         const timeDifference = 20000 - ( +new Date() - +startDate );
@@ -48,7 +46,7 @@ const CountdownTimer = ({ socket, startTime, allottedTime }) => {
         };
 
         timerComponents.push(
-            <span>
+            <span key={interval}>
                 {timeLeft[interval]} {interval}{" "}
             </span>
         );

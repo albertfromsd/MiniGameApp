@@ -87,12 +87,7 @@ const Lobby = ({ dispatch }) => {
 
             <div className={[styles.textWhite, styles.onlyDiv, styles.flexColCen].join(' ')}>
             <h1>Join the Party, Join the Fun!</h1>
-            <p className={styles.textWhite}>Pausable Timer below: </p>
-            <PausableTimer />
-                <br/>
-            <p className={styles.textWhite}>Countdown Timer below: </p>
-            <CountdownTimer />
-                <br />
+
             <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
                 <br/> <br/>
             <form className={styles.flexColCen} onSubmit={enterRoom}>
