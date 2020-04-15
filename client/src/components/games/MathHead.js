@@ -30,8 +30,9 @@ const MathHead = ({ socket, userName, roomName }) => {
     const [ resultColor, setResultColor ] = useState("white");
 
     // ANSWER TIMER
-    const [timer, setTimer] = useState("");
-    const [totalTime, setTotalTime] = useState(0);
+    const [ timerStart, setTimerStart ] = useState("");
+    const [ totalTime, setTotalTime ] = useState(0);
+    const [ timeAllowed, setTimeAllowed ] = useState(20000);
 
 
     useEffect( () => {
@@ -62,7 +63,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
-            setTimer(data.createdAt);
+            setTimerStart(data.createdAt);
         });
 
         socket.on("answeredMathHeadTarget", data => {
@@ -88,7 +89,7 @@ const MathHead = ({ socket, userName, roomName }) => {
         // Start timer
         let now = new Date();
         let questionTime = now.getTime();
-        setTimer(questionTime);
+        setTimerStart(questionTime);
         setTotalTime(0);
 
         setResultMsg([]);
@@ -167,8 +168,8 @@ const MathHead = ({ socket, userName, roomName }) => {
             // time and score
             let now = new Date();
             let answerTime = now.getTime();
-            let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
-            let points = 15-totalTimeTaken;
+            let totalTimeTaken = Math.round((+answerTime - + timerStart))/1000;
+            let points = 20-totalTimeTaken;
 
             // if ( difficulty == "Easy") {
             //     points = 10-totalTimeTaken;
@@ -184,7 +185,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             // };
 
             console.log("points: "+points);
-            setTimer("");
+            setTimerStart("");
             
             // results
             setResultMsg([
@@ -224,8 +225,6 @@ const MathHead = ({ socket, userName, roomName }) => {
     return(
         <>
         <div className={styles.entirePage}>
-
-            
         <h3 className={styles.textWhite}> <i> {userName} </i>  </h3>
             
                 <br />
@@ -253,7 +252,9 @@ const MathHead = ({ socket, userName, roomName }) => {
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                    <CountdownTimer startTime={20} />
+                    { formVisibility == "hidden"
+                        ? <p> Countdown Timer Here </p>
+                        : <CountdownTimer timeAllowed={timeAllowed} /> }
                     <p className={styles.textWhite}>{question}</p>
                         <br/>
                         <br/>

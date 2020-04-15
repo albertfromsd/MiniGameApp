@@ -4,14 +4,16 @@ import { connect } from 'react-redux';
 // [ STYLING ]
 import styles from '../GlobalComponents.module.css';
 
-const CountdownTimer = ({ socket, timeAllowed }) => {
-    // const timeAllotted = 20000; // 20 seconds or 20,000 milliseconds
-    // const [ timeRemaining, setTimeRemaining ] = useState(timeAllotted)
-    const [ startDate, setStartDate ] = useState(new Date());
+const CountdownTimer = ({ socket, startTime }) => {
+    const timeAllotted = 20000; // 20 seconds or 20,000 milliseconds
+    const [ timeRemaining, setTimeRemaining ] = useState(timeAllotted)
 
+    const startDate = new Date();
+
+    
     const calculateTimeLeft = () => {
         // below follows the example in online article
-        const timeDifference = 20000 - ( +new Date() - +startDate );
+        const timeDifference = timeAllotted - ( +new Date() - +startDate );
         // below if we used .getTime() as startTime
         // const timeDifference = startTime - +new Date().getTime();
 
@@ -22,8 +24,8 @@ const CountdownTimer = ({ socket, timeAllowed }) => {
                 // days: Math.floor( (timeDifference / (1000 * 60 * 60 * 24)) ),
                 // hours: Math.floor( (timeDifference / (1000 * 60 * 60) ) % 24 ),
                 // minutes: Math.floor( (timeDifference / 1000 / 60) % 60 ),
-                seconds: Math.floor( (timeDifference / 1000) % 60 ),
-                milliseconds: ( (timeDifference % 1000 ) ),
+                // seconds: Math.floor( (timeDifference / 1000) % 60 ),
+                milliseconds: Math.floor(timeDifference),
             }
         };
 
@@ -46,7 +48,7 @@ const CountdownTimer = ({ socket, timeAllowed }) => {
         };
 
         timerComponents.push(
-            <span key={interval}>
+            <span>
                 {timeLeft[interval]} {interval}{" "}
             </span>
         );
@@ -67,6 +69,7 @@ function mapStateToProps(state) {
         roomName: state.roomName,
         gameName: state.gameName,
         userName: state.userName,
+
         
     };
 };
