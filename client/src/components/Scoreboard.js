@@ -11,7 +11,6 @@ import Table from 'react-bootstrap/Table';
 const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
     const [ userList, setUserList ] = useState([]);
     const [ scoreList, setScoreList ] = useState([]);
-    const [ scoreboard, setScoreboard ] = useState([]);
 
     useEffect( () => {
         if( userName === null || 
@@ -24,7 +23,6 @@ const Scoreboard = ({ socket, userName, roomName, dispatch }) => {
         };
 
         socket.on("refreshScoreboard", data => {
-            setScoreboard(data.scoreboardList);
             setUserList(data.userList);
             setScoreList(data.scoreList);
 

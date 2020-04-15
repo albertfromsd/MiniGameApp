@@ -79,6 +79,10 @@ io.on("connection", socket => {
                 "chatLog": [],
             };
 
+            io.emit("setAdmin", data.userName);
+            console.log("server setAdmin event emitted: "+data.userName);
+            console.log("newRoom admin check: "+rooms[data.roomName]["admin"]["name"]);
+
         }; // [end] room creation
 
         admin = rooms[data.roomName]["admin"]["name"];
@@ -104,6 +108,8 @@ io.on("connection", socket => {
             rooms[data.roomName]["scoreboard"][data.userName] = 0;
             rooms[data.roomName]["partySize"]++;
 
+            io.emit("setAdmin", rooms[data.roomName]["admin"]["name"]);
+
             console.log("["+rooms[data.roomName]["name"]+"] Party size: "+ rooms[data.roomName]["partySize"]);
         };
 
@@ -114,7 +120,7 @@ io.on("connection", socket => {
 
         // [SYNC NEW USER] with existing party
         if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
-            socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
+            socket.emit("syncNewUser", rooms[data.roomName]["admin"]);
         };
 
 
@@ -163,6 +169,8 @@ io.on("connection", socket => {
             // SHARE TARGET after generation
             socket.on("mathHeadTargetGenerated", mathHeadData => {
                 io.emit("sharedMathHeadTarget", mathHeadData);
+                io.emit("startTimer", mathHeadData);
+                console.log("server startTimer activated: "+mathHeadData.timeAllowed);
             });
 
             // TARGET ANSWERED correctly

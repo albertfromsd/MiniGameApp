@@ -102,6 +102,14 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         //     roomName
         // })
 
+        socket.on("setAdmin", admin => {
+            console.log(admin);
+            dispatch({
+                type: 'SETADMIN',
+                admin
+            });
+        });
+
         socket.emit("chatLogUpdate",
             {
                 userName,
@@ -116,8 +124,12 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
             }
         );
 
-        socket.on("syncNewUser", currentGame => {
-            navigate("/"+roomName+"/"+currentGame);
+        socket.on("syncNewUser", data => {
+            dispatch({
+                type: 'SETADMIN',
+                admin: data.name
+            })
+            navigate("/"+roomName+"/"+data.currentGame);
         });
         
         socket.on("partyNavigator", data => {
@@ -135,8 +147,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
         <NavBar socket={socket} 
             roomName={roomName} />
         <Scoreboard socket={socket}
-            roomName={roomName}
-            userName={userName} />
+            roomName={roomName} />
         <div className={styles.contentRow}>
             <div className={gameStyles.gameComponent}>
                 <Router>
@@ -176,6 +187,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
 function mapStateToProps(state) {
     return {
         userName: state.userName,
+        admin: state.admin,
     };
 };
 

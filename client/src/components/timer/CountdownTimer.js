@@ -4,14 +4,25 @@ import { connect } from 'react-redux';
 // [ STYLING ]
 import styles from '../GlobalComponents.module.css';
 
-const CountdownTimer = ({ socket, timeAllowed }) => {
-    // const timeAllotted = 20000; // 20 seconds or 20,000 milliseconds
-    // const [ timeRemaining, setTimeRemaining ] = useState(timeAllotted)
+
+
+const CountdownTimer = ({ socket }) => {
+    const [ timeAllowed, setTimeAllowed ] = useState(0);
     const [ startDate, setStartDate ] = useState(new Date());
+
+    // const [ resetState, setResetState ] = useState(false);
+    
+    // [function] force update
+    // const useForceUpdate = () => {
+    //     const [value, setValue] = useState(0); // integer state
+    //     return () => setValue(value => ++value); // update the state to force render
+    // }
+    // const forceUpdate = useForceUpdate();
+
 
     const calculateTimeLeft = () => {
         // below follows the example in online article
-        const timeDifference = 20000 - ( +new Date() - +startDate );
+        const timeDifference = timeAllowed - ( +new Date() - +startDate );
         // below if we used .getTime() as startTime
         // const timeDifference = startTime - +new Date().getTime();
 
@@ -37,6 +48,14 @@ const CountdownTimer = ({ socket, timeAllowed }) => {
             setTimeLeft( calculateTimeLeft() );
         }, 1);
     });
+
+    useEffect( () => {
+        socket.on("startTimer", data => {
+            setTimeAllowed(data.timeAllowed);
+            console.log("incoming data.timeAllowed: "+data.timeAllowed);
+        });
+
+    }, [socket]);
 
     const timerComponents = [];
 

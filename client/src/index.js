@@ -20,20 +20,25 @@ function reducer( state, action ) {
             ...state,
             socket: action.socket
             };
-        case 'SETUSERNAME':
+        case 'SETADMIN':
             return {
-            ...state,
-            userName: action.userName,
+                ...state,
+                admin: action.admin
             };
         case 'SETROOMNAME':
             return {
-            ...state,
-            roomName: action.roomName,
+                ...state,
+                roomName: action.roomName,
             };
         case 'SETGAMENAME':
             return{
                 ...state,
                 gameName : action.gameName,
+            };
+        case 'SETUSERNAME':
+            return {
+            ...state,
+            userName: action.userName,
             };
         case 'SETSCOREBOARD':
             return{
@@ -57,9 +62,10 @@ function reducer( state, action ) {
 
     const initialState = {
         socket: null,
-        userName: null,
         roomName: null,
-        gameName : null
+        admin: null,
+        userName: null,
+        gameName : null,
     };
 
 

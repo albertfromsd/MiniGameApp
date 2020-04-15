@@ -4,7 +4,7 @@ import { navigate } from '@reach/router';
 
 import styles from './Games.module.css';
 
-const GameSelector = ({ socket, dispatch, userName, roomName }) => {
+const GameSelector = ({ socket, dispatch, userName, admin, roomName }) => {
     const [ systemMsg, setSystemMsg ] = useState("");
     let gameName;
 
@@ -114,6 +114,7 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 function mapStateToProps(state) {
     return {
         userName: state.userName,
+        admin: state.admin,
     };
 };
 
