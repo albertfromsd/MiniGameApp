@@ -3,7 +3,7 @@ import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 // [ COMPONENTS ]
-import CountdownTimer from '../CountdownTimer';
+import CountdownTimer from '../timer/CountdownTimer';
 
 // [ STYLING ]
 import styles from './Games.module.css';
@@ -253,7 +253,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                    <CountdownTimer startTime="20" />
+                    <CountdownTimer startTime={20} />
                     <p className={styles.textWhite}>{question}</p>
                         <br/>
                         <br/>

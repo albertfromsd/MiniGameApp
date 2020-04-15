@@ -65,9 +65,8 @@ io.on("connection", socket => {
 
     // [ ENTER GAMEROOM ]
     socket.on("enteredGameRoom", data => {
-        console.log(data.userName+" entered the game room");
-
-        // [ TOP ] [SET UP ROOM / PARTY ]
+        // [SET UP ROOM / PARTY ]
+        // [ROOM CREATION]
         if ( !rooms[data.roomName] ) {
             rooms[data.roomName] = {
                 "name": data.roomName,
@@ -80,24 +79,27 @@ io.on("connection", socket => {
                 "chatLog": [],
             };
 
-            admin = rooms[data.roomName]["admin"]["name"];
+        }; // [end] room creation
 
-            console.log("");
-            console.log( "[NEW ROOM]: "+rooms[data.roomName]["name"] );
-            console.log( "[ADMIN]: " + rooms[data.roomName]["admin"]["name"] );
-        };
+        admin = rooms[data.roomName]["admin"]["name"];
+        console.log("");
+        console.log( "[NEW ROOM]: "+rooms[data.roomName]["name"] );
+        console.log( "[ADMIN]: " + rooms[data.roomName]["admin"]["name"] );
+
 
         // 6 max per room / party
+        // move room size validation in the backend
         if ( rooms[data.roomName]["partySize"] > 5 ) {
-            console.log("Sorry "+data.userName+" "+rooms[data.roomName]["name"]+" is full");
+            console.log("Sorry, "+data.userName+". "+rooms[data.roomName]["name"]+" is full");
             socket.emit("fullParty", "That party room is full");
-            return;
-            //not sure what to put here to stop function
+            return; //not sure what to put here to stop function
         };
 
-        // add user to scoreboard if room not full
+
+        // [ADD USER] to scoreboard if room not full
         if( !rooms[data.roomName]["scoreboard"][data.userName] 
-            && data.userName != null ) {
+            && data.userName != null
+            && rooms[data.roomName]["partySize"] < 6 ) {
 
             rooms[data.roomName]["scoreboard"][data.userName] = 0;
             rooms[data.roomName]["partySize"]++;
@@ -105,13 +107,16 @@ io.on("connection", socket => {
             console.log("["+rooms[data.roomName]["name"]+"] Party size: "+ rooms[data.roomName]["partySize"]);
         };
 
-        // new user sync with existing party
+        // ASSIGN VALUES to variables declared at a higher level, to use in disconnect
+        roomName = data.roomName;
+        userName = data.userName;
+
+
+        // [SYNC NEW USER] with existing party
         if ( data.gameName != rooms[data.roomName]["admin"]["currentGame"] ) {
             socket.emit("syncNewUser", rooms[data.roomName]["admin"]["currentGame"]);
         };
 
-        roomName = data.roomName;
-        userName = data.userName;
 
         // [ SCOREBOARD ]
         socket.on("scoreboardUpdate", data => {
@@ -121,7 +126,6 @@ io.on("connection", socket => {
                 scoreboardList: Object.entries( rooms[data.roomName] ),
             });
         }); // [end] scoreboard
-
         // [ END ] [SET UP ROOM ]
 
         // [ CHAT ]
@@ -139,53 +143,50 @@ io.on("connection", socket => {
             io.emit("updateChatLog", rooms[data.roomName]["chatLog"])
         }); // [end] chat
 
-        // PARTY SYNC
+        // [NAVIGATE PARTY] in sync
         socket.on("navigateParty", data => {
             rooms[data.roomName]["admin"]["currentGame"] = data.gameName;
             console.log("Entering new game: "+rooms[data.roomName]["admin"]["currentGame"]);
             io.emit("partyNavigator", data);
-        }); // [end] party sync
+        }); // [end] navigate party in sync
 
-
+        // [C.LOG CHECK]
         console.log("");
         console.log("Room name: " + rooms[data.roomName]["name"]);
         console.log("Current Game: " +rooms[data.roomName]["admin"]["currentGame"]);
         console.log(rooms[data.roomName]["partySize"] +" players inside room: " +  rooms[data.roomName]["name"]);
+        // [end] c.log check
 
 
         // [ MATH HEAD ]
         socket.on("mathHeadEntered", mathHeadEntryData => {
-            console.log(mathHeadEntryData.userName+" entered Math Head");
-
-            // [ MATH HEAD EVENT LISTENERS ]
-            //Share question after generated
+            // SHARE TARGET after generation
             socket.on("mathHeadTargetGenerated", mathHeadData => {
                 io.emit("sharedMathHeadTarget", mathHeadData);
             });
-            
-            //Alert players when someone gets it right
+
+            // TARGET ANSWERED correctly
             socket.on("mathHeadTargetAnswered", mathHeadData => {
                 rooms[data.roomName]["scoreboard"][mathHeadData.userName] += mathHeadData.points;
-                
+
                 socket.broadcast.emit("answeredMathHeadTarget", mathHeadData);
                 io.emit("refreshScoreboard", {
                     userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
                     scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
                     scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
                 });
-            });
+            }); // [end] target answered correctly
         }); // [end] mathhead
 
 
         // [ TYPE FASTER MASTER ]
         socket.on("typeFasterEntered", typeFasterEntryData=> {
-            console.log(typeFasterEntryData.userName+" entered TypeFasterMaster");
-
+            // SHARE TARGET after generation
             socket.on("typeFasterTargetGenerated", typeFasterTarget => {
                 io.emit("sharedTypeFasterTarget", typeFasterTarget);
             });
 
-            //Alert players when someone gets it right
+            // TARGET ANSWERED correctly
             socket.on("typeFasterTargetAnswered", typeFasterAnswerData => {
                 rooms[data.roomName]["scoreboard"][typeFasterAnswerData.userName] += typeFasterAnswerData.points;
 
@@ -195,31 +196,118 @@ io.on("connection", socket => {
                     scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
                     scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
                 });
-            });
+            }); // [end] typefaster target answered correctly
         }); // [end] typefastermaster
+
+
+        // [ WISE TO MEMORIZE ]
+        socket.on("wiseToMemorizeEntered", wiseToMemorizeEntryData => {
+            // SHARE TARGET after generation
+            socket.on("wiseToMemorizeTargetGenerated", wiseToMemorizeTarget => {
+                io.emit("sharedWiseToMemorizeTarget", wiseToMemorizeTarget);
+            });
+
+            // TARGET ANSWERED correctly
+            socket.on("wiseToMemorizeTargetAnswered", wiseToMemorizeResults => {
+                rooms[data.roomName]["scoreboard"][wiseToMemorizeResults.userName] += wiseToMemorizeResults.points;
+
+                socket.broadcast.emit("resultsWiseToMemorize", wiseToMemorizeResults);
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
+            }); // [end] wise to memorize target answered correctly
+        }); // [end] wise to memorize
+
+
+        // [ LITTLE BOXES ]
+        socket.on("littleBoxesEntered", littleBoxesEntryData => {
+            // SHARE TARGET after generation
+            socket.on("littleBoxesTargetGenerated", littleBoxesTarget => {
+                io.emit("sharedLittleBoxesTarget", littleBoxesTarget);
+            });
+
+            // TARGET ANSWERED correctly
+            socket.on("littleBoxesTargetResults", littleBoxesResults => {
+                rooms[data.roomName]["scoreboard"][littleBoxesResults.userName] += littleBoxesResults.points;
+
+                socket.broadcast.emit("resultsLittleBoxes", littleBoxesResults);
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
+            }); // [end] dont come inside me target answered correctly
+        }); // [end] dont come inside me
+
+
+        // [ DON'T COME INSIDE ME ]
+        socket.on("dontComeEntered", dontComeEntryData => {
+            // SHARE TARGET after generation
+            socket.on("dontComeTargetGenerated", dontComeTarget => {
+                io.emit("sharedDontComeTarget", dontComeTarget);
+            });
+
+            // TARGET ANSWERED correctly
+            socket.on("dontComeTargetResults", dontComeResults => {
+                rooms[data.roomName]["scoreboard"][dontComeResults.userName] += dontComeResults.points;
+
+                socket.broadcast.emit("resultsDontComeTarget", dontComeResults);
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
+            }); // [end] dont come inside me target answered correctly
+        }); // [end] dont come inside me
+
+
+        // [ DROP A FAT SHOT ]
+        socket.on("dropAFatShotEntered", dropAFatShotEntryData => {
+            // SHARE TARGET after generation
+            socket.on("dropAFatShotTargetGenerated", dontComeTarget => {
+                io.emit("sharedDontComeTarget", dontComeTarget);
+            });
+
+            // TARGET ANSWERED correctly
+            socket.on("dropAFatShortResults", dropAFatShotResults => {
+                rooms[data.roomName]["scoreboard"][dropAFatShotResults.userName] += dropAFatShotResults.points;
+
+                socket.broadcast.emit("resultsDontComeTarget", dropAFatShotResults);
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[data.roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[data.roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[data.roomName]["scoreboard"] ),
+                });
+            }); // [end] dont come inside me target answered correctly
+        }); // [end] drop a fat shot
 
     }); // [END] socket.on("enteredGameRoom") 
 
-    // [ USER EXITS ROOM ]
-    // declare variables you need before nested sockets i.e. data.xxx
+    // [ USER LOGOUT ]
     socket.on("disconnect", () => {
-        delete rooms[roomName]["scoreboard"][userName];
-        rooms[roomName]["partySize"]--;
+        // need if statement bc after saving some components, the page does not refresh even though the rooms[roomName] gets erased
+        if ( rooms[roomName] ) {
+            delete rooms[roomName]["scoreboard"][userName];
+            rooms[roomName]["partySize"]--;
 
-        console.log("");
-        console.log("[ LOGOUT NOTICE ]");
-        console.log(rooms[roomName]["partySize"] + " remaining in " + rooms[roomName]["name"]);
-        console.log("Players still here: "+ Object.keys(rooms[roomName]["scoreboard"]));
+            console.log("---------------------");
+            console.log("[ LOGOUT NOTICE ]");
+            console.log(rooms[roomName]["partySize"] + " remaining in " + rooms[roomName]["name"]);
+            console.log("Players still here: "+ Object.keys(rooms[roomName]["scoreboard"]));
 
-        if ( rooms[roomName]["partySize"] == 0 ) {
-            delete rooms[roomName];
-        } else {
-            io.emit("refreshScoreboard", {
-                userList: Object.keys( rooms[roomName]["scoreboard"] ),
-                scoreList: Object.values( rooms[roomName]["scoreboard"] ),
-                scoreboardList: Object.entries( rooms[roomName]["scoreboard"] ),
-            });
-        };
-    });// [END] user exits room
+            if ( rooms[roomName]["partySize"] == 0 ) {
+                delete rooms[roomName];
+            } else {
+                io.emit("refreshScoreboard", {
+                    userList: Object.keys( rooms[roomName]["scoreboard"] ),
+                    scoreList: Object.values( rooms[roomName]["scoreboard"] ),
+                    scoreboardList: Object.entries( rooms[roomName]["scoreboard"] ),
+                });
+            }; // [end] delete empty room
+        }; // [end] check if rooms[roomName] exists
+
+    });// [END] user logout
 
 }); // [END] io.on("connection")

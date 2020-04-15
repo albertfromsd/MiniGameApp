@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [TIMER]
+import PausableTimer from '../components/timer/PausableTimer';
+import CountdownTimer from '../components/timer/CountdownTimer';
+
 // [STYLES]
 import styles from './Views.module.css';
 
@@ -19,9 +23,9 @@ import {
 //[ ANIMATION]
 import {Fade} from 'react-reveal';
 
- 
+// [BOOTSTRAP]
 import Carousel from 'react-bootstrap/Carousel';
- 
+
 
 const Lobby = ({ dispatch }) => {
     const [ formState, setFormState ] = useState({
@@ -83,8 +87,12 @@ const Lobby = ({ dispatch }) => {
 
             <div className={[styles.textWhite, styles.onlyDiv, styles.flexColCen].join(' ')}>
             <h1>Join the Party, Join the Fun!</h1>
-
+            <p className={styles.textWhite}>Pausable Timer below: </p>
+            <PausableTimer />
                 <br/>
+            <p className={styles.textWhite}>Countdown Timer below: </p>
+            <CountdownTimer />
+                <br />
             <p className={styles.textRed}>Please enter your desired nick name and room you wish to enter or create</p> 
                 <br/> <br/>
             <form className={styles.flexColCen} onSubmit={enterRoom}>

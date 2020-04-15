@@ -20,6 +20,7 @@ import DropAFatShot from '../components/games/DropAFatShot';
 // [ STYLING ]
 import styles from './Views.module.css';
 import gameStyles from '../components/games/Games.module.css';
+import chatStyles from '../components/chat/Chat.module.css'
 
 // [ ANIMATIONS ]
 import Fade from 'react-reveal';
@@ -162,10 +163,10 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
                         roomName={roomName} />
                 </Router>
             </div>
-            <>
-            <Chat socket={socket} 
-                roomName = {roomName} />
-            </>
+            <div className={chatStyles.chatComponent}>
+                <Chat socket={socket} 
+                    roomName = {roomName} />
+            </div>
         </div>
         </Fade>
         </>

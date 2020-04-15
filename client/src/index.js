@@ -47,6 +47,8 @@ function reducer( state, action ) {
                 ...state,
                 socket: null,
                 userName: null,
+                roomName: null,
+                gameName: null,
             };
         default:
             return state;
@@ -56,11 +58,10 @@ function reducer( state, action ) {
     const initialState = {
         socket: null,
         userName: null,
-        userScore: null,
         roomName: null,
         gameName : null
     };
-  
+
 
 const store = createStore( reducer, initialState );
   // [END] [ REDUX ]

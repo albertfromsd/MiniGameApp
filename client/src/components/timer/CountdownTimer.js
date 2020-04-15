@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 // [ STYLING ]
-import styles from './GlobalComponents.module.css';
+import styles from '../GlobalComponents.module.css';
 
-const CountdownTimer = ({ startTime }) => {
+const CountdownTimer = ({ socket, startTime }) => {
+    
     const calculateTimeLeft = () => {
         // below follows the example in online article
-        const timeDifference = +new Date() - +new Date();
-
+        const timeDifference = +new Date("2021-01-01") - +new Date();
         // below if we used .getTime() as startTime
         // const timeDifference = startTime - +new Date().getTime();
+
         let timeLeft = {};
 
         if ( timeDifference > 0 ) {
@@ -19,7 +20,7 @@ const CountdownTimer = ({ startTime }) => {
                 hours: Math.floor( (timeDifference / (1000 * 60 * 60) ) % 24 ),
                 minutes: Math.floor( (timeDifference / 1000 / 60) % 60 ),
                 seconds: Math.floor( (timeDifference / 1000) % 60 ),
-                milliseconds: Math.floor( (timeDifference / 1000) ),
+                milliseconds: Math.floor(timeDifference),
             }
         };
 
@@ -38,8 +39,8 @@ const CountdownTimer = ({ startTime }) => {
 
     Object.keys(timeLeft).forEach(interval => {
         if (!timeLeft[interval]) {
-            return;
-        }
+            timeLeft[interval] = 0;
+        };
 
         timerComponents.push(
             <span>
@@ -50,7 +51,9 @@ const CountdownTimer = ({ startTime }) => {
 
     return (
         <div className={styles.textWhite}>
-            {timerComponents.length ? timerComponents : <span>Time's up!</span>}
+            {timerComponents.length 
+                ? timerComponents 
+                : <span>Time's up!</span>}
         </div>
     );
 };
@@ -58,7 +61,11 @@ const CountdownTimer = ({ startTime }) => {
 function mapStateToProps(state) {
     return {
         socket: state.socket,
+        roomName: state.roomName,
+        gameName: state.gameName,
         userName: state.userName,
+
+        
     };
 };
 

@@ -12,8 +12,6 @@ const CustomizedButton = ({ socket, roomName, userName, dispatch }) => {
 
         dispatch({
             type: 'LOGOUT',
-            socket,
-            userName,
         });
 
         navigate('/');
@@ -33,8 +31,8 @@ const CustomizedButton = ({ socket, roomName, userName, dispatch }) => {
     
     return (
         <>
-        <Button variant="outline-secondary" onClick={exitThisGame}>Return to Game Room</Button>
-        <Button variant="outline-secondary" onClick={logout}>Logout</Button>
+            <Button variant="outline-secondary" onClick={exitThisGame}>Return to Game Room</Button>
+            <Button variant="outline-secondary" onClick={logout}>Logout</Button>
         </>
     );
 };
