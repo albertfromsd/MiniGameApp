@@ -64,7 +64,8 @@ const NavBar = ({ socket, roomName, userName, dispatch }) => {
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                 </NavDropdown>
                 </Nav>
-                <CustomizedButton roomName={roomName}/>
+                <CustomizedButton className={navBarStyles.flexColCen}
+                    roomName={roomName}/>
             </Navbar.Collapse>
         </Navbar>
         </>

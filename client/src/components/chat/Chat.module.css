@@ -2,6 +2,11 @@
   margin: 0 auto;
 }
 
+.chatComponent {
+  width: 28%;
+  height: 65%;
+}
+
 .chatBox {
   display: flex;
   flex-flow: column;

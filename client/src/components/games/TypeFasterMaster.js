@@ -32,12 +32,12 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
 
     useEffect( () => {  
         if( userName == null || 
-            userName.length < 1 || 
             userName == undefined || 
+            userName.length < 1 || 
             roomName == null || 
-            roomName.length < 1 || 
-            roomName == undefined ) {
-                
+            roomName == undefined ||
+            roomName.length < 1 ) {
+
             navigate('/');
         };
 
@@ -58,7 +58,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setTargetString(data.target);
-            setTimer(data.createdAt);
+            setTimer(data.createdAt); 
         });
 
         socket.on("answeredTypeFasterTarget", data => {
@@ -119,7 +119,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const findResult = (event) =>{
         event.preventDefault();
 
-        if ( difficulty == "Genius" && userInput == targetString ) {
+        if ( difficulty == "Genius" && userInput == targetString.join('') ) {
             let now = new Date();
             let answerTime = now.getTime();(now.getSeconds()).toString();
             let totalTimeTaken = Math.round((+answerTime - + timer))/1000;

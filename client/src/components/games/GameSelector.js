@@ -35,7 +35,7 @@ const GameSelector = ({ socket, dispatch, userName, roomName }) => {
 
         dispatch({
             type: 'SETROOMNAME',
-            gameName,
+            roomName,
         });
 
         socket.emit("navigateParty", 
