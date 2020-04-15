@@ -30,7 +30,7 @@ const MathHead = ({ socket, userName, roomName }) => {
     const [ resultColor, setResultColor ] = useState("white");
 
     // ANSWER TIMER
-    const [timer, setTimer] = useState("");
+    const [timerStart, setTimerStart] = useState("");
     const [totalTime, setTotalTime] = useState(0);
 
 
@@ -62,7 +62,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             setResultsVisibility("hidden");
             setQuestion(data.question);
             setAnswer(data.answer);
-            setTimer(data.createdAt);
+            setTimerStart(data.createdAt);
         });
 
         socket.on("answeredMathHeadTarget", data => {
@@ -88,7 +88,7 @@ const MathHead = ({ socket, userName, roomName }) => {
         // Start timer
         let now = new Date();
         let questionTime = now.getTime();
-        setTimer(questionTime);
+        setTimerStart(questionTime);
         setTotalTime(0);
 
         setResultMsg([]);
@@ -167,7 +167,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             // time and score
             let now = new Date();
             let answerTime = now.getTime();
-            let totalTimeTaken = Math.round((+answerTime - + timer))/1000;
+            let totalTimeTaken = Math.round((+answerTime - + timerStart))/1000;
             let points = 15-totalTimeTaken;
 
             // if ( difficulty == "Easy") {
@@ -184,7 +184,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             // };
 
             console.log("points: "+points);
-            setTimer("");
+            setTimerStart("");
             
             // results
             setResultMsg([
