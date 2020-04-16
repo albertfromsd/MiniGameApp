@@ -73,7 +73,9 @@ const MathHead = ({ socket, userName, roomName }) => {
             setResultsVisibility("visible");
             setResultMsg([
                 data.userName+" beat you! ", 
-                data.question+" equals "+data.answer+"!", "It took that player "+data.totalTimeTaken+" seconds to beat you!", 
+                data.question+" equals "+data.answer+"!", 
+                "They beat you in "+data.totalTimeTaken+" seconds", 
+                "They scored "+data.points+" points!", 
                 "You can get it next time!"]);
             setResultColor("orange");
         });
@@ -162,7 +164,7 @@ const MathHead = ({ socket, userName, roomName }) => {
         };
         generateProblem(max, min, maxOp, minOp);
     };
-    // [ END ] Create question and use sockets to share will players
+    // [ END ] Create question and use sockets to share with players
 
     const findResult = (event) => {
         event.preventDefault();
@@ -211,7 +213,7 @@ const MathHead = ({ socket, userName, roomName }) => {
                     question,
                     answer,
                     totalTimeTaken,
-                    points
+                    points: points.toFixed(3),
                 }
             );
         // wrong answer submitted; set wrong msg and no emit
@@ -227,11 +229,11 @@ const MathHead = ({ socket, userName, roomName }) => {
 
     return(
         <div className={styles.entirePage}>
-        <h3 className={styles.textWhite}> <i> {userName} </i>  </h3>
-            
+            <h3 className={styles.textWhite}> <i> {userName} </i>  </h3>
                 <br />
             <h2 className={styles.textWhite}>Math Head</h2>
                 <br/>
+
             <div>
                 {difficultyLevels.map( (d, i) => {
 
@@ -251,6 +253,7 @@ const MathHead = ({ socket, userName, roomName }) => {
 
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
                 <br/>
+
             <div className={formVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
@@ -271,6 +274,7 @@ const MathHead = ({ socket, userName, roomName }) => {
                 </form>
             </div>
                 <br/>
+
             <div className={resultsVisibility == "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
@@ -281,6 +285,7 @@ const MathHead = ({ socket, userName, roomName }) => {
                     </>
                 )}
             </div>
+
         </div>
     );
 };

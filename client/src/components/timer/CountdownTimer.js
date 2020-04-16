@@ -10,22 +10,8 @@ const CountdownTimer = ({ socket }) => {
     const [ timeAllowed, setTimeAllowed ] = useState(0);
     const [ startDate, setStartDate ] = useState(new Date());
 
-    // const [ resetState, setResetState ] = useState(false);
-    
-    // [function] force update
-    // const useForceUpdate = () => {
-    //     const [value, setValue] = useState(0); // integer state
-    //     return () => setValue(value => ++value); // update the state to force render
-    // }
-    // const forceUpdate = useForceUpdate();
-
-
     const calculateTimeLeft = () => {
-        // below follows the example in online article
         const timeDifference = timeAllowed - ( +new Date() - +startDate );
-        // below if we used .getTime() as startTime
-        // const timeDifference = startTime - +new Date().getTime();
-
         let timeLeft = {};
 
         if ( timeDifference > 0 ) {

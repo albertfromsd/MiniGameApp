@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
+// [ COMPONENTS ]
+import CountdownTimer from '../timer/CountdownTimer';
+
 // [ STYLING ]
 import styles from './Games.module.css';
 
@@ -55,6 +58,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
 
         socket.on("sharedTypeFasterTarget", data => {
             console.log("sharedTypeFasterTarget activated:"+data.target);
+            setFormVisibility("hidden");
             setFormVisibility("visible");
             setResultsVisibility("hidden");
             setTargetString(data.target);
@@ -66,8 +70,8 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
             setFormVisibility("hidden");
             setResultsVisibility("visible");
             setResultMsg([
-                data.userName+" wins! ", 
-                "It took that player " +data.totalTimeTaken + " seconds.",
+                data.userName+" beat you! ", 
+                "They beat you in" +data.totalTimeTaken + " seconds",
                 "They scored "+data.points+" points!", 
                 "You can get it next time!"]);
             setResultColor("orange");
@@ -143,7 +147,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
                     roomName,
                     string: targetString,
                     totalTimeTaken,
-                    points
+                    points: points.toFixed(3),
                 }
             );
         };

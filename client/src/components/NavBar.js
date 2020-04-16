@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { navigate, Link } from '@reach/router';
+import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
 import CustomizedButton from './CustomizedButton';
@@ -13,7 +13,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 
 
-const NavBar = ({ socket, roomName, userName, admin, dispatch }) => {
+const NavBar = ({ socket, roomName, userName, admin }) => {
 
     useEffect( () => {
         if( userName === null || 
@@ -31,22 +31,6 @@ const NavBar = ({ socket, roomName, userName, admin, dispatch }) => {
         console.log(gameName);
         navigate('/'+roomName+"/"+gameName);
     };
-
-    // const navigateLobby = e => {
-    //     socket.emit("navigateParty", 
-    //         {
-    //             roomName,
-    //             gameName: ""
-    //         }
-    //     );
-    // };
-
-    // const exitParty = event =>{
-    //     console.log("Socket should disconnect");
-    //     socket.disconnect();
-    //     navigate('/');
-
-    // }
     
     return (
         <>
@@ -65,9 +49,12 @@ const NavBar = ({ socket, roomName, userName, admin, dispatch }) => {
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                 </NavDropdown>
                 </Nav>
-                <p className={navBarStyles.textWhite}>Logged in as: <i> { userName } </i></p>
-                    <br />
-                <p className={navBarStyles.textWhite}>Admin:  { admin } </p>
+                <div>
+                    <p className={navBarStyles.textWhite}>Logged in as: <i> { userName } </i></p>
+                        <br />
+                    <p className={navBarStyles.textWhite}>Admin:  { admin } </p>
+                        <br />
+                </div>
                 <CustomizedButton className={navBarStyles.flexColCen}
                     roomName={roomName}/>
             </Navbar.Collapse>
