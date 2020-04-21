@@ -12,12 +12,12 @@ const Chat = ( { socket, userName, roomName } ) => {
   const [ adminState, setAdminState ] = useState(false);
 
   useEffect( () => {
-    if (  userName == null || 
+    if (  userName === null || 
           userName.length < 1 || 
-          userName == undefined || 
-          roomName == null || 
+          userName === undefined || 
+          roomName === null || 
           roomName.length < 1 || 
-          roomName == undefined ) {
+          roomName === undefined ) {
         navigate('/');
     };
 

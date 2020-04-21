@@ -35,11 +35,11 @@ const MathHead = ({ socket, userName, roomName }) => {
     const [ timeAllowed, setTimeAllowed ] = useState(0);
 
     useEffect( () => {
-        if( userName == null || 
-            userName == undefined || 
+        if( userName === null || 
+            userName === undefined || 
             userName.length < 1 || 
-            roomName == null || 
-            roomName == undefined ||
+            roomName === null || 
+            roomName === undefined ||
             roomName.length < 1 ) {
 
             navigate('/');
@@ -115,13 +115,13 @@ const MathHead = ({ socket, userName, roomName }) => {
             const num2 = getRandomInt(max, min);
             const operator = operators[getRandomInt(maxOp, minOp)];
             let result;
-            if (operator == "+") {
+            if (operator === "+") {
                 result = num1+num2;
             };
-            if (operator == "-") {
+            if (operator === "-") {
                 result = num1-num2;
             };
-            if (operator == "×") {
+            if (operator === "×") {
                 result = num1*num2;
             };
 
@@ -135,26 +135,25 @@ const MathHead = ({ socket, userName, roomName }) => {
         }; // [END] sub-function generateProblem
 
         // Question changes based on difficulty
-
-        if ( difficulty == "Easy" ) {
+        if ( difficulty === "Easy" ) {
             max = 21;
             min = 2;
             maxOp = 2;
             minOp = 0;
         };
-        if ( difficulty == "Medium" ) {
+        if ( difficulty === "Medium" ) {
             max = 52;
             min = 5;
             maxOp = 3;
             minOp = 0;
         };
-        if ( difficulty == "Hard" ) {
+        if ( difficulty === "Hard" ) {
             max = 102;
             min = 11;
             maxOp = 3;
             minOp = 0;
         };
-        if ( difficulty == "Genius" ) {
+        if ( difficulty === "Genius" ) {
             max = 1002;
             min = 11;
             maxOp = 3;
@@ -243,7 +242,7 @@ const MathHead = ({ socket, userName, roomName }) => {
                             key={i} 
                             name={d} 
                             value={d} 
-                            className={(d == difficulty ? styles.activeBtn : styles.inactiveBtn)}>
+                            className={(d === difficulty ? styles.activeBtn : styles.inactiveBtn)}>
                                 {d}
                         </button>
                     )
@@ -254,10 +253,10 @@ const MathHead = ({ socket, userName, roomName }) => {
             <button onClick={createTarget} className={styles.createBtn}>{"Create " + difficulty + " Problem"}</button>
                 <br/>
 
-            <div className={formVisibility == "hidden" 
+            <div className={formVisibility === "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
-                    { formVisibility == "hidden"
+                    { formVisibility === "hidden"
                         ? <p> Countdown timer not yet activated </p>
                         : <CountdownTimer /> }
                     <p className={styles.textWhite}>{question}</p>
@@ -275,7 +274,7 @@ const MathHead = ({ socket, userName, roomName }) => {
             </div>
                 <br/>
 
-            <div className={resultsVisibility == "hidden" 
+            <div className={resultsVisibility === "hidden" 
                 ? styles.hiddenForm 
                 : styles.visibleForm}>
                 {resultMsg.length > 0 && resultMsg.map( (msg, i) => 
