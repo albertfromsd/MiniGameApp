@@ -4,7 +4,7 @@ const app = express();
 app.use( express.json() );
 app.use( express.urlencoded({ extended: true }) );
 
-// [ CORS ] only for localhost
+// [ CORS ] only for offline-development
 const cors = require('cors');
 app.use(cors({
     credentials: true,
@@ -18,7 +18,7 @@ app.use(cookieParser());
 // [ CONFIG ]
 require('./config/mongoose.config');
 require('dotenv').config();
-console.log("SECRET_KEY: "+process.env.SECRET_KEY);
+
 
 // [ MODELS ] add when DB is activated
 const { Chat } = require('./models/Chat.model');

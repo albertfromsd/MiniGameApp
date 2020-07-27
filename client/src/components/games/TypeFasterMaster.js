@@ -34,13 +34,7 @@ const TypeFasterMaster = ({  socket, userName, roomName })  => {
     const [ totalTime, setTotalTime ] = useState(0);
 
     useEffect( () => {  
-        if( userName == null || 
-            userName == undefined || 
-            userName.length < 1 || 
-            roomName == null || 
-            roomName == undefined ||
-            roomName.length < 1 ) {
-
+        if( !userName || !roomName ) {
             navigate('/');
         };
 
