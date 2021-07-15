@@ -1,0 +1,9 @@
+export const gameActionTypes = {
+
+    SET_SOCKET: "SET_SOCKET",
+    SET_ADMIN: "SET_ADMIN",
+    SET_ROOMNAME: "SET_ROOMNAME",
+    SET_GAMENAME: "SET_GAMENAME",
+    SET_SCOREBOARD: "SET_SCOREBOARD",
+
+}

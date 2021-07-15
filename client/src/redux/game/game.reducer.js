@@ -1,48 +1,48 @@
-const rootReducer = ( state, action ) => {
+import { gameActionTypes } from './game.types';
+
+
+const initialState = {
+    socket: null,
+    roomName: null,
+    admin: null,
+    gameName : null,
+    scoreboard: null,
+    userList: null,
+    scoreList: null,
+};
+
+const gameReducer = ( state=initialState, action ) => {
     switch(action.type) {
-        case 'SETSOCKET':
+        case gameActionTypes.SET_SOCKET:
             return {
             ...state,
             socket: action.socket
             };
-        case 'SETADMIN':
+        case gameActionTypes.SET_ADMIN:
             return {
                 ...state,
                 admin: action.admin
             };
-        case 'SETROOMNAME':
+        case gameActionTypes.SET_ROOMNAME:
             return {
                 ...state,
                 roomName: action.roomName,
             };
-        case 'SETGAMENAME':
+        case gameActionTypes.SET_GAMENAME:
             return{
                 ...state,
                 gameName : action.gameName,
             };
-        case 'SETUSERNAME':
-            return {
-            ...state,
-            userName: action.userName,
-            };
-        case 'SETSCOREBOARD':
+        case gameActionTypes.SET_SCOREBOARD:
             return{
                 ...state,
                 scoreboard : action.scoreboard,
                 userList: action.userList,
                 scoreList: action.scoreList
             };
-        case 'LOGOUT':
-            return {
-                ...state,
-                socket: null,
-                userName: null,
-                roomName: null,
-                gameName: null,
-            };
         default:
             return state;
     };
 };
 
-export default rootReducer;
+export default gameReducer;
