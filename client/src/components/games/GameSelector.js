@@ -16,12 +16,10 @@ const GameSelector = ({ socket, dispatch, userName, admin, roomName }) => {
     }, [socket]);
 
     const gameSelector = e => {
-        if( userName === null || 
-            userName.length < 1 || 
-            userName === undefined || 
-            roomName === null || 
-            roomName.length < 1 || 
-            roomName === undefined ) {
+        if( userName == undefined || 
+            userName.length < 1 ||  
+            roomName == undefined || 
+            roomName.length < 1  ) {
             
             navigate('/');
         };
@@ -65,21 +63,21 @@ const GameSelector = ({ socket, dispatch, userName, admin, roomName }) => {
                             className={styles.gameBtn}>
                                 Math Head
                         </button>{" "}
-                        <br/>
+                        {/* <br/>
                             <button 
                             onClick={gameSelector} 
                             value="wisetomemorize"
                             className={styles.gameBtn}>
-                                Wise to Memorize
+                                Wise to Memorize (Under Construction)
                         </button>{" "}
                             <br/>
                         <button 
                         onClick={gameSelector} 
                         value="dontcomeinsideme"
                         className={styles.gameBtn}>
-                            Don't Come Inside Me
+                            Don't Come Inside Me (Under Construction)
                         </button>{" "}
-                            <br/>
+                            <br/> */}
                     </div>
                     <div className={styles.flexColCen}>
                         <button 
@@ -88,21 +86,21 @@ const GameSelector = ({ socket, dispatch, userName, admin, roomName }) => {
                             className={styles.gameBtn}>
                                 Type Faster Master
                         </button>{" "}
-                            <br/>
+                            {/* <br/>
                         <button 
                             onClick={gameSelector} 
                             value="littleboxes"
                             className={styles.gameBtn}>
-                                Little Boxes
+                                Little Boxes (Under Construction)
                         </button>{" "}
                             <br/>
                         <button 
                             onClick={gameSelector} 
                             value="dropafatshot"
                             className={styles.gameBtn}>
-                                Drop a Fat Shot
+                                Drop a Fat Shot (Under Construction)
                         </button>{" "}
-                            <br/>
+                            <br/> */}
                     </div>
                 </div>
             </div>

@@ -13,23 +13,39 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 
 
-const NavBar = ({ socket, roomName, userName, admin }) => {
+const NavBar = ({ socket, dispatch, roomName, userName, admin }) => {
+    let gameName;
 
     useEffect( () => {
-        if( userName === null || 
+        if( userName == undefined || 
             userName.length < 1 || 
-            userName === undefined || 
-            roomName === null || 
-            roomName.length < 1 || 
-            roomName === undefined ) {
+            roomName == undefined || 
+            roomName.length < 1 ) {
             navigate('/');
         };
 
     }, [socket, userName, roomName]);
 
-    const navLink = (e, gameName) => {
+    const navLink = e => {
+        gameName = e.target.value;
         console.log(gameName);
-        navigate('/'+roomName+"/"+gameName);
+        dispatch({
+            type: 'SETGAMENAME',
+            gameName,
+        });
+
+        dispatch({
+            type: 'SETROOMNAME',
+            roomName,
+        });
+
+        socket.emit("navigateParty", 
+            {
+                roomName,
+                userName,
+                gameName
+            }
+        );
     };
     
     return (
@@ -40,14 +56,11 @@ const NavBar = ({ socket, roomName, userName, admin }) => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                 <Nav.Link href="#">Home</Nav.Link>
-                <Nav.Link href="#link">Link</Nav.Link>
-                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                    <NavDropdown.Item onClick={navLink}>Math Head</NavDropdown.Item>
-                    <NavDropdown.Item href={`/${roomName}/typefaster`}>Type faster</NavDropdown.Item>
+                {/* <NavDropdown title="Games" id="basic-nav-dropdown">
+                    <NavDropdown.Item onClick={navLink} value="mathhead">Math Head</NavDropdown.Item>
+                    <NavDropdown.Item onClick={navLink} value="typefaster">Type faster</NavDropdown.Item>
                     <NavDropdown.Item href={`/${roomName}/`}>Wise To Memorise</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                </NavDropdown>
+                </NavDropdown> */}
                 </Nav>
                 <div>
                     <p className={navBarStyles.textWhite}>Logged in as: <i> { userName } </i></p>
