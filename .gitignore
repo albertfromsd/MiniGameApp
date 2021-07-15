@@ -2,3 +2,4 @@ node_modules/
 errorImages/
 
 *pem
+nginxconfig.txt
