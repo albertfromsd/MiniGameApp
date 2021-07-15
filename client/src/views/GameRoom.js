@@ -29,7 +29,7 @@ const GameRoom = ({ dispatch, userName, roomName }) => {
     const gameName = " ";
 
     // [ SOCKETS ] CHOOSE ONE: localhost:8000 / deployed
-    const [ socket ] = useState( () => io(':8000') );
+    const [ socket ] = useState( () => io('http://localhost:8000') );
     // const [ socket ] = useState( () => io() );
 
     // ADMIN STATE BOOLEAN
