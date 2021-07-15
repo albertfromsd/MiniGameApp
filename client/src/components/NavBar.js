@@ -64,9 +64,9 @@ const NavBar = ({ socket, dispatch, roomName, userName, admin }) => {
                 </Nav>
                 <div>
                     <p className={navBarStyles.textWhite}>Logged in as: <i> { userName } </i></p>
-                        <br />
+                        {/* <br />
                     <p className={navBarStyles.textWhite}>Admin:  { admin } </p>
-                        <br />
+                        <br /> */}
                 </div>
                 <CustomizedButton className={navBarStyles.flexColCen}
                     roomName={roomName}/>
