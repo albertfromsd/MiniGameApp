@@ -1,20 +1,48 @@
-import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+const rootReducer = ( state, action ) => {
+    switch(action.type) {
+        case 'SETSOCKET':
+            return {
+            ...state,
+            socket: action.socket
+            };
+        case 'SETADMIN':
+            return {
+                ...state,
+                admin: action.admin
+            };
+        case 'SETROOMNAME':
+            return {
+                ...state,
+                roomName: action.roomName,
+            };
+        case 'SETGAMENAME':
+            return{
+                ...state,
+                gameName : action.gameName,
+            };
+        case 'SETUSERNAME':
+            return {
+            ...state,
+            userName: action.userName,
+            };
+        case 'SETSCOREBOARD':
+            return{
+                ...state,
+                scoreboard : action.scoreboard,
+                userList: action.userList,
+                scoreList: action.scoreList
+            };
+        case 'LOGOUT':
+            return {
+                ...state,
+                socket: null,
+                userName: null,
+                roomName: null,
+                gameName: null,
+            };
+        default:
+            return state;
+    };
+};
 
-// [ SUB REDUCERS ]
-import userReducer from './user/user.reducer';
-import gameReducer from './game/game.reducer';
-
-const persistConfig = {
-    key: 'root',
-    storage,
-    whiteList: ['user']
-}
-
-const rootReducer = combineReducers({
-    user: userReducer,
-    game: gameReducer
-});
-
-export default persistReducer( persistConfig, rootReducer );
+export default rootReducer;

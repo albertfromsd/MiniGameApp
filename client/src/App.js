@@ -3,7 +3,7 @@ import { Router } from '@reach/router';
 import { connect } from 'react-redux';
 
 // [ STYLES ]
-import './MiniGameApp.css';
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // [ VIEWS ]
